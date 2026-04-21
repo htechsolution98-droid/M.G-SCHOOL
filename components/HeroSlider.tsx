@@ -14,7 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
-const slides = [
+const defaultSlides = [
   {
     image: "/images/kids-school (1).jpg",
     tagline: "Premier Education",
@@ -41,7 +41,12 @@ const slides = [
   }
 ];
 
-const HeroSlider = () => {
+interface HeroSliderProps {
+  slides?: any[] | null;
+}
+
+const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
+  const slides = propSlides && propSlides.length > 0 ? propSlides : defaultSlides;
   return (
     <div className="relative h-screen w-full overflow-hidden">
       <Swiper
@@ -85,7 +90,7 @@ const HeroSlider = () => {
               </motion.div>
 
               {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
 
               <div className="container-custom relative z-10">
                 <div className="max-w-3xl">
@@ -107,7 +112,7 @@ const HeroSlider = () => {
                     initial={{ y: 30, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-white mb-8 leading-tight drop-shadow-2xl"
+                    className="text-3xl md:text-4xl lg:text-5xl font-playfair font-black text-white mb-6 leading-tight drop-shadow-2xl"
                   >
                     {slide.title}
                   </motion.h1>
@@ -116,7 +121,7 @@ const HeroSlider = () => {
                     initial={{ y: 30, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed font-light"
+                    className="text-base md:text-lg text-gray-300 mb-10 leading-relaxed font-light"
                   >
                     {slide.description}
                   </motion.p>

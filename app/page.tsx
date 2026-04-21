@@ -1,30 +1,97 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeroSlider from "@/components/HeroSlider";
-import SectionTitle from "@/components/SectionTitle";
-import BranchCard from "@/components/BranchCard";
 import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+const iconMap: Record<string, React.ReactNode> = {
+  Users: <Users size={20} />,
+  ShieldCheck: <ShieldCheck size={20} />,
+  Award: <Award size={20} />,
+  Trophy: <Trophy size={20} />,
+  BookOpen: <BookOpen size={20} />,
+  Heart: <Heart size={20} />,
+};
+
+const featureIconMap: Record<string, React.ReactNode> = {
+  "Intellectual Rigor": <BookOpen className="text-secondary" />,
+  "Ethical Leadership": <ShieldCheck className="text-secondary" />,
+  "Physical Wellness": <Trophy className="text-secondary" />,
+  "Creative Expression": <Heart className="text-secondary" />,
+};
+
 export default function Home() {
-  const stats = [
-    { label: "Students", val: "2,500+", icon: <Users size={20} /> },
-    { label: "Faculty", val: "150+", icon: <ShieldCheck size={20} /> },
-    { label: "Exp", val: "28 Yrs", icon: <Award size={20} /> },
+  const [content, setContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/home-content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setContent(data.content);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fallback data while loading
+  const stats = content?.stats || [
+    { label: "Students", value: "2,500+", icon: "Users" },
+    { label: "Faculty", value: "150+", icon: "ShieldCheck" },
+    { label: "Exp", value: "28 Yrs", icon: "Award" },
   ];
+
+  const philosophy = content?.philosophy || {
+    badge: "Established 1995",
+    heading: "Cultivating",
+    headingHighlight: "Wisdom",
+    description: "Our curriculum is designed to ignite curiosity. We don't just teach subjects; we inspire a lifelong passion for discovery in an environment that honors both tradition and technological progress.",
+    image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2071",
+    floatingText: "Child-Centric Learning Approach",
+    features: ["Intellectual Rigor", "Ethical Leadership", "Physical Wellness", "Creative Expression"],
+    ctaText: "Explore Our Legacy",
+    ctaLink: "/about",
+  };
+
+  const campusHubs = content?.campusHubs || [
+    {
+      id: "block-a",
+      name: "Block A",
+      hub: "Foundation Hub",
+      title: "Primary Foundation",
+      desc: "Activity-based learning for Std 1–8 in our vibrant Gujarati Medium campus.",
+      img: "/images/kids-school (1).jpg"
+    },
+    {
+      id: "block-b",
+      name: "Block B",
+      hub: "Excellence Hub",
+      title: "Secondary Mastery",
+      desc: "Rigorous preparation for Std 9–12 Board Exams with expert academic guidance.",
+      img: "/images/proud-teacher-with-her-elementary-students (1).jpg"
+    },
+    {
+      id: "block-c",
+      name: "Block C",
+      hub: "International Hub",
+      title: "Bilingual Academy",
+      desc: "Our premium dual-medium campus with global technology & sports infrastructure.",
+      img: "/images/school3 (1).jpg"
+    }
+  ];
+
+  const heroSlides = content?.heroSlides || null;
 
   return (
     <div className="flex flex-col w-full">
-      <HeroSlider />
+      <HeroSlider slides={heroSlides} />
 
       {/* Floating Stats Section */}
       <section className="relative z-20 -mt-20">
         <div className="container-custom">
           <div className="bg-white rounded-[3rem] p-10 shadow-3xl flex flex-wrap justify-around items-center gap-8 border border-gray-100">
-            {stats.map((stat, i) => (
+            {stats.map((stat: any, i: number) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -34,10 +101,10 @@ export default function Home() {
                 className="flex items-center gap-5"
               >
                 <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
-                  {stat.icon}
+                  {iconMap[stat.icon] || <Users size={20} />}
                 </div>
                 <div>
-                  <div className="text-3xl font-playfair font-black text-primary">{stat.val}</div>
+                  <div className="text-3xl font-playfair font-black text-primary">{stat.value}</div>
                   <div className="text-xs uppercase tracking-widest font-black text-secondary">{stat.label}</div>
                 </div>
               </motion.div>
@@ -63,7 +130,7 @@ export default function Home() {
               <div className="absolute -top-10 -left-10 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
               <div className="relative z-10 glass p-4 rounded-[4rem] shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2071"
+                  src={philosophy.image}
                   alt="Students"
                   width={600}
                   height={800}
@@ -75,7 +142,7 @@ export default function Home() {
                   className="absolute -bottom-10 -right-10 bg-secondary p-10 rounded-[3rem] shadow-3xl text-primary max-w-[250px]"
                 >
                   <Heart className="w-10 h-10 mb-4 fill-primary" />
-                  <div className="text-2xl font-playfair font-black leading-tight">Child-Centric Learning Approach</div>
+                  <div className="text-2xl font-playfair font-black leading-tight">{philosophy.floatingText}</div>
                 </motion.div>
               </div>
             </motion.div>
@@ -86,32 +153,27 @@ export default function Home() {
               viewport={{ once: true }}
               className="lg:w-1/2"
             >
-              <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">Established 1995</div>
+              <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">{philosophy.badge}</div>
               <h2 className="text-5xl md:text-7xl font-playfair font-black leading-[1.1] mb-10 text-primary">
-                Cultivating <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">Wisdom</span> & Character.
+                {philosophy.heading} <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">{philosophy.headingHighlight}</span> &amp; Character.
               </h2>
               <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
-                Our curriculum is designed to ignite curiosity. We don't just teach subjects; we inspire a lifelong passion for discovery in an environment that honors both tradition and technological progress.
+                {philosophy.description}
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                {[
-                  { title: "Intellectual Rigor", icon: <BookOpen className="text-secondary" /> },
-                  { title: "Ethical Leadership", icon: <ShieldCheck className="text-secondary" /> },
-                  { title: "Physical Wellness", icon: <Trophy className="text-secondary" /> },
-                  { title: "Creative Expression", icon: <Heart className="text-secondary" /> },
-                ].map((item, i) => (
+                {(philosophy.features || []).map((feature: string, i: number) => (
                   <div key={i} className="flex items-center gap-4 p-4 hover:bg-white hover:shadow-xl rounded-2xl transition-all border border-transparent hover:border-gray-100">
                     <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      {item.icon}
+                      {featureIconMap[feature] || <BookOpen className="text-secondary" />}
                     </div>
-                    <span className="font-bold text-primary">{item.title}</span>
+                    <span className="font-bold text-primary">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <Link href="/about" className="group text-primary font-black text-xl flex items-center gap-4">
-                Explore Our Legacy
+              <Link href={philosophy.ctaLink} className="group text-primary font-black text-xl flex items-center gap-4">
+                {philosophy.ctaText}
                 <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -131,32 +193,7 @@ export default function Home() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              {
-                id: "block-a",
-                name: "Block A",
-                hub: "Foundation Hub",
-                title: "Primary Foundation",
-                desc: "Activity-based learning for Std 1–8 in our vibrant Gujarati Medium campus.",
-                img: "https://images.unsplash.com/photo-1544391682-17ef1f24ff3a?q=80&w=2072"
-              },
-              {
-                id: "block-b",
-                name: "Block B",
-                hub: "Excellence Hub",
-                title: "Secondary Mastery",
-                desc: "Rigorous preparation for Std 9–12 Board Exams with expert academic guidance.",
-                img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2072"
-              },
-              {
-                id: "block-c",
-                name: "Block C",
-                hub: "International Hub",
-                title: "Bilingual Academy",
-                desc: "Our premium dual-medium campus with global technology & sports infrastructure.",
-                img: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
-              }
-            ].map((item, idx) => (
+            {campusHubs.map((item: any, idx: number) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -180,7 +217,7 @@ export default function Home() {
                     <p className="text-gray-500 text-sm font-medium leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2">
                       {item.desc}
                     </p>
-                    <Link href={`/branches#${item.id}`} className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest hover:text-secondary transition-colors">
+                    <Link href={`/branches/${item.id}`} className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest hover:text-secondary transition-colors">
                       Enter Campus <ArrowRight size={16} />
                     </Link>
                   </div>

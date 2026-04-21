@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import LayoutShell from "@/components/LayoutShell";
 
 const playfair = Playfair_Display({ 
   subsets: ["latin"],
@@ -30,11 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${outfit.variable} scroll-smooth`}>
       <body className="antialiased selection:bg-secondary selection:text-primary">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <WhatsAppButton />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );
 }
+
