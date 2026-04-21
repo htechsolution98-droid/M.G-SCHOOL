@@ -1,14 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SectionTitle from "@/components/SectionTitle";
 import { BookMarked, Microscope, Laptop, Music, Dumbbell, Globe, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import axiosInstance from "@/lib/axios";
 
 const Academics = () => {
-  const sections = [
+  const [content, setContent] = useState<any>(null);
+
+  useEffect(() => {
+    axiosInstance.get("/api/academics-content")
+      .then((res) => {
+        if (res.data.success) setContent(res.data.content);
+      })
+      .catch(() => { });
+  }, []);
+
+  const hero = content?.hero || {
+    heading: "Elite",
+    headingHighlight: "Curriculum.",
+    description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
+    image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+  };
+
+  const sections = content?.programs || [
     {
       title: "Primary Foundation",
       level: "Std 1 to 5",
@@ -49,39 +67,69 @@ const Academics = () => {
 
   return (
     <div className="pt-24 min-h-screen mb-32">
-      {/* Dynamic Header */}
-      <section className="bg-slate-50 py-32 md:py-48 overflow-hidden relative">
+      {/* Dynamic Header - Split UI */}
+      <section className="bg-slate-50 py-20 md:py-32 overflow-hidden relative">
         <div className="absolute inset-0 bg-pattern opacity-10" />
-        <div className="container-custom relative z-10 flex flex-col items-center text-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="p-4 bg-primary text-secondary rounded-2xl mb-10 shadow-2xl"
-          >
-            <Sparkles size={40} />
-          </motion.div>
-          <motion.h1 
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter"
-          >
-            Elite <br/><span className="text-secondary italic">Curriculum.</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl md:text-3xl text-gray-400 font-light max-w-3xl leading-relaxed"
-          >
-            "Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."
-          </motion.p>
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16 md:gap-24">
+            {/* Left Content */}
+            <div className="lg:w-1/2 text-left">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="p-4 bg-primary text-secondary rounded-2xl mb-10 shadow-2xl inline-block"
+              >
+                <Sparkles size={40} />
+              </motion.div>
+              <motion.h1 
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter"
+              >
+                {hero.heading} <br/><span className="text-secondary italic">{hero.headingHighlight}</span>
+              </motion.h1>
+              <motion.p 
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl md:text-2xl text-gray-400 font-light max-w-xl leading-relaxed"
+              >
+                {hero.description}
+              </motion.p>
+            </div>
+
+            {/* Right Image */}
+            <div className="lg:w-1/2 relative">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="relative z-10 glass p-4 rounded-[4rem] shadow-2xl"
+              >
+                <Image
+                  src={hero.image}
+                  alt="Academics"
+                  width={800}
+                  height={600}
+                  className="rounded-[3.5rem] object-cover h-[400px] md:h-[500px] w-full"
+                  priority
+                />
+                <div className="absolute -bottom-6 -right-6 bg-secondary p-6 rounded-[2rem] shadow-3xl hidden md:block">
+                  <div className="text-primary font-black text-xs uppercase tracking-widest">Enrollment Open</div>
+                  <div className="text-2xl font-playfair font-black text-primary">Session 2024-25</div>
+                </div>
+              </motion.div>
+              <div className="absolute -top-10 -right-10 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -z-10" />
+              <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Program Blocks - Innovative Layout */}
       <section className="mt-20">
         <div className="container-custom space-y-32 md:space-y-48">
-          {sections.map((section, idx) => (
+          {sections.map((section: any, idx: number) => (
             <div key={idx} className={`flex flex-col ${idx % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-20 items-center`}>
               <motion.div 
                 initial={{ x: idx % 2 === 1 ? 50 : -50, opacity: 0 }}
@@ -101,7 +149,7 @@ const Academics = () => {
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {section.features.map((feature, fIdx) => (
+                  {(section.features || []).map((feature: string, fIdx: number) => (
                     <motion.div 
                       key={fIdx} 
                       whileHover={{ x: 10, backgroundColor: "#1E3A8A", color: "white" }}
@@ -120,7 +168,7 @@ const Academics = () => {
                 viewport={{ once: true }}
                 className="lg:w-1/2 relative group"
               >
-                <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color)} />
+                <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color || "from-primary/10 to-transparent")} />
                 <div className="relative overflow-hidden rounded-[5rem] shadow-3xl">
                   <Image 
                     src={section.image} 

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
+import axiosInstance from "@/lib/axios";
 
 interface ImageUploadProps {
   value: string;
@@ -24,12 +25,9 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await axiosInstance.post("/api/upload", formData);
 
-      const data = await res.json();
+      const data = res.data;
 
       if (data.success) {
         onChange(data.url);

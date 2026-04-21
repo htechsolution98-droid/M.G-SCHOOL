@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Target, Eye, ShieldCheck, History, ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import axiosInstance from "@/lib/axios";
 export default function About() {
   const values = [
     {
@@ -29,10 +30,9 @@ export default function About() {
   const [content, setContent] = useState<any>(null);
 
   React.useEffect(() => {
-    fetch("/api/about-content")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setContent(data.content);
+    axiosInstance.get("/api/about-content")
+      .then((res) => {
+        if (res.data.success) setContent(res.data.content);
       })
       .catch(() => { });
   }, []);

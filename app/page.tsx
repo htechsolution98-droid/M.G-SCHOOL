@@ -6,6 +6,7 @@ import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart } f
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import axiosInstance from "@/lib/axios";
 
 const iconMap: Record<string, React.ReactNode> = {
   Users: <Users size={20} />,
@@ -27,10 +28,9 @@ export default function Home() {
   const [content, setContent] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/home-content")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setContent(data.content);
+    axiosInstance.get("/api/home-content")
+      .then((res) => {
+        if (res.data.success) setContent(res.data.content);
       })
       .catch(() => {});
   }, []);

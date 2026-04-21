@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import axiosInstance from "@/lib/axios";
 import {
   GraduationCap,
   LayoutDashboard,
@@ -33,6 +34,7 @@ const sidebarItems = [
   { id: "overview", name: "Overview", icon: LayoutDashboard },
   { id: "homepage", name: "Homepage", icon: Home },
   { id: "about", name: "About Us", icon: BookOpen },
+  { id: "academics", name: "Academics", icon: GraduationCap },
   { id: "students", name: "Students", icon: Users },
   { id: "branches", name: "Branches", icon: Building2 },
   { id: "faculty", name: "Faculty", icon: BookOpen },
@@ -189,6 +191,7 @@ export default function AdminDashboard() {
           {activeTab === "overview" && <OverviewTab />}
           {activeTab === "homepage" && <HomepageTab />}
           {activeTab === "about" && <AboutTab />}
+          {activeTab === "academics" && <AcademicsTab />}
           {activeTab === "students" && <PlaceholderTab title="Students" description="Manage student records, admissions, and academic data." />}
           {activeTab === "branches" && <PlaceholderTab title="Branches" description="Manage Block A, Block B, and Block C campus details." />}
           {activeTab === "faculty" && <PlaceholderTab title="Faculty" description="Manage faculty profiles, assignments, and schedules." />}
@@ -330,9 +333,9 @@ function HomepageTab() {
   const [dbConnected, setDbConnected] = useState(true);
 
   useEffect(() => {
-    fetch("/api/home-content")
-      .then((res) => res.json())
-      .then((data) => {
+    axiosInstance.get("/api/home-content")
+      .then((res) => {
+        const data = res.data;
         if (data.success && data.content) {
           setContent(data.content);
           setDbConnected(true);
@@ -351,12 +354,8 @@ function HomepageTab() {
     setSaving(section);
     setMessage("");
     try {
-      const res = await fetch("/api/home-content", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ section, ...data }),
-      });
-      const result = await res.json();
+      const res = await axiosInstance.put("/api/home-content", { section, ...data });
+      const result = res.data;
       if (result.success) {
         setContent(result.content);
         setMessage("Saved successfully!");
@@ -708,9 +707,9 @@ function AboutTab() {
   const [activeSection, setActiveSection] = useState("hero");
 
   useEffect(() => {
-    fetch("/api/about-content")
-      .then((res) => res.json())
-      .then((data) => {
+    axiosInstance.get("/api/about-content")
+      .then((res) => {
+        const data = res.data;
         if (data.success && data.content) {
           setContent(data.content);
         }
@@ -723,12 +722,8 @@ function AboutTab() {
     setSaving(section);
     setMessage("");
     try {
-      const res = await fetch("/api/about-content", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ section, ...data }),
-      });
-      const result = await res.json();
+      const res = await axiosInstance.put("/api/about-content", { section, ...data });
+      const result = res.data;
       if (result.success) {
         setContent(result.content);
         setMessage("Saved successfully!");
@@ -876,6 +871,215 @@ function AboutLegacyEditor({ legacy, onSave, saving }: { legacy: any; onSave: (l
       <button onClick={() => onSave(local)} disabled={saving}
         className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
         <Save size={18} /> {saving ? "Saving..." : "Save Legacy Section"}
+      </button>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════
+// ACADEMICS TAB - Edit Hero, Programs
+// ════════════════════════════════════════
+const defaultAcademicsContent = {
+  hero: {
+    heading: "Elite",
+    headingHighlight: "Curriculum.",
+    description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
+    image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+  },
+  programs: [
+    {
+      title: "Primary Foundation",
+      level: "Std 1 to 5",
+      tagline: "Building Bright Beginnings",
+      description: "Our primary program focuses on sensory and play-based learning, ensuring every child develops a love for discovery while mastering core literacy and numeracy.",
+      features: ["Experimental Science", "Vedic Mathematics", "Creative Storytelling", "Environmental Awareness"],
+      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
+      color: "from-blue-500/10 to-transparent"
+    },
+    {
+      title: "Secondary Excellence",
+      level: "Std 6 to 10",
+      tagline: "Critical Thinking & Character",
+      description: "Students transition into abstract reasoning and critical analysis. We combine rigorous board curriculum with real-world application to prepare them for global stages.",
+      features: ["Robotics & Coding", "Advanced Social Sciences", "Foreign Language Lab", "Competitive Sports"],
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+      color: "from-amber-500/10 to-transparent"
+    },
+    {
+      title: "Higher Secondary",
+      level: "Std 11 & 12",
+      tagline: "Career & Leadership Portals",
+      description: "Dedicated streams for Science, Commerce, and Arts with personalized mentoring. We focus on entrance exam mastery and professional portfolio development.",
+      features: ["University Guidance", "Research Workshops", "Enterprise Training", "Creative Portfolio"],
+      image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+      color: "from-primary/10 to-transparent"
+    }
+  ],
+};
+
+function AcademicsTab() {
+  const [content, setContent] = useState<any>(defaultAcademicsContent);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    axiosInstance.get("/api/academics-content")
+      .then((res) => {
+        const data = res.data;
+        if (data.success && data.content) {
+          setContent(data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveSection = async (section: string, data: any) => {
+    setSaving(section);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/academics-content", { section, ...data });
+      const result = res.data;
+      if (result.success) {
+        setContent(result.content);
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error: " + result.error);
+      }
+    } catch {
+      setMessage("Failed to save. Check MongoDB connection.");
+    }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const sections = [
+    { id: "hero", name: "Hero Section", icon: ImageIcon },
+    { id: "programs", name: "Programs Section", icon: BookOpen },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-3">
+        {sections.map((s) => {
+          const Icon = s.icon as any;
+          return (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+              }`}
+            >
+              <Icon size={18} /> {s.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {message && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
+          {message}
+        </motion.div>
+      )}
+
+      {activeSection === "hero" && content && (
+        <AcademicsHeroEditor
+          hero={content.hero || defaultAcademicsContent.hero}
+          onSave={(hero: any) => saveSection("hero", { hero })}
+          saving={saving === "hero"}
+        />
+      )}
+
+      {activeSection === "programs" && content && (
+        <AcademicsProgramsEditor
+          programs={content.programs || defaultAcademicsContent.programs}
+          onSave={(programs: any[]) => saveSection("programs", { programs })}
+          saving={saving === "programs"}
+        />
+      )}
+    </div>
+  );
+}
+
+function AcademicsHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(hero);
+  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Academics: Hero Section</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={local.heading} onChange={(v) => update("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
+          <div className="md:col-span-2">
+            <ImageUpload label="Hero Side Image" value={local.image} onChange={(v) => update("image", v)} />
+          </div>
+          <div className="md:col-span-2">
+            <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
+          </div>
+        </div>
+      </div>
+      <button onClick={() => onSave(local)} disabled={saving}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+        <Save size={18} /> {saving ? "Saving..." : "Save Hero"}
+      </button>
+    </div>
+  );
+}
+
+function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]; onSave: (p: any[]) => void; saving: boolean }) {
+  const [localPrograms, setLocalPrograms] = useState(programs);
+
+  const updateProgram = (idx: number, field: string, value: any) => {
+    const updated = [...localPrograms];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocalPrograms(updated);
+  };
+
+  return (
+    <div className="space-y-6">
+      {localPrograms.slice(0, 3).map((program, idx) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+          <h4 className="text-lg font-playfair font-black text-primary mb-6">Program {idx + 1}: {program.title || "New Program"}</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InputField label="Title" value={program.title} onChange={(v) => updateProgram(idx, "title", v)} />
+            <InputField label="Level (e.g. Std 1 to 5)" value={program.level} onChange={(v) => updateProgram(idx, "level", v)} />
+            <InputField label="Tagline" value={program.tagline} onChange={(v) => updateProgram(idx, "tagline", v)} />
+            <InputField label="Card Color (CSS Gradient)" value={program.color} onChange={(v) => updateProgram(idx, "color", v)} />
+            <div className="md:col-span-2">
+              <ImageUpload label="Program Image" value={program.image} onChange={(v) => updateProgram(idx, "image", v)} />
+            </div>
+            <div className="md:col-span-2">
+              <TextareaField label="Description" value={program.description} onChange={(v) => updateProgram(idx, "description", v)} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Features (comma separated)</label>
+              <textarea
+                value={(program.features || []).join(", ")}
+                onChange={(e) => updateProgram(idx, "features", e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                rows={2}
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+      <button onClick={() => onSave(localPrograms)} disabled={saving}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+        <Save size={18} /> {saving ? "Saving..." : "Save Programs"}
       </button>
     </div>
   );
