@@ -1,34 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SectionTitle from "@/components/SectionTitle";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Camera, Sparkles } from "lucide-react";
+import axiosInstance from "@/lib/axios";
 
 const GalleryPage = () => {
-  const categories = ["All Chronicles", "Campus Art", "Cultural Fest", "Academics", "Expeditions"];
+  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("All Chronicles");
 
-  const images = [
-    { src: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80", category: "Campus Art", title: "Aerial View of Main Campus" },
-    { src: "https://images.unsplash.com/photo-1577891772447-b31528753a9c?q=80", category: "Academics", title: "Chemistry Lab Discoveries" },
-    { src: "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80", category: "Cultural Fest", title: "Annual Night Grand Finale" },
-    { src: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80", category: "Academics", title: "Primary Reading Hub" },
-    { src: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80", category: "Cultural Fest", title: "Traditional Dance Performance" },
-    { src: "https://images.unsplash.com/photo-1526726533290-441065c92f18?q=80", category: "Expeditions", title: "Nature Trail Picnic" },
-    { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80", category: "Academics", title: "High School Mathematics" },
-    { src: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80", category: "Campus Art", title: "Modern Architecture" },
-    { src: "https://images.unsplash.com/photo-1588072432836-e10032774350?q=80", category: "Expeditions", title: "Adventure Park Day" },
-    { src: "https://images.unsplash.com/photo-1544391682-17ef1f24ff3a?q=80", category: "Academics", title: "Standard 5 Art Class" },
-    { src: "https://images.unsplash.com/photo-1564325724739-bae0bd08bc62?q=80", category: "Academics", title: "STEM project Showcase" },
-    { src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80", category: "Events", title: "Convocation 2024" },
-  ];
+  useEffect(() => {
+    axiosInstance.get("/api/gallery")
+      .then((res) => {
+        if (res.data.success) {
+          setContent(res.data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
+  const categories = ["All Chronicles", ...(content?.categories || [])];
+  const images = content?.images || [];
 
   const filteredImages = activeTab === "All Chronicles" 
     ? images 
-    : images.filter(img => img.category === activeTab);
+    : images.filter((img: any) => img.category === activeTab);
 
   return (
     <div className="pt-24 min-h-screen">

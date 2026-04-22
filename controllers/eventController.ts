@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getAllEvents,
   createEvent,
+  updateEvent,
   deleteEvent,
 } from "@/services/eventService";
 
@@ -19,6 +20,17 @@ export async function handleCreateEvent(req: NextRequest) {
     const data = await req.json();
     const event = await createEvent(data);
     return NextResponse.json({ success: true, event }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function handleUpdateEvent(req: NextRequest) {
+  try {
+    const data = await req.json();
+    const { _id, ...updateData } = data;
+    const event = await updateEvent(_id, updateData);
+    return NextResponse.json({ success: true, event });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

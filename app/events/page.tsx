@@ -1,54 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SectionTitle from "@/components/SectionTitle";
 import { Calendar, MapPin, Clock, ArrowRight, Zap, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import axiosInstance from "@/lib/axios";
 
 const EventsPage = () => {
-  const events = [
-    {
-      title: "Annual Cultural Fest 2024",
-      date: "Dec 15",
-      year: "2024",
-      time: "5:00 PM - 9:00 PM",
-      location: "Main Campus Auditorium",
-      category: "Celebration",
-      image: "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80",
-      description: "A grand celebration of talent showcasing music, dance, and drama by our creative students across all branches."
-    },
-    {
-      title: "Inter-Branch Sports Day",
-      date: "Oct 10",
-      year: "2024",
-      time: "8:00 AM - 4:00 PM",
-      location: "East Campus Grounds",
-      category: "Competition",
-      image: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80",
-      description: "Celebrating physical excellence and team spirit. Students compete in various track and field events for the championship trophy."
-    },
-    {
-      title: "Science & Innovation Fair",
-      date: "Sep 05",
-      year: "2024",
-      time: "9:00 AM - 3:00 PM",
-      location: "Block C Exhibition Hall",
-      category: "Academic",
-      image: "https://images.unsplash.com/photo-1532094349884-543bb11cd237?q=80",
-      description: "Our young scientists present innovative projects and working models addressing real-world environmental and technological challenges."
-    },
-    {
-      title: "Independence Day",
-      date: "Aug 15",
-      year: "2024",
-      time: "7:30 AM",
-      location: "All Campus Blocks",
-      category: "National",
-      image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80",
-      description: "Flag hoisting ceremonies followed by patriotic songs and speeches to honor our nation and inspire young citizens."
-    }
-  ];
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axiosInstance.get("/api/events")
+      .then((res) => {
+        if (res.data.success) {
+          setEvents(res.data.events);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="pt-24 min-h-screen">
@@ -90,59 +68,65 @@ const EventsPage = () => {
       {/* Editorial Event List */}
       <section className="section-padding bg-slate-50 border-y border-gray-100">
         <div className="container-custom space-y-24 md:space-y-40">
-          {events.map((event, idx) => (
-            <motion.div 
-              key={idx} 
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`flex flex-col ${idx % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-20 items-stretch h-full overflow-hidden`}
-            >
-              {/* Event Image & Date */}
-              <div className="lg:w-1/2 relative min-h-[500px] overflow-hidden rounded-[4rem] shadow-3xl group">
-                <Image 
-                   src={event.image} 
-                   alt={event.title} 
-                   fill 
-                   className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                />
-                <div className="absolute top-10 left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl text-center min-w-[120px]">
-                   <div className="text-secondary text-sm font-black tracking-widest uppercase mb-1">{event.year}</div>
-                   <div className="text-4xl font-playfair font-black text-primary">{event.date}</div>
+          {events.map((event, idx) => {
+            const d = new Date(event.date);
+            const dateStr = d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' });
+            const yearStr = d.getFullYear();
+
+            return (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className={`flex flex-col ${idx % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-20 items-stretch h-full overflow-hidden`}
+              >
+                {/* Event Image & Date */}
+                <div className="lg:w-1/2 relative min-h-[500px] overflow-hidden rounded-[4rem] shadow-3xl group">
+                  <Image 
+                     src={event.image || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"} 
+                     alt={event.title} 
+                     fill 
+                     className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                  />
+                  <div className="absolute top-10 left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl text-center min-w-[120px]">
+                     <div className="text-secondary text-sm font-black tracking-widest uppercase mb-1">{yearStr}</div>
+                     <div className="text-4xl font-playfair font-black text-primary">{dateStr}</div>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="absolute bottom-10 left-10 text-white">
+                     <span className="bg-secondary/20 backdrop-blur-md text-secondary px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/30">{event.category}</span>
+                  </div>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
-                <div className="absolute bottom-10 left-10 text-white">
-                   <span className="bg-secondary/20 backdrop-blur-md text-secondary px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/30">{event.category}</span>
+
+                {/* Event Content */}
+                <div className="lg:w-1/2 flex flex-col justify-center">
+                   <header className="mb-10">
+                      <h2 className="text-5xl md:text-7xl font-playfair font-black text-primary mb-8 leading-tight tracking-tight">{event.title}</h2>
+                      <div className="flex flex-wrap gap-8">
+                         <div className="flex items-center gap-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
+                            <Clock size={16} className="text-secondary" /> {event.time || "Time TBD"}
+                         </div>
+                         <div className="flex items-center gap-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
+                            <MapPin size={16} className="text-secondary" /> {event.location}
+                         </div>
+                      </div>
+                   </header>
+
+                   <p className="text-2xl text-gray-500 font-light leading-relaxed mb-12 italic">
+                      "{event.description}"
+                   </p>
+
+                   <button className="group flex items-center gap-6 w-max">
+                      <span className="text-primary font-black text-xl tracking-widest uppercase">Event Details</span>
+                      <div className="w-16 h-16 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-active:scale-90 transition-all">
+                         <ArrowRight size={24} className="group-hover:text-white group-hover:translate-x-1 transition-all" />
+                      </div>
+                   </button>
                 </div>
-              </div>
-
-              {/* Event Content */}
-              <div className="lg:w-1/2 flex flex-col justify-center">
-                 <header className="mb-10">
-                    <h2 className="text-5xl md:text-7xl font-playfair font-black text-primary mb-8 leading-tight tracking-tight">{event.title}</h2>
-                    <div className="flex flex-wrap gap-8">
-                       <div className="flex items-center gap-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
-                          <Clock size={16} className="text-secondary" /> {event.time}
-                       </div>
-                       <div className="flex items-center gap-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
-                          <MapPin size={16} className="text-secondary" /> {event.location}
-                       </div>
-                    </div>
-                 </header>
-
-                 <p className="text-2xl text-gray-500 font-light leading-relaxed mb-12 italic">
-                    "{event.description}"
-                 </p>
-
-                 <button className="group flex items-center gap-6 w-max">
-                    <span className="text-primary font-black text-xl tracking-widest uppercase">Event Details</span>
-                    <div className="w-16 h-16 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-active:scale-90 transition-all">
-                       <ArrowRight size={24} className="group-hover:text-white group-hover:translate-x-1 transition-all" />
-                    </div>
-                 </button>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

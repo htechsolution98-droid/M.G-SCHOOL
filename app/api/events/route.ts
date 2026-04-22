@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import {
   handleGetEvents,
   handleCreateEvent,
+  handleUpdateEvent,
   handleDeleteEvent,
 } from "@/controllers/eventController";
 
@@ -11,6 +12,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   return handleCreateEvent(req);
+}
+
+export async function PUT(req: NextRequest) {
+  return handleUpdateEvent(req);
 }
 
 export async function DELETE(req: NextRequest) {

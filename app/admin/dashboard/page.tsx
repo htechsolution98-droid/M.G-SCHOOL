@@ -38,6 +38,7 @@ const sidebarItems = [
   { id: "students", name: "Students", icon: Users },
   { id: "branches", name: "Branches", icon: Building2 },
   { id: "faculty", name: "Faculty", icon: BookOpen },
+  { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
   { id: "gallery", name: "Gallery", icon: ImageIcon },
   { id: "events", name: "Events", icon: Calendar },
   { id: "messages", name: "Messages", icon: MessageSquare },
@@ -192,12 +193,13 @@ export default function AdminDashboard() {
           {activeTab === "homepage" && <HomepageTab />}
           {activeTab === "about" && <AboutTab />}
           {activeTab === "academics" && <AcademicsTab />}
-          {activeTab === "students" && <PlaceholderTab title="Students" description="Manage student records, admissions, and academic data." />}
+          {activeTab === "students" && <StudentsTab />}
           {activeTab === "branches" && <BranchesTab />}
-          {activeTab === "faculty" && <PlaceholderTab title="Faculty" description="Manage faculty profiles, assignments, and schedules." />}
-          {activeTab === "gallery" && <PlaceholderTab title="Gallery" description="Upload and manage school photos and media." />}
-          {activeTab === "events" && <PlaceholderTab title="Events" description="Create and manage school events and announcements." />}
-          {activeTab === "messages" && <PlaceholderTab title="Messages" description="View contact form submissions and inquiries." />}
+          {activeTab === "faculty" && <FacultyTab />}
+          {activeTab === "life-at-mg" && <LifeAtMGTab />}
+          {activeTab === "gallery" && <GalleryTab />}
+          {activeTab === "events" && <EventsTab />}
+          {activeTab === "messages" && <MessagesTab />}
           {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
         </div>
       </main>
@@ -1173,7 +1175,7 @@ const defaultBranchesContent = {
     headingHighlight: "Excellence.",
     description: "Three distinct campuses, one unified vision of nurturing tomorrow's leaders.",
   },
-  branches: [
+  branchesList: [
     {
       id: "block-a",
       name: "Block A",
@@ -1183,7 +1185,58 @@ const defaultBranchesContent = {
       location: "East Campus, MG Road",
       image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80",
     },
-  ]
+    {
+      id: "block-b",
+      name: "Block B",
+      subtitle: "The Academic Center",
+      grades: "Std 9–12",
+      medium: "Gujarati Medium",
+      location: "West Campus, Scholars Lane",
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80",
+    },
+    {
+      id: "block-c",
+      name: "Block C",
+      subtitle: "The International Hub",
+      grades: "Std 1–12",
+      medium: "English & Gujarati Medium",
+      location: "Central Hub, Education Square",
+      image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80",
+    },
+  ],
+  blockA: {
+    name: "Block A",
+    subtitle: "The Foundation Campus",
+    grades: "Std 1–8",
+    medium: "Gujarati Medium",
+    description: "Our vibrant foundation hub focuses on building character and core academic skills through activity-based learning in our native tongue.",
+    images: ["https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80"],
+    location: "East Campus, MG Road",
+    principal: "Dr. Rajesh Shah",
+    specialties: ["Smart Classrooms", "Vedic Math", "Moral Education", "Vibrant Playgrounds"],
+  },
+  blockB: {
+    name: "Block B",
+    subtitle: "The Academic Center",
+    grades: "Std 9–12",
+    medium: "Gujarati Medium",
+    description: "A focused academic environment designed for rigorous board preparation and career readiness.",
+    images: ["https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"],
+    location: "West Campus, Scholars Lane",
+    principal: "Mrs. Anjali Desai",
+    specialties: ["Science Labs", "Career Counseling", "Digital Library", "Sports Complex"],
+  },
+  blockC: {
+    name: "Block C",
+    subtitle: "The International Hub",
+    grades: "Std 1–12",
+    medium: "English & Gujarati Medium",
+    description: "A modern facility blending state-board rigor with international perspectives and dual-medium instruction.",
+    images: ["https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80"],
+    location: "Central Hub, Education Square",
+    principal: "Mr. Vikram Mehta",
+    specialties: ["Robotics Lab", "Foreign Languages", "Global Exchange", "Performing Arts"],
+  }
 };
 
 function BranchesTab() {
@@ -1191,7 +1244,7 @@ function BranchesTab() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState("");
   const [message, setMessage] = useState("");
-  const [activeSection, setActiveSection] = useState("hero");
+  const [activeSection, setActiveSection] = useState("status");
 
   useEffect(() => {
     axiosInstance.get("/api/branches-content")
@@ -1233,12 +1286,19 @@ function BranchesTab() {
   }
 
   const sections = [
+    { id: "status", name: "Current Status", icon: LayoutDashboard },
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "branches", name: "Branches List", icon: Building2 },
     { id: "blockA", name: "Block A Content", icon: Building2 },
     { id: "blockB", name: "Block B Content", icon: Building2 },
     { id: "blockC", name: "Block C Content", icon: Building2 },
   ];
+
+  const currentBranches = content.branchesList || defaultBranchesContent.branchesList || [];
+  const currentHero = content.hero || defaultBranchesContent.hero;
+  const currentBlockA = content.blockA || defaultBranchesContent.blockA;
+  const currentBlockB = content.blockB || defaultBranchesContent.blockB;
+  const currentBlockC = content.blockC || defaultBranchesContent.blockC;
 
   return (
     <div className="space-y-8">
@@ -1257,6 +1317,17 @@ function BranchesTab() {
             </button>
           );
         })}
+        <button 
+          onClick={async () => {
+            if(confirm("Are you sure you want to reset all Branch content to defaults? This cannot be undone.")) {
+              await axiosInstance.delete("/api/branches-content");
+              window.location.reload();
+            }
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all cursor-pointer ml-auto"
+        >
+          <Trash2 size={18} /> Reset All
+        </button>
       </div>
 
       {message && (
@@ -1264,6 +1335,76 @@ function BranchesTab() {
           className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
           {message}
         </motion.div>
+      )}
+
+      {activeSection === "status" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm col-span-full">
+            <h4 className="text-sm font-black text-secondary uppercase tracking-widest mb-4">Hero Summary</h4>
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+               <div className="flex-1">
+                  <p className="text-xl font-playfair font-black text-primary">{currentHero.heading} {currentHero.headingHighlight}</p>
+                  <p className="text-sm text-gray-500 mt-2 italic">"{currentHero.description}"</p>
+               </div>
+               <button onClick={() => setActiveSection("hero")} className="px-6 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all">Edit Hero</button>
+            </div>
+          </div>
+
+          {[
+            { key: "blockA", data: currentBlockA, title: "Block A" },
+            { key: "blockB", data: currentBlockB, title: "Block B" },
+            { key: "blockC", data: currentBlockC, title: "Block C" }
+          ].map((block) => (
+            <div key={block.key} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-black text-primary">{block.title}</h4>
+                <span className="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-bold uppercase tracking-tighter">Live</span>
+              </div>
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between text-xs font-medium">
+                  <span className="text-gray-400">Principal:</span>
+                  <span className="text-primary truncate ml-2">{block.data.principal}</span>
+                </div>
+                <div className="flex justify-between text-xs font-medium">
+                  <span className="text-gray-400">Medium:</span>
+                  <span className="text-primary">{block.data.medium}</span>
+                </div>
+                <div className="flex justify-between text-xs font-medium">
+                  <span className="text-gray-400">Grades:</span>
+                  <span className="text-primary">{block.data.grades}</span>
+                </div>
+              </div>
+              <div className="mt-auto">
+                <button 
+                  onClick={() => setActiveSection(block.key)}
+                  className="w-full py-2.5 rounded-xl bg-gray-50 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all"
+                >
+                  Edit Block Data
+                </button>
+              </div>
+            </div>
+          ))}
+          
+          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm col-span-full">
+             <div className="flex items-center justify-between mb-6">
+                <h4 className="text-sm font-black text-secondary uppercase tracking-widest">Branches Overview List ({currentBranches.length})</h4>
+                <button onClick={() => setActiveSection("branches")} className="text-xs font-bold text-primary hover:underline">Edit List</button>
+             </div>
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {currentBranches.map((b: any, i: number) => (
+                  <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-primary/10 transition-all">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-200 shrink-0">
+                      {b.image ? <img src={b.image} className="w-full h-full object-cover" /> : <Building2 className="w-full h-full p-3 text-gray-400" />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-primary truncate">{b.name}</p>
+                      <p className="text-[10px] text-gray-400 truncate">{b.location}</p>
+                    </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+        </div>
       )}
 
       {activeSection === "hero" && content && (
@@ -1420,6 +1561,843 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
         className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
         <Save size={18} /> {saving ? "Saving..." : "Save Block"}
       </button>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════
+// FACULTY TAB - Edit Hero, Faculty Members
+// ════════════════════════════════════════
+const defaultFacultyContent = {
+  hero: {
+    heading: "Inspiring ",
+    headingHighlight: "Mentors.",
+    description: "Meet the dedicated educators who are shaping the future of our students with passion and expertise.",
+    image: "https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070",
+  },
+  facultyMembers: [
+    {
+      name: "Dr. Rajesh Shah",
+      designation: "Principal",
+      expertise: "Educational Leadership",
+      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80",
+      block: "Block A",
+      experience: "20+ Years",
+      education: "Ph.D. in Education",
+    }
+  ],
+};
+
+function FacultyTab() {
+  const [content, setContent] = useState<any>(defaultFacultyContent);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    axiosInstance.get("/api/faculty-content")
+      .then((res) => {
+        const data = res.data;
+        if (data.success && data.content) {
+          setContent(data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveSection = async (section: string, data: any) => {
+    setSaving(section);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/faculty-content", { section, ...data });
+      const result = res.data;
+      if (result.success) {
+        setContent(result.content);
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error: " + result.error);
+      }
+    } catch {
+      setMessage("Failed to save. Check MongoDB connection.");
+    }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const sections = [
+    { id: "hero", name: "Hero Section", icon: ImageIcon },
+    { id: "members", name: "Faculty Members", icon: Users },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-3">
+        {sections.map((s) => {
+          const Icon = s.icon as any;
+          return (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+              }`}
+            >
+              <Icon size={18} /> {s.name}
+            </button>
+          );
+        })}
+        <button 
+          onClick={async () => {
+            if(confirm("Are you sure you want to reset all Faculty content to defaults? This cannot be undone.")) {
+              await axiosInstance.delete("/api/faculty-content");
+              window.location.reload();
+            }
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all cursor-pointer ml-auto"
+        >
+          <Trash2 size={18} /> Reset All
+        </button>
+      </div>
+
+      {message && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
+          {message}
+        </motion.div>
+      )}
+
+      {activeSection === "hero" && content && (
+        <FacultyHeroEditor
+          hero={content.hero || defaultFacultyContent.hero}
+          onSave={(hero: any) => saveSection("hero", { hero })}
+          saving={saving === "hero"}
+        />
+      )}
+
+      {activeSection === "members" && content && (
+        <FacultyMembersEditor
+          members={content.facultyMembers || []}
+          onSave={(facultyMembers: any[]) => saveSection("members", { facultyMembers })}
+          saving={saving === "members"}
+        />
+      )}
+    </div>
+  );
+}
+
+function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(hero);
+  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Faculty: Hero Section</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={local.heading} onChange={(v) => update("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
+          <div className="md:col-span-2">
+            <ImageUpload label="Hero Background Image" value={local.image} onChange={(v) => update("image", v)} />
+          </div>
+          <div className="md:col-span-2">
+            <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
+          </div>
+        </div>
+      </div>
+      <button onClick={() => onSave(local)} disabled={saving}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+        <Save size={18} /> {saving ? "Saving..." : "Save Hero"}
+      </button>
+    </div>
+  );
+}
+
+function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onSave: (m: any[]) => void; saving: boolean }) {
+  const [localMembers, setLocalMembers] = useState(members);
+
+  const updateMember = (idx: number, field: string, value: any) => {
+    const updated = [...localMembers];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocalMembers(updated);
+  };
+
+  const addMember = () => {
+    setLocalMembers([...localMembers, { name: "", designation: "", expertise: "", image: "", block: "Block A", experience: "", education: "" }]);
+  };
+
+  const removeMember = (idx: number) => {
+    setLocalMembers(localMembers.filter((_: any, i: number) => i !== idx));
+  };
+
+  return (
+    <div className="space-y-6">
+      {localMembers.map((member, idx) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-playfair font-black text-primary">Faculty Member {idx + 1}: {member.name || "New Member"}</h4>
+            <button onClick={() => removeMember(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InputField label="Full Name" value={member.name} onChange={(v) => updateMember(idx, "name", v)} />
+            <InputField label="Designation" value={member.designation} onChange={(v) => updateMember(idx, "designation", v)} />
+            <InputField label="Expertise" value={member.expertise} onChange={(v) => updateMember(idx, "expertise", v)} />
+            <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
+            <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
+            <div>
+              <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Campus Block</label>
+              <select
+                value={member.block}
+                onChange={(e) => updateMember(idx, "block", e.target.value)}
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+              >
+                <option value="Block A">Block A</option>
+                <option value="Block B">Block B</option>
+                <option value="Block C">Block C</option>
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <ImageUpload label="Profile Photo" value={member.image} onChange={(v) => updateMember(idx, "image", v)} />
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-4">
+        <button onClick={addMember} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Faculty Member
+        </button>
+        <button onClick={() => onSave(localMembers)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Members"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MessagesTab() {
+  const [messages, setMessages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchMessages = async () => {
+    try {
+      const res = await axiosInstance.get("/api/messages");
+      if (res.data.success) {
+        setMessages(res.data.messages);
+      }
+    } catch (err) {
+      setError("Failed to load messages");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const deleteMsg = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+    try {
+      const res = await axiosInstance.delete(`/api/messages?id=${id}`);
+      if (res.data.success) {
+        setMessages(messages.filter((m) => m._id !== id));
+      }
+    } catch (err) {
+      alert("Failed to delete message");
+    }
+  };
+
+  const toggleRead = async (id: string, currentRead: boolean) => {
+    try {
+      const res = await axiosInstance.put("/api/messages", { id, isRead: !currentRead });
+      if (res.data.success) {
+        setMessages(messages.map((m) => m._id === id ? { ...m, isRead: !currentRead } : m));
+      }
+    } catch (err) {
+      alert("Failed to update message status");
+    }
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-32">
+      <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+           <h3 className="text-2xl font-playfair font-black text-primary">Inquiries & Messages</h3>
+           <p className="text-sm text-gray-400 font-medium">Manage student and parent inquiries</p>
+        </div>
+        <span className="text-sm font-bold text-gray-400 bg-gray-100 px-4 py-2 rounded-xl">{messages.length} Total</span>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        {messages.length === 0 ? (
+          <div className="bg-white rounded-3xl p-16 text-center border border-gray-100 shadow-sm">
+            <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
+               <MessageSquare size={36} className="text-gray-200" />
+            </div>
+            <h3 className="text-xl font-playfair font-black text-primary mb-2">No messages yet</h3>
+            <p className="text-gray-400 font-medium max-w-xs mx-auto">When parents or students contact you via the website, their messages will appear here.</p>
+          </div>
+        ) : (
+          messages.map((msg) => (
+            <div key={msg._id} className={`bg-white rounded-3xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md ${!msg.isRead ? "border-l-4 border-l-secondary" : ""}`}>
+              <div className="flex flex-col lg:flex-row justify-between gap-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-lg font-bold text-primary">{msg.name}</span>
+                    {!msg.isRead && <span className="text-[10px] bg-secondary text-primary px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">New Inquiry</span>}
+                  </div>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 mb-4 font-bold uppercase tracking-widest">
+                    <span className="flex items-center gap-2"><Users size={14} className="text-secondary" /> {msg.email}</span>
+                    <span className="flex items-center gap-2"><GraduationCap size={14} className="text-secondary" /> {msg.phone}</span>
+                    <span className="flex items-center gap-2"><Calendar size={14} className="text-secondary" /> {new Date(msg.createdAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                  <p className="text-sm font-black text-gray-700 mb-3 underline decoration-secondary/30 underline-offset-4">{msg.subject}</p>
+                  <p className="text-sm text-gray-500 leading-relaxed bg-gray-50 p-5 rounded-2xl border border-gray-100 italic">"{msg.message}"</p>
+                </div>
+                <div className="flex lg:flex-col gap-2 shrink-0">
+                  <button onClick={() => toggleRead(msg._id, msg.isRead)} 
+                    className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-xs cursor-pointer ${msg.isRead ? "bg-gray-50 text-gray-400 hover:bg-gray-100" : "bg-secondary text-primary hover:bg-secondary/90 shadow-sm"}`}>
+                    {msg.isRead ? "Unread" : "Mark Read"}
+                  </button>
+                  <button onClick={() => deleteMsg(msg._id)} 
+                    className="p-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer border border-red-100 flex items-center justify-center">
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function LifeAtMGTab() {
+  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    axiosInstance.get("/api/life-at-mg")
+      .then((res) => {
+        if (res.data.success) {
+          setContent(res.data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveSection = async (section: string, data: any) => {
+    setSaving(section);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/life-at-mg", { section, ...data });
+      if (res.data.success) {
+        setContent(res.data.content);
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error: " + res.data.error);
+      }
+    } catch {
+      setMessage("Failed to save.");
+    }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-32">
+      <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
+  const sections = [
+    { id: "hero", name: "Hero Section", icon: ImageIcon },
+    { id: "slider", name: "Image Slider", icon: ImageIcon },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-3">
+        {sections.map((s) => {
+          const Icon = s.icon as any;
+          return (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+              }`}
+            >
+              <Icon size={18} /> {s.name}
+            </button>
+          );
+        })}
+        <button 
+          onClick={async () => {
+            if(confirm("Reset Life@MG content to defaults?")) {
+              await axiosInstance.delete("/api/life-at-mg");
+              window.location.reload();
+            }
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all cursor-pointer ml-auto"
+        >
+          <Trash2 size={18} /> Reset
+        </button>
+      </div>
+
+      {message && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
+          {message}
+        </motion.div>
+      )}
+
+      {activeSection === "hero" && content && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Hero Section</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent({...content, hero: {...content.hero, heading: v}})} />
+              <div className="md:col-span-2">
+                <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent({...content, hero: {...content.hero, image: v}})} />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Description (Small Text)</label>
+                <textarea 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-xs font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all h-32"
+                  value={content.hero.description} 
+                  onChange={(e) => setContent({...content, hero: {...content.hero, description: e.target.value}})} 
+                />
+              </div>
+            </div>
+          </div>
+          <button onClick={() => saveSection("hero", { hero: content.hero })} disabled={saving === "hero"}
+            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <Save size={18} /> {saving === "hero" ? "Saving..." : "Save Hero"}
+          </button>
+        </div>
+      )}
+
+      {activeSection === "slider" && content && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Image Slider</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {content.slider.map((img: string, idx: number) => (
+                <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                  <img src={img} className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => setContent({...content, slider: content.slider.filter((_:any, i:number)=>i!==idx)})}
+                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent({...content, slider: [...content.slider, v]})} />
+          </div>
+          <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
+            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <Save size={18} /> {saving === "slider" ? "Saving..." : "Save Slider"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GalleryTab() {
+  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+  const [activeSection, setActiveSection] = useState("images");
+
+  useEffect(() => {
+    axiosInstance.get("/api/gallery")
+      .then((res) => {
+        if (res.data.success) {
+          setContent(res.data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveSection = async (section: string, data: any) => {
+    setSaving(section);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/gallery", { section, ...data });
+      if (res.data.success) {
+        setContent(res.data.content);
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error: " + res.data.error);
+      }
+    } catch {
+      setMessage("Failed to save.");
+    }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-3">
+        {["images", "categories"].map((id) => (
+          <button
+            key={id}
+            onClick={() => setActiveSection(id)}
+            className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+              activeSection === id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+            }`}
+          >
+            {id.toUpperCase()}
+          </button>
+        ))}
+        <button 
+          onClick={async () => {
+            if(confirm("Reset Gallery?")) {
+              await axiosInstance.delete("/api/gallery");
+              window.location.reload();
+            }
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all cursor-pointer ml-auto"
+        >
+          <Trash2 size={18} /> Reset
+        </button>
+      </div>
+
+      {message && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
+          {message}
+        </motion.div>
+      )}
+
+      {activeSection === "categories" && content && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <h4 className="text-lg font-playfair font-black text-primary mb-6">Gallery Categories</h4>
+            <div className="flex flex-wrap gap-3 mb-6">
+              {content.categories.map((cat: string, idx: number) => (
+                <div key={idx} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
+                  <span className="text-sm font-bold text-gray-600">{cat}</span>
+                  <button onClick={() => setContent({...content, categories: content.categories.filter((_:any, i:number)=>i!==idx)})} className="text-red-400 hover:text-red-600"><X size={14} /></button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-4">
+              <input 
+                id="new-cat"
+                type="text" 
+                placeholder="Add new category..." 
+                className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/30 w-full max-w-xs" 
+                onKeyDown={(e) => {
+                  if(e.key === "Enter") {
+                    const val = (e.target as HTMLInputElement).value;
+                    if(val) {
+                      setContent({...content, categories: [...content.categories, val]});
+                      (e.target as HTMLInputElement).value = "";
+                    }
+                  }
+                }}
+              />
+              <button onClick={() => {
+                const input = document.getElementById("new-cat") as HTMLInputElement;
+                if(input.value) {
+                  setContent({...content, categories: [...content.categories, input.value]});
+                  input.value = "";
+                }
+              }} className="px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm">Add</button>
+            </div>
+          </div>
+          <button onClick={() => saveSection("categories", { categories: content.categories })} disabled={saving === "categories"}
+            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <Save size={18} /> {saving === "categories" ? "Saving..." : "Save Categories"}
+          </button>
+        </div>
+      )}
+
+      {activeSection === "images" && content && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {content.images.map((img: any, idx: number) => (
+              <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
+                <button 
+                  onClick={() => setContent({...content, images: content.images.filter((_:any, i:number)=>i!==idx)})}
+                  className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                >
+                  <Trash2 size={16} />
+                </button>
+                <div className="aspect-video rounded-2xl overflow-hidden mb-4 border border-gray-100">
+                  <img src={img.src} className="w-full h-full object-cover" />
+                </div>
+                <div className="space-y-3">
+                  <InputField label="Title" value={img.title} onChange={(v) => {
+                    const updated = [...content.images];
+                    updated[idx].title = v;
+                    setContent({...content, images: updated});
+                  }} />
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 ml-1">Category</label>
+                    <select 
+                      value={img.category} 
+                      onChange={(e) => {
+                        const updated = [...content.images];
+                        updated[idx].category = e.target.value;
+                        setContent({...content, images: updated});
+                      }}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30"
+                    >
+                      {content.categories.map((c: string) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="bg-primary/5 rounded-3xl p-8 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-center">
+              <Plus size={32} className="text-primary/30 mb-4" />
+              <p className="text-sm font-bold text-primary mb-6">Add New Archive</p>
+              <ImageUpload label="Upload Image" value="" onChange={(v) => setContent({...content, images: [...content.images, { src: v, title: "New Memory", category: content.categories[0] || "General" }]})} />
+            </div>
+          </div>
+          <button onClick={() => saveSection("images", { images: content.images })} disabled={saving === "images"}
+            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <Save size={18} /> {saving === "images" ? "Saving..." : "Save Gallery"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EventsTab() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+
+  const fetchEvents = async () => {
+    const res = await axiosInstance.get("/api/events");
+    if (res.data.success) setEvents(res.data.events);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchEvents(); }, []);
+
+  const saveEvent = async (event: any) => {
+    setSaving(event._id || "new");
+    try {
+      const res = await axiosInstance.post("/api/events", event);
+      if (res.data.success) {
+        setMessage("Event saved!");
+        fetchEvents();
+      }
+    } catch { setMessage("Error saving event"); }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  const deleteEvent = async (id: string) => {
+    if(!confirm("Delete event?")) return;
+    try {
+      const res = await axiosInstance.delete(`/api/events?id=${id}`);
+      if (res.data.success) {
+        setEvents(events.filter(e => e._id !== id));
+      }
+    } catch { alert("Error deleting event"); }
+  };
+
+  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl font-playfair font-black text-primary">School Events</h3>
+        <button 
+          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", description: "", image: "", category: "Upcoming" }, ...events])}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
+        >
+          <Plus size={18} /> Create Event
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {events.map((event, idx) => (
+          <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-8 hover:shadow-md transition-all">
+            <div className="md:col-span-1">
+               <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
+                 const updated = [...events];
+                 updated[idx].image = v;
+                 setEvents(updated);
+               }} />
+            </div>
+            <div className="md:col-span-2 space-y-4">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField label="Title" value={event.title} onChange={(v) => {
+                    const updated = [...events];
+                    updated[idx].title = v;
+                    setEvents(updated);
+                  }} />
+                  <InputField label="Date" value={event.date?.split('T')[0]} onChange={(v) => {
+                    const updated = [...events];
+                    updated[idx].date = v;
+                    setEvents(updated);
+                  }} />
+                  <InputField label="Location" value={event.location} onChange={(v) => {
+                    const updated = [...events];
+                    updated[idx].location = v;
+                    setEvents(updated);
+                  }} />
+                  <InputField label="Category" value={event.category} onChange={(v) => {
+                    const updated = [...events];
+                    updated[idx].category = v;
+                    setEvents(updated);
+                  }} />
+               </div>
+               <TextareaField label="Description" value={event.description} onChange={(v) => {
+                 const updated = [...events];
+                 updated[idx].description = v;
+                 setEvents(updated);
+               }} />
+               <div className="flex gap-4 pt-4">
+                  <button onClick={() => saveEvent(event)} disabled={saving === (event._id || "new")}
+                    className="flex-1 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-all shadow-lg">
+                    {saving === (event._id || "new") ? "Saving..." : "Persist Event"}
+                  </button>
+                  <button onClick={() => deleteEvent(event._id)} className="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
+                    <Trash2 size={20} />
+                  </button>
+               </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StudentsTab() {
+  const [students, setStudents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+
+  const fetchStudents = async () => {
+    const res = await axiosInstance.get("/api/students");
+    if (res.data.success) setStudents(res.data.students);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchStudents(); }, []);
+
+  const saveStudent = async (student: any) => {
+    setSaving(student._id || "new");
+    try {
+      const res = student._id 
+        ? await axiosInstance.put("/api/students", student)
+        : await axiosInstance.post("/api/students", student);
+      if (res.data.success) fetchStudents();
+    } catch { alert("Error saving student"); }
+    setSaving("");
+  };
+
+  const deleteStudent = async (id: string) => {
+    if(!confirm("Delete student record?")) return;
+    try {
+      await axiosInstance.delete(`/api/students?id=${id}`);
+      fetchStudents();
+    } catch { alert("Error deleting student"); }
+  };
+
+  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl font-playfair font-black text-primary">Student Management</h3>
+        <button 
+          onClick={() => setStudents([{ name: "New Student", grade: "Std 1", rollNo: "", section: "A", admissionNo: "", image: "" }, ...students])}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
+        >
+          <Plus size={18} /> Register Student
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {students.map((std, idx) => (
+          <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
+             <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
+                   {std.image ? <img src={std.image} className="w-full h-full object-cover" /> : <Users className="w-full h-full p-4 text-gray-200" />}
+                </div>
+                <div className="min-w-0">
+                   <p className="text-lg font-black text-primary truncate">{std.name}</p>
+                   <p className="text-xs font-bold text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
+                </div>
+             </div>
+             <div className="space-y-4">
+                <InputField label="Full Name" value={std.name} onChange={(v) => {
+                  const updated = [...students];
+                  updated[idx].name = v;
+                  setStudents(updated);
+                }} />
+                <div className="grid grid-cols-2 gap-4">
+                   <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
+                     const updated = [...students];
+                     updated[idx].rollNo = v;
+                     setStudents(updated);
+                   }} />
+                   <InputField label="Admission No" value={std.admissionNo} onChange={(v) => {
+                     const updated = [...students];
+                     updated[idx].admissionNo = v;
+                     setStudents(updated);
+                   }} />
+                </div>
+                <ImageUpload label="Profile Photo" value={std.image} onChange={(v) => {
+                  const updated = [...students];
+                  updated[idx].image = v;
+                  setStudents(updated);
+                }} />
+                <div className="flex gap-2 pt-2">
+                   <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
+                     className="flex-1 bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 shadow-sm transition-all">
+                     {saving === (std._id || "new") ? "..." : "Save Record"}
+                   </button>
+                   <button onClick={() => deleteStudent(std._id)} className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
+                     <Trash2 size={16} />
+                   </button>
+                </div>
+             </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

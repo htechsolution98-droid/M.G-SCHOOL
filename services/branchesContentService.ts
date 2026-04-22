@@ -118,3 +118,7 @@ export async function updateBlockContent(blockKey: "blockA" | "blockB" | "blockC
   }
   return content;
 }
+export async function deleteBranchesContent() {
+  await connectDB();
+  return await BranchesContent.deleteMany({});
+}

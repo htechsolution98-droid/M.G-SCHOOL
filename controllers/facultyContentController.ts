@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getBranchesContent,
-  updateBranchesList,
-  updateBlockContent,
-  deleteBranchesContent
-} from "@/services/branchesContentService";
+  updateFacultyHero,
+  updateFacultyMembers,
+  deleteFacultyContent
+} from "@/services/facultyContentService";
 
-export async function handleGetBranchesContent() {
+export async function handleGetFacultyContent() {
   try {
-    const content = await getBranchesContent();
+    const content = await getFacultyContent();
     return NextResponse.json({ success: true, content });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-export async function handleUpdateBranchesContent(req: NextRequest) {
+export async function handleUpdateFacultyContent(req: NextRequest) {
   try {
     const data = await req.json();
     const { section, ...sectionData } = data;
@@ -24,15 +23,10 @@ export async function handleUpdateBranchesContent(req: NextRequest) {
 
     switch (section) {
       case "hero":
-        content = await updateBranchesHero(sectionData.hero);
+        content = await updateFacultyHero(sectionData.hero);
         break;
-      case "branches":
-        content = await updateBranchesList(sectionData.branchesList);
-        break;
-      case "blockA":
-      case "blockB":
-      case "blockC":
-        content = await updateBlockContent(section, sectionData.blockContent);
+      case "members":
+        content = await updateFacultyMembers(sectionData.facultyMembers);
         break;
       default:
         return NextResponse.json({ success: false, error: "Invalid section" }, { status: 400 });
@@ -44,9 +38,9 @@ export async function handleUpdateBranchesContent(req: NextRequest) {
   }
 }
 
-export async function handleDeleteBranchesContent() {
+export async function handleDeleteFacultyContent() {
   try {
-    await deleteBranchesContent();
+    await deleteFacultyContent();
     return NextResponse.json({ success: true, message: "Content reset to default" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
