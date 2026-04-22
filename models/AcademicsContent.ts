@@ -17,9 +17,16 @@ export interface IAcademicsProgram {
   features: string[];
 }
 
+export interface IAcademicsActivity {
+  title: string;
+  description: string;
+  images: string[];
+}
+
 export interface IAcademicsContent extends Document {
   hero: IAcademicsHero;
   programs: IAcademicsProgram[];
+  activities: IAcademicsActivity[];
   updatedAt: Date;
 }
 
@@ -41,8 +48,17 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
       features: [{ type: String }],
     },
   ],
+  activities: [
+    {
+      title: { type: String, default: "" },
+      description: { type: String, default: "" },
+      images: [{ type: String }],
+    },
+  ],
   updatedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.AcademicsContent ||
-  mongoose.model<IAcademicsContent>("AcademicsContent", AcademicsContentSchema);
+if (mongoose.models.AcademicsContent) {
+  delete mongoose.models.AcademicsContent;
+}
+export default mongoose.model<IAcademicsContent>("AcademicsContent", AcademicsContentSchema);

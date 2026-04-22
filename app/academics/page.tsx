@@ -5,6 +5,12 @@ import SectionTitle from "@/components/SectionTitle";
 import { BookMarked, Microscope, Laptop, Music, Dumbbell, Globe, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { cn } from "@/lib/utils";
 import axiosInstance from "@/lib/axios";
 
@@ -63,6 +69,18 @@ const Academics = () => {
     { icon: <Dumbbell className="w-10 h-10" />, name: "Indoor Sports Complex" },
     { icon: <Music className="w-10 h-10" />, name: "Creative Arts Studio" },
     { icon: <Globe className="w-10 h-10" />, name: "Global Language Lab" },
+  ];
+
+  const activities = (content?.activities && content.activities.length > 0) ? content.activities : [
+    {
+      title: "Extracurricular Programs",
+      description: "Our comprehensive extracurricular programs run throughout the academic year, fostering teamwork, leadership, and physical excellence across multiple disciplines.",
+      images: [
+        "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+        "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
+      ]
+    }
   ];
 
   return (
@@ -185,29 +203,64 @@ const Academics = () => {
         </div>
       </section>
 
-      {/* Modern Facilities Grid */}
+      {/* Dynamic Activities Section */}
       <section className="section-padding bg-slate-50 mt-32 rounded-[5rem] border border-gray-100">
         <div className="container-custom">
           <SectionTitle 
-            title="World-Class Infrastructure" 
-            subtitle="The right environment is half the education. We invest in the tools of tomorrow."
+            title="Beyond the Classroom" 
+            subtitle="Engaging activities that foster creativity, leadership, and holistic development."
           />
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-12 mt-24">
-            {facilities.map((fac, idx) => (
-              <motion.div 
-                key={idx} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white p-16 rounded-[4rem] shadow-xl hover:shadow-3xl transition-all group flex flex-col items-center text-center border border-transparent hover:border-secondary/20"
-              >
-                <div className="text-primary bg-primary/5 w-24 h-24 rounded-[2.5rem] flex items-center justify-center mb-10 group-hover:bg-primary group-hover:text-white transition-all duration-700">
-                  {fac.icon}
-                </div>
-                <h4 className="text-xl font-playfair font-black text-primary group-hover:text-secondary transition-colors uppercase tracking-widest">{fac.name}</h4>
-              </motion.div>
-            ))}
+          
+          <div className="mt-20 px-4 md:px-12 relative">
+            <Swiper
+              modules={[Autoplay, Navigation, Pagination]}
+              spaceBetween={40}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              className="pb-16"
+            >
+              {activities.map((activity: any, idx: number) => (
+                <SwiperSlide key={idx}>
+                  <div className="bg-white rounded-[4rem] p-10 md:p-16 shadow-xl border border-gray-100 mx-2 mb-10">
+                    <div className="text-center mb-12">
+                      <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
+                      <p className="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">{activity.description}</p>
+                    </div>
+                    
+                    {activity.images && activity.images.length > 0 && (
+                      <div className="rounded-[3rem] overflow-hidden shadow-lg">
+                        <Swiper
+                          modules={[Autoplay, EffectFade]}
+                          effect="fade"
+                          speed={1000}
+                          autoplay={{ delay: 3000, disableOnInteraction: false }}
+                          loop
+                          className="w-full h-[400px] md:h-[500px]"
+                        >
+                          {activity.images.map((img: string, imgIdx: number) => {
+                            if (!img) return null;
+                            return (
+                              <SwiperSlide key={imgIdx}>
+                                <div className="relative w-full h-full">
+                                  <Image 
+                                    src={img}
+                                    alt={`${activity.title} image ${imgIdx + 1}`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                                </div>
+                              </SwiperSlide>
+                            );
+                          })}
+                        </Swiper>
+                      </div>
+                    )}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </section>

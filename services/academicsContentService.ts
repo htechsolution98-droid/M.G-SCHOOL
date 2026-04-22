@@ -36,6 +36,17 @@ const defaultAcademicsContent = {
       image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
       color: "from-primary/10 to-transparent"
     }
+  ],
+  activities: [
+    {
+      title: "Extracurricular Programs",
+      description: "Our comprehensive extracurricular programs run throughout the academic year, fostering teamwork, leadership, and physical excellence across multiple disciplines.",
+      images: [
+        "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+        "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
+      ]
+    }
   ]
 };
 
@@ -68,6 +79,19 @@ export async function updateAcademicsPrograms(programs: any[]) {
     content = await AcademicsContent.create({ ...defaultAcademicsContent, programs });
   } else {
     content.programs = programs;
+    content.updatedAt = new Date();
+    await content.save();
+  }
+  return content;
+}
+
+export async function updateAcademicsActivities(activities: any[]) {
+  await connectDB();
+  let content = await AcademicsContent.findOne();
+  if (!content) {
+    content = await AcademicsContent.create({ ...defaultAcademicsContent, activities });
+  } else {
+    content.activities = activities;
     content.updatedAt = new Date();
     await content.save();
   }

@@ -193,7 +193,7 @@ export default function AdminDashboard() {
           {activeTab === "about" && <AboutTab />}
           {activeTab === "academics" && <AcademicsTab />}
           {activeTab === "students" && <PlaceholderTab title="Students" description="Manage student records, admissions, and academic data." />}
-          {activeTab === "branches" && <PlaceholderTab title="Branches" description="Manage Block A, Block B, and Block C campus details." />}
+          {activeTab === "branches" && <BranchesTab />}
           {activeTab === "faculty" && <PlaceholderTab title="Faculty" description="Manage faculty profiles, assignments, and schedules." />}
           {activeTab === "gallery" && <PlaceholderTab title="Gallery" description="Upload and manage school photos and media." />}
           {activeTab === "events" && <PlaceholderTab title="Events" description="Create and manage school events and announcements." />}
@@ -966,6 +966,7 @@ function AcademicsTab() {
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "programs", name: "Programs Section", icon: BookOpen },
+    { id: "activities", name: "Activities Section", icon: Building2 },
   ];
 
   return (
@@ -1007,6 +1008,14 @@ function AcademicsTab() {
           programs={content.programs || defaultAcademicsContent.programs}
           onSave={(programs: any[]) => saveSection("programs", { programs })}
           saving={saving === "programs"}
+        />
+      )}
+
+      {activeSection === "activities" && content && (
+        <AcademicsActivitiesEditor
+          activities={content.activities || []}
+          onSave={(activities: any[]) => saveSection("activities", { activities })}
+          saving={saving === "activities"}
         />
       )}
     </div>
@@ -1080,6 +1089,336 @@ function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]
       <button onClick={() => onSave(localPrograms)} disabled={saving}
         className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
         <Save size={18} /> {saving ? "Saving..." : "Save Programs"}
+      </button>
+    </div>
+  );
+}
+
+function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities: any[]; onSave: (a: any[]) => void; saving: boolean }) {
+  const [localActivities, setLocalActivities] = useState(activities);
+
+  const updateActivity = (idx: number, field: string, value: any) => {
+    const updated = [...localActivities];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocalActivities(updated);
+  };
+
+  const updateActivityImage = (activityIdx: number, imageIdx: number, value: string) => {
+    const updated = [...localActivities];
+    const newImages = [...(updated[activityIdx].images || [])];
+    // Ensure array has at least enough elements to place the image at index
+    while (newImages.length <= imageIdx) {
+      newImages.push("");
+    }
+    newImages[imageIdx] = value;
+    updated[activityIdx] = { ...updated[activityIdx], images: newImages };
+    setLocalActivities(updated);
+  };
+
+  const addActivity = () => {
+    setLocalActivities([...localActivities, { title: "", description: "", images: ["", "", ""] }]);
+  };
+
+  const removeActivity = (idx: number) => {
+    setLocalActivities(localActivities.filter((_: any, i: number) => i !== idx));
+  };
+
+  return (
+    <div className="space-y-6">
+      {localActivities.map((activity, idx) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-playfair font-black text-primary">Activity {idx + 1}: {activity.title || "New Activity"}</h4>
+            <button onClick={() => removeActivity(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
+          </div>
+          <div className="grid grid-cols-1 gap-6">
+            <InputField label="Title" value={activity.title} onChange={(v) => updateActivity(idx, "title", v)} />
+            <TextareaField label="Description" value={activity.description} onChange={(v) => updateActivity(idx, "description", v)} />
+            
+            <div>
+              <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-4 border-b border-gray-100 pb-2">Activity Images (Exactly 3 required for slider)</label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[0, 1, 2].map((imgIdx) => (
+                  <ImageUpload 
+                    key={imgIdx} 
+                    label={`Image ${imgIdx + 1}`} 
+                    value={(activity.images || [])[imgIdx] || ""} 
+                    onChange={(v) => updateActivityImage(idx, imgIdx, v)} 
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-4">
+        <button onClick={addActivity} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Activity
+        </button>
+        <button onClick={() => onSave(localActivities)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Activities"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════
+// BRANCHES TAB - Edit Hero, Branches List
+// ════════════════════════════════════════
+const defaultBranchesContent = {
+  hero: {
+    heading: "Distributed ",
+    headingHighlight: "Excellence.",
+    description: "Three distinct campuses, one unified vision of nurturing tomorrow's leaders.",
+  },
+  branches: [
+    {
+      id: "block-a",
+      name: "Block A",
+      subtitle: "The Foundation Campus",
+      grades: "Std 1–8",
+      medium: "Gujarati Medium",
+      location: "East Campus, MG Road",
+      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80",
+    },
+  ]
+};
+
+function BranchesTab() {
+  const [content, setContent] = useState<any>(defaultBranchesContent);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState("");
+  const [message, setMessage] = useState("");
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    axiosInstance.get("/api/branches-content")
+      .then((res) => {
+        const data = res.data;
+        if (data.success && data.content) {
+          setContent(data.content);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveSection = async (section: string, data: any) => {
+    setSaving(section);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/branches-content", { section, ...data });
+      const result = res.data;
+      if (result.success) {
+        setContent(result.content);
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error: " + result.error);
+      }
+    } catch {
+      setMessage("Failed to save. Check MongoDB connection.");
+    }
+    setSaving("");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const sections = [
+    { id: "hero", name: "Hero Section", icon: ImageIcon },
+    { id: "branches", name: "Branches List", icon: Building2 },
+    { id: "blockA", name: "Block A Content", icon: Building2 },
+    { id: "blockB", name: "Block B Content", icon: Building2 },
+    { id: "blockC", name: "Block C Content", icon: Building2 },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap gap-3">
+        {sections.map((s) => {
+          const Icon = s.icon as any;
+          return (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+              }`}
+            >
+              <Icon size={18} /> {s.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {message && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
+          {message}
+        </motion.div>
+      )}
+
+      {activeSection === "hero" && content && (
+        <BranchesHeroEditor
+          hero={content.hero || defaultBranchesContent.hero}
+          onSave={(hero: any) => saveSection("hero", { hero })}
+          saving={saving === "hero"}
+        />
+      )}
+
+      {activeSection === "branches" && content && (
+        <BranchesListEditor
+          branches={content.branchesList || []}
+          onSave={(branchesList: any[]) => saveSection("branches", { branchesList })}
+          saving={saving === "branches"}
+        />
+      )}
+
+      {["blockA", "blockB", "blockC"].includes(activeSection) && content && (
+        <BlockContentEditor
+          blockName={activeSection}
+          blockData={content[activeSection] || defaultBranchesContent[activeSection as keyof typeof defaultBranchesContent]}
+          onSave={(blockContent: any) => saveSection(activeSection, { blockContent })}
+          saving={saving === activeSection}
+        />
+      )}
+    </div>
+  );
+}
+
+function BranchesHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(hero);
+  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Branches: Hero Section</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading Prefix" value={local.heading} onChange={(v) => update("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
+          <div className="md:col-span-2">
+            <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
+          </div>
+        </div>
+      </div>
+      <button onClick={() => onSave(local)} disabled={saving}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+        <Save size={18} /> {saving ? "Saving..." : "Save Hero"}
+      </button>
+    </div>
+  );
+}
+
+function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onSave: (b: any[]) => void; saving: boolean }) {
+  const [localBranches, setLocalBranches] = useState(branches);
+
+  const updateBranch = (idx: number, field: string, value: any) => {
+    const updated = [...localBranches];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocalBranches(updated);
+  };
+
+  const addBranch = () => {
+    setLocalBranches([...localBranches, { id: "", name: "", subtitle: "", grades: "", medium: "", location: "", image: "" }]);
+  };
+
+  const removeBranch = (idx: number) => {
+    setLocalBranches(localBranches.filter((_: any, i: number) => i !== idx));
+  };
+
+  return (
+    <div className="space-y-6">
+      {localBranches.map((branch, idx) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-playfair font-black text-primary">Branch {idx + 1}: {branch.name || "New Branch"}</h4>
+            <button onClick={() => removeBranch(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InputField label="URL ID (e.g. block-a)" value={branch.id} onChange={(v) => updateBranch(idx, "id", v)} />
+            <InputField label="Name (e.g. Block A)" value={branch.name} onChange={(v) => updateBranch(idx, "name", v)} />
+            <InputField label="Subtitle" value={branch.subtitle} onChange={(v) => updateBranch(idx, "subtitle", v)} />
+            <InputField label="Grades (e.g. Std 1-8)" value={branch.grades} onChange={(v) => updateBranch(idx, "grades", v)} />
+            <InputField label="Medium (e.g. Gujarati Medium)" value={branch.medium} onChange={(v) => updateBranch(idx, "medium", v)} />
+            <InputField label="Location" value={branch.location} onChange={(v) => updateBranch(idx, "location", v)} />
+            <div className="md:col-span-2">
+              <ImageUpload label="Branch Image" value={branch.image} onChange={(v) => updateBranch(idx, "image", v)} />
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-4">
+        <button onClick={addBranch} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Branch
+        </button>
+        <button onClick={() => onSave(localBranches)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Branches"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockName: string; blockData: any; onSave: (b: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(blockData);
+
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  const addImage = (url: string) => {
+    update("images", [...(local.images || []), url]);
+  };
+
+  const removeImage = (idx: number) => {
+    update("images", (local.images || []).filter((_: any, i: number) => i !== idx));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Edit {blockName.replace("block", "Block ")} Content</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Name (e.g. Block A)" value={local.name} onChange={(v) => update("name", v)} />
+          <InputField label="Subtitle" value={local.subtitle} onChange={(v) => update("subtitle", v)} />
+          <InputField label="Grades (e.g. Std 1-8)" value={local.grades} onChange={(v) => update("grades", v)} />
+          <InputField label="Medium (e.g. Gujarati Medium)" value={local.medium} onChange={(v) => update("medium", v)} />
+          <InputField label="Location" value={local.location} onChange={(v) => update("location", v)} />
+          <InputField label="Principal / Head" value={local.principal || ""} onChange={(v) => update("principal", v)} />
+          <div className="md:col-span-2">
+            <InputField label="Specialties (comma-separated)" value={local.specialties ? local.specialties.join(", ") : ""} onChange={(v) => update("specialties", v.split(",").map((s: string) => s.trim()).filter(Boolean))} />
+          </div>
+          <div className="md:col-span-2">
+            <TextareaField label="Description" value={local.description || ""} onChange={(v) => update("description", v)} />
+          </div>
+          
+          <div className="md:col-span-2">
+            <label className="block text-sm font-bold text-gray-700 mb-2">Image Sliders</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              {(local.images || []).map((img: string, idx: number) => (
+                <div key={idx} className="relative group rounded-xl overflow-hidden aspect-video border border-gray-200">
+                  <img src={img} alt="slide" className="w-full h-full object-cover" />
+                  <button onClick={() => removeImage(idx)} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <ImageUpload label="Add New Slide" value="" onChange={addImage} />
+          </div>
+        </div>
+      </div>
+      <button onClick={() => onSave(local)} disabled={saving}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+        <Save size={18} /> {saving ? "Saving..." : "Save Block"}
       </button>
     </div>
   );

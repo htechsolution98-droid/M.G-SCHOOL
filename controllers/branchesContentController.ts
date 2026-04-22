@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getAcademicsContent,
-  updateAcademicsHero,
-  updateAcademicsPrograms,
-  updateAcademicsActivities,
-} from "@/services/academicsContentService";
+  getBranchesContent,
+  updateBranchesHero,
+  updateBranchesList,
+  updateBlockContent
+} from "@/services/branchesContentService";
 
-export async function handleGetAcademicsContent() {
+export async function handleGetBranchesContent() {
   try {
-    const content = await getAcademicsContent();
+    const content = await getBranchesContent();
     return NextResponse.json({ success: true, content });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-export async function handleUpdateAcademicsContent(req: NextRequest) {
+export async function handleUpdateBranchesContent(req: NextRequest) {
   try {
     const data = await req.json();
     const { section, ...sectionData } = data;
@@ -24,13 +24,15 @@ export async function handleUpdateAcademicsContent(req: NextRequest) {
 
     switch (section) {
       case "hero":
-        content = await updateAcademicsHero(sectionData.hero);
+        content = await updateBranchesHero(sectionData.hero);
         break;
-      case "programs":
-        content = await updateAcademicsPrograms(sectionData.programs);
+      case "branches":
+        content = await updateBranchesList(sectionData.branchesList);
         break;
-      case "activities":
-        content = await updateAcademicsActivities(sectionData.activities);
+      case "blockA":
+      case "blockB":
+      case "blockC":
+        content = await updateBlockContent(section, sectionData.blockContent);
         break;
       default:
         return NextResponse.json({ success: false, error: "Invalid section" }, { status: 400 });

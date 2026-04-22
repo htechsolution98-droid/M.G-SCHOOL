@@ -1,12 +1,8 @@
 "use client";
 
 import React from "react";
-import BlockB from "@/components/branches/BlockB";
+import BlockPageLayout from "@/components/branches/BlockPageLayout";
 
 export default function BlockBPage() {
-  return (
-    <div className="pt-24 min-h-screen pb-32">
-      <BlockB />
-    </div>
-  );
+  return <BlockPageLayout blockKey="blockB" />;
 }
