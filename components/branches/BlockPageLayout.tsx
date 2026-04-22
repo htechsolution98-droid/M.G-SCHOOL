@@ -13,7 +13,7 @@ import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function BlockPageLayout({ blockKey }: { blockKey: "blockA" | "blockB" | "blockC" }) {
+export default function BlockPageLayout({ blockKey, children }: { blockKey: "blockA" | "blockB" | "blockC", children?: React.ReactNode }) {
   const [block, setBlock] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -115,7 +115,7 @@ export default function BlockPageLayout({ blockKey }: { blockKey: "blockA" | "bl
               <span className="h-px w-10 bg-secondary" />
               {block.subtitle}
             </div>
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
               {block.name}
             </h2>
             <div className="flex flex-wrap gap-4 mb-10">
@@ -187,6 +187,12 @@ export default function BlockPageLayout({ blockKey }: { blockKey: "blockA" | "bl
           </div>
         </div>
       </motion.section>
+
+      {children && (
+        <section className="container-custom mt-20">
+          {children}
+        </section>
+      )}
     </div>
   );
 }

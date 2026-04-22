@@ -95,7 +95,7 @@ export default function BranchDetailPage({ params }: { params: { branchId: strin
               <span className="h-px w-10 bg-secondary" />
               {branch.subtitle}
             </div>
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
               {branch.name}
             </h2>
             <div className="flex flex-wrap gap-4 mb-10">

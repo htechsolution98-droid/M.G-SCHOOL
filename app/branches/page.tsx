@@ -66,7 +66,7 @@ const BranchesPage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="lg:w-2/3"
             >
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter shadow-sm">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter shadow-sm">
                 {hero.heading} <br />
                 <span className="text-secondary italic">{hero.headingHighlight}</span>
               </h1>

@@ -25,24 +25,54 @@ const defaultAboutContent = {
     imageSmall1: "https://images.unsplash.com/photo-1509062522246-3755977927d7",
     imageSmall2: "https://images.unsplash.com/photo-1577891772447-b31528753a9c",
   },
+  excellence: [
+    {
+      title: "Our Mission",
+      description: "To provide a nurturing environment where students are inspired to achieve academic excellence and develop into compassionate leaders.",
+      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80",
+    },
+    {
+      title: "Our Vision",
+      description: "To be a global leader in education, fostering innovation, integrity, and a lifelong passion for learning in every student.",
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80",
+    },
+    {
+      title: "Core Values",
+      description: "Integrity, Respect, Excellence, and Inclusivity are the pillars that guide every interaction and decision at M.G. School.",
+      image: "https://images.unsplash.com/photo-1577891772447-b31528753a9c?q=80",
+    },
+  ],
+  valuesScroll: {
+    heading: "Every Child, ",
+    headingHighlight: "Every Future.",
+    description: "\"Our commitment is to the unique potential within every student.\"",
+    features: [
+      { title: "Immersive Digital Classrooms", image: "" },
+      { title: "Holistic Character Building", image: "" },
+      { title: "Global Athletic Exposure", image: "" },
+      { title: "Creative & Performing Arts", image: "" },
+      { title: "Ethics-Driven Education", image: "" },
+      { title: "Sustainable Campus Living", image: "" },
+      { title: "Peer-to-Peer Mentorship", image: "" },
+      { title: "International Exchange", image: "" }
+    ]
+  }
 };
 
 export async function getAboutContent() {
   await connectDB();
-
   let content = await AboutContent.findOne();
-
-  // Seed default if empty
   if (!content) {
     content = await AboutContent.create(defaultAboutContent);
+  } else if (!content.excellence || content.excellence.length === 0) {
+    content.excellence = defaultAboutContent.excellence as any;
+    await content.save();
   }
-
   return content;
 }
 
 export async function updateAboutHero(hero: any) {
   await connectDB();
-
   let content = await AboutContent.findOne();
   if (!content) {
     content = await AboutContent.create({ ...defaultAboutContent, hero });
@@ -51,13 +81,11 @@ export async function updateAboutHero(hero: any) {
     content.updatedAt = new Date();
     await content.save();
   }
-
   return content;
 }
 
 export async function updateAboutLegacy(legacy: any) {
   await connectDB();
-
   let content = await AboutContent.findOne();
   if (!content) {
     content = await AboutContent.create({ ...defaultAboutContent, legacy });
@@ -66,6 +94,31 @@ export async function updateAboutLegacy(legacy: any) {
     content.updatedAt = new Date();
     await content.save();
   }
+  return content;
+}
 
+export async function updateAboutExcellence(excellence: any[]) {
+  await connectDB();
+  let content = await AboutContent.findOne();
+  if (!content) {
+    content = await AboutContent.create({ ...defaultAboutContent, excellence });
+  } else {
+    content.excellence = excellence;
+    content.updatedAt = new Date();
+    await content.save();
+  }
+  return content;
+}
+
+export async function updateAboutValuesScroll(valuesScroll: any) {
+  await connectDB();
+  let content = await AboutContent.findOne();
+  if (!content) {
+    content = await AboutContent.create({ ...defaultAboutContent, valuesScroll });
+  } else {
+    content.valuesScroll = valuesScroll;
+    content.updatedAt = new Date();
+    await content.save();
+  }
   return content;
 }

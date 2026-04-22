@@ -112,7 +112,7 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
                     initial={{ y: 30, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-3xl md:text-4xl lg:text-5xl font-playfair font-black text-white mb-6 leading-tight drop-shadow-2xl"
+                    className="text-3xl md:text-4xl lg:text-4xl font-playfair font-black text-white mb-6 leading-tight drop-shadow-2xl"
                   >
                     {slide.title}
                   </motion.h1>

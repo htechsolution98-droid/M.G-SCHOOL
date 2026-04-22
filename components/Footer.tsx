@@ -18,9 +18,7 @@ const Footer = () => {
           {/* Brand & Vision */}
           <div className="lg:col-span-4 space-y-10">
             <Link href="/" className="flex items-center gap-4 group">
-              <div className="bg-secondary p-3 rounded-2xl group-hover:rotate-12 transition-transform duration-500 shadow-xl">
-                <GraduationCap className="text-primary w-8 h-8" />
-              </div>
+              <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-16 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
               <div className="flex flex-col">
                 <span className="text-3xl font-playfair font-black tracking-tighter">M.G. SCHOOL</span>
                 <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-secondary">Est. 1995</span>

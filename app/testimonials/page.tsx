@@ -58,7 +58,7 @@ const TestimonialsPage = () => {
               <div className="p-4 bg-secondary text-primary rounded-2xl w-max mb-8 shadow-xl">
                  <Heart className="fill-primary" size={32} />
               </div>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">Community <br/><span className="text-secondary italic">Voices.</span></h1>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">Community <br/><span className="text-secondary italic">Voices.</span></h1>
               <p className="text-2xl text-gray-400 font-light max-w-xl leading-relaxed italic border-l-4 border-secondary pl-8">
                 "Real stories from our students, parents, and alumni who lived the M.G. School legacy."
               </p>
@@ -124,7 +124,7 @@ const TestimonialsPage = () => {
                <div className="flex justify-center gap-1 mb-8">
                   {[1,2,3,4,5].map(i => <Sparkles key={i} className="text-secondary fill-secondary" size={20} />)}
                </div>
-               <h2 className="text-5xl md:text-7xl font-playfair font-black text-primary uppercase tracking-tighter shadow-sm">Verified <br/><span className="text-secondary italic">Experiences.</span></h2>
+               <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary uppercase tracking-tighter shadow-sm">Verified <br/><span className="text-secondary italic">Experiences.</span></h2>
             </header>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -173,7 +173,7 @@ const TestimonialsPage = () => {
               className="bg-white rounded-[5rem] p-16 md:p-32 text-center border-4 border-slate-50 relative overflow-hidden shadow-3xl"
            >
               <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <h2 className="text-5xl md:text-[8rem] font-playfair font-black text-primary leading-none mb-10 tracking-tighter uppercase underline decoration-secondary decoration-8 underline-offset-8">Be part of the <br/><span className="italic text-secondary">Family.</span></h2>
+              <h2 className="text-3xl md:text-[8rem] font-playfair font-black text-primary leading-none mb-10 tracking-tighter uppercase underline decoration-secondary decoration-8 underline-offset-8">Be part of the <br/><span className="italic text-secondary">Family.</span></h2>
               <p className="text-2xl text-gray-400 font-light italic max-w-2xl mx-auto mb-16">"Experience why M.G. School is the top-rated academic institution in the region."</p>
               <button className="bg-primary text-white px-20 py-6 rounded-[2.5rem] font-black text-xl hover:bg-secondary hover:text-primary transition-all shadow-2xl active:scale-95">Enroll Now</button>
            </motion.div>

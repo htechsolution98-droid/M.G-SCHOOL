@@ -22,9 +22,29 @@ export interface ILegacySection {
   imageSmall2: string;
 }
 
+export interface IExcellenceItem {
+  title: string;
+  description: string;
+  image: string;
+}
+
+export interface IValuesScrollFeature {
+  title: string;
+  image: string;
+}
+
+export interface IValuesScroll {
+  heading: string;
+  headingHighlight: string;
+  description: string;
+  features: IValuesScrollFeature[];
+}
+
 export interface IAboutContent extends Document {
   hero: IAboutHero;
   legacy: ILegacySection;
+  excellence: IExcellenceItem[];
+  valuesScroll: IValuesScroll;
   updatedAt: Date;
 }
 
@@ -48,6 +68,24 @@ const AboutContentSchema: Schema = new Schema({
     imageMain: { type: String, default: "" },
     imageSmall1: { type: String, default: "" },
     imageSmall2: { type: String, default: "" },
+  },
+  excellence: [
+    {
+      title: { type: String, default: "" },
+      description: { type: String, default: "" },
+      image: { type: String, default: "" },
+    }
+  ],
+  valuesScroll: {
+    heading: { type: String, default: "" },
+    headingHighlight: { type: String, default: "" },
+    description: { type: String, default: "" },
+    features: [
+      {
+        title: { type: String, default: "" },
+        image: { type: String, default: "" },
+      }
+    ],
   },
   updatedAt: { type: Date, default: Date.now },
 });

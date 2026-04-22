@@ -49,7 +49,7 @@ const FacultyPage = () => {
             animate={{ opacity: 1, x: 0 }}
             className="md:w-1/2"
           >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">
               {hero.heading} <br/>
               <span className="text-secondary italic">{hero.headingHighlight}</span>
             </h1>
@@ -75,7 +75,7 @@ const FacultyPage = () => {
         <div className="container-custom">
           <header className="mb-24 flex flex-col md:flex-row justify-between items-end gap-10">
             <div className="max-w-2xl">
-              <h2 className="text-5xl font-playfair font-black text-primary mb-6">Expertise & <span className="text-secondary italic">Leadership</span></h2>
+              <h2 className="text-3xl font-playfair font-black text-primary mb-6">Expertise & <span className="text-secondary italic">Leadership</span></h2>
               <p className="text-lg text-gray-500 font-medium tracking-wide font-outfit uppercase">Our leadership remains dedicated to fostering an environment of innovation and ethics.</p>
             </div>
             <div className="flex gap-4">
@@ -130,7 +130,7 @@ const FacultyPage = () => {
           >
             <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-pattern" />
             <Quote className="text-secondary w-20 h-20 mx-auto mb-12 opacity-50" />
-            <h2 className="text-4xl md:text-6xl font-playfair font-bold mb-12 leading-tight max-w-4xl mx-auto italic underline decoration-secondary/30 underline-offset-[16px]">
+            <h2 className="text-4xl md:text-5xl font-playfair font-bold mb-12 leading-tight max-w-4xl mx-auto italic underline decoration-secondary/30 underline-offset-[16px]">
               "Education is not the learning of facts, but the training of the mind to think."
             </h2>
             <div className="w-32 h-1 bg-secondary mx-auto mb-10 rounded-full" />

@@ -44,7 +44,7 @@ const EventsPage = () => {
                  <Zap className="text-secondary fill-secondary" size={32} />
                  <span className="text-xs uppercase tracking-[0.5em] font-black text-primary/40">Campus Pulse</span>
               </div>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">Life at <br/><span className="text-secondary italic">MG School.</span></h1>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">Life at <br/><span className="text-secondary italic">MG School.</span></h1>
               <p className="text-2xl text-gray-400 font-light max-w-xl leading-relaxed italic border-l-4 border-secondary pl-8">
                 "Where every celebration is a step towards greatness. Join our vibrant community life."
               </p>
@@ -55,7 +55,7 @@ const EventsPage = () => {
               className="lg:w-1/3 relative"
             >
                <div className="p-12 bg-white/50 backdrop-blur-xl border border-white rounded-[4rem] shadow-3xl text-center relative z-10">
-                  <div className="text-6xl font-playfair font-black text-primary mb-2">12+</div>
+                  <div className="text-4xl font-playfair font-black text-primary mb-2">12+</div>
                   <div className="text-xs uppercase tracking-widest font-black text-secondary mb-8">Annual Events</div>
                   <button className="bg-primary text-white w-full py-5 rounded-2xl font-bold hover:bg-secondary hover:text-primary transition-all shadow-xl active:scale-95">Download Calendar</button>
                </div>
@@ -102,7 +102,7 @@ const EventsPage = () => {
                 {/* Event Content */}
                 <div className="lg:w-1/2 flex flex-col justify-center">
                    <header className="mb-10">
-                      <h2 className="text-5xl md:text-7xl font-playfair font-black text-primary mb-8 leading-tight tracking-tight">{event.title}</h2>
+                      <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-8 leading-tight tracking-tight">{event.title}</h2>
                       <div className="flex flex-wrap gap-8">
                          <div className="flex items-center gap-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">
                             <Clock size={16} className="text-secondary" /> {event.time || "Time TBD"}
@@ -141,7 +141,7 @@ const EventsPage = () => {
             >
                <div className="absolute top-0 right-0 w-1/2 h-full bg-secondary/5 -translate-y-1/2 translate-x-1/2 rounded-full blur-3xl pointer-events-none" />
                <Sparkles size={60} className="text-secondary opacity-30 mx-auto mb-10" />
-               <h2 className="text-4xl md:text-8xl font-playfair font-black mb-12 leading-none uppercase tracking-tighter shadow-2xl">Watch the <br/><span className="italic text-secondary underline decoration-secondary decoration-4 underline-offset-8">highlights.</span></h2>
+               <h2 className="text-4xl md:text-6xl font-playfair font-black mb-12 leading-none uppercase tracking-tighter shadow-2xl">Watch the <br/><span className="italic text-secondary underline decoration-secondary decoration-4 underline-offset-8">highlights.</span></h2>
                <p className="text-2xl text-white/50 mb-16 max-w-2xl mx-auto font-light leading-relaxed italic">"Relive every grand moment from our past events through our curated video archive."</p>
                <button className="bg-secondary text-primary px-16 py-6 rounded-[2.5rem] font-black text-xl hover:bg-white transition-all shadow-2xl active:scale-95">Open Video Portal</button>
             </motion.div>

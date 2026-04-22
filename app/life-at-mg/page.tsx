@@ -43,7 +43,7 @@ const LifeAtMGPage = () => {
         <Image src={hero.image} fill className="object-cover" alt="Life at MG" priority />
         <div className="container-custom relative z-20 text-center text-white">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-6xl md:text-8xl font-playfair font-black mb-8 leading-tight tracking-tighter">
+            <h1 className="text-4xl md:text-6xl font-playfair font-black mb-8 leading-tight tracking-tighter">
               {hero.heading}
             </h1>
             <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed italic opacity-90">
@@ -63,7 +63,7 @@ const LifeAtMGPage = () => {
                 <div className="w-12 h-1 bg-secondary rounded-full" />
                 <span className="text-xs font-black text-primary uppercase tracking-[0.4em]">The MG Experience</span>
               </div>
-              <h2 className="text-5xl md:text-7xl font-playfair font-black text-primary leading-tight tracking-tighter">
+              <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary leading-tight tracking-tighter">
                 Moments of <br/><span className="text-secondary italic">Excellence.</span>
               </h2>
             </div>
@@ -101,7 +101,7 @@ const LifeAtMGPage = () => {
         <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-pattern" />
         <div className="container-custom text-center relative z-10">
            <Sparkles size={48} className="text-secondary mx-auto mb-10" />
-           <h2 className="text-4xl md:text-6xl font-playfair font-black mb-12 italic underline decoration-secondary/30 underline-offset-[16px]">
+           <h2 className="text-4xl md:text-5xl font-playfair font-black mb-12 italic underline decoration-secondary/30 underline-offset-[16px]">
              "Education is the most powerful weapon which you can use to change the world."
            </h2>
            <div className="w-32 h-1 bg-secondary mx-auto mb-10 rounded-full" />

@@ -3,6 +3,8 @@ import {
   getAboutContent,
   updateAboutHero,
   updateAboutLegacy,
+  updateAboutExcellence,
+  updateAboutValuesScroll,
 } from "@/services/aboutContentService";
 
 export async function handleGetAboutContent() {
@@ -27,6 +29,12 @@ export async function handleUpdateAboutContent(req: NextRequest) {
         break;
       case "legacy":
         content = await updateAboutLegacy(sectionData.legacy);
+        break;
+      case "excellence":
+        content = await updateAboutExcellence(sectionData.excellence);
+        break;
+      case "valuesScroll":
+        content = await updateAboutValuesScroll(sectionData.valuesScroll);
         break;
       default:
         throw new Error("Invalid section");

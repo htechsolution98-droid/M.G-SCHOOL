@@ -49,9 +49,7 @@ const Navbar = () => {
       >
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="bg-primary p-2.5 rounded-2xl group-hover:rotate-12 transition-transform duration-500 shadow-lg">
-              <GraduationCap className="text-secondary w-7 h-7" />
-            </div>
+            <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
             <div className="flex flex-col">
               <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
                 M.G. SCHOOL

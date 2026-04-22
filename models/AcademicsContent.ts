@@ -5,6 +5,7 @@ export interface IAcademicsHero {
   headingHighlight: string;
   description: string;
   image: string;
+  images: string[];
 }
 
 export interface IAcademicsProgram {
@@ -23,10 +24,18 @@ export interface IAcademicsActivity {
   images: string[];
 }
 
+export interface ITeacherDuty {
+  category: string;
+  duty: string;
+  teachers: string;
+  description: string;
+}
+
 export interface IAcademicsContent extends Document {
   hero: IAcademicsHero;
   programs: IAcademicsProgram[];
   activities: IAcademicsActivity[];
+  teacherDuties: ITeacherDuty[];
   updatedAt: Date;
 }
 
@@ -36,6 +45,7 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
     headingHighlight: { type: String, default: "Curriculum." },
     description: { type: String, default: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."' },
     image: { type: String, default: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070" },
+    images: [{ type: String }],
   },
   programs: [
     {
@@ -54,6 +64,14 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
       description: { type: String, default: "" },
       images: [{ type: String }],
     },
+  ],
+  teacherDuties: [
+    {
+      category: { type: String, default: "" },
+      duty: { type: String, default: "" },
+      teachers: { type: String, default: "" },
+      description: { type: String, default: "" },
+    }
   ],
   updatedAt: { type: Date, default: Date.now },
 });

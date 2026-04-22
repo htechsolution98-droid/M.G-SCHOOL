@@ -7,6 +7,11 @@ const defaultAcademicsContent = {
     headingHighlight: "Curriculum.",
     description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
     image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+    images: [
+      "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070"
+    ],
   },
   programs: [
     {
@@ -47,6 +52,86 @@ const defaultAcademicsContent = {
         "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
       ]
     }
+  ],
+  teacherDuties: [
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Activity Promoter",
+      teachers: "Varsha ma’am",
+      description: "Plan and coordinate school activities, celebrations, competitions"
+    },
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Examination Department",
+      teachers: "Neetu Ma’am",
+      description: "Paper setting, timetable, supervision, result preparation"
+    },
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Time Table In-charge",
+      teachers: "Deepa Ma’am",
+      description: "Prepare and manage school timetable for all classes"
+    },
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Parents Meetings Coordinator",
+      teachers: "Mamta ma’am",
+      description: "Arrange PTM (Parent-Teacher Meetings) and maintain records"
+    },
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Supervisor",
+      teachers: "Deepa ma’am",
+      description: "Overall monitoring of classes, discipline, and daily functioning"
+    },
+    {
+      category: "1. ADMINISTRATIVE & ACADEMIC DUTIES",
+      duty: "Cabinet Form In-charge",
+      teachers: "N.A.",
+      description: "Manage student cabinet / leadership selection and records"
+    },
+    {
+      category: "2. ACADEMIC SUPPORT DUTIES",
+      duty: "English Communication In-charge",
+      teachers: "Kanchan Ma’am",
+      description: "Improve English speaking, reading, writing activities"
+    },
+    {
+      category: "2. ACADEMIC SUPPORT DUTIES",
+      duty: "Library In-charge",
+      teachers: "Kusum ma’am",
+      description: "Manage books, issue/return system, reading activities"
+    },
+    {
+      category: "3. DISCIPLINE & MANAGEMENT",
+      duty: "Discipline In-charge",
+      teachers: "Sakshi ma’am, suman ma’am",
+      description: "Maintain student discipline, rules enforcement"
+    },
+    {
+      category: "3. DISCIPLINE & MANAGEMENT",
+      duty: "Assembly In-charge",
+      teachers: "Reshma ma’am, laxmi ma’am",
+      description: "Daily assembly planning, prayer, announcements"
+    },
+    {
+      category: "4. ACTIVITY & STUDENT DEVELOPMENT",
+      duty: "Saturday Sports",
+      teachers: "Rajat sir, Aarti ma’am",
+      description: "Organize sports activities every Saturday"
+    },
+    {
+      category: "4. ACTIVITY & STUDENT DEVELOPMENT",
+      duty: "Saturday Co-curricular",
+      teachers: "Divya Ma'am, khushi ma’am",
+      description: "Art, music, dance, craft, quiz activities"
+    },
+    {
+      category: "4. ACTIVITY & STUDENT DEVELOPMENT",
+      duty: "School Cleanliness In-charge",
+      teachers: "Kajal ma’am",
+      description: "Hygiene, classroom cleaning, campus maintenance"
+    }
   ]
 };
 
@@ -55,6 +140,9 @@ export async function getAcademicsContent() {
   let content = await AcademicsContent.findOne();
   if (!content) {
     content = await AcademicsContent.create(defaultAcademicsContent);
+  } else if (!content.teacherDuties || content.teacherDuties.length === 0) {
+    content.teacherDuties = defaultAcademicsContent.teacherDuties as any;
+    await content.save();
   }
   return content;
 }
@@ -92,6 +180,19 @@ export async function updateAcademicsActivities(activities: any[]) {
     content = await AcademicsContent.create({ ...defaultAcademicsContent, activities });
   } else {
     content.activities = activities;
+    content.updatedAt = new Date();
+    await content.save();
+  }
+  return content;
+}
+
+export async function updateAcademicsTeacherDuties(teacherDuties: any[]) {
+  await connectDB();
+  let content = await AcademicsContent.findOne();
+  if (!content) {
+    content = await AcademicsContent.create({ ...defaultAcademicsContent, teacherDuties });
+  } else {
+    content.teacherDuties = teacherDuties;
     content.updatedAt = new Date();
     await content.save();
   }

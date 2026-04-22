@@ -136,14 +136,6 @@ export default function Home() {
                   height={800}
                   className="rounded-[3.5rem] object-cover h-[600px] w-full"
                 />
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  className="absolute -bottom-10 -right-10 bg-secondary p-10 rounded-[3rem] shadow-3xl text-primary max-w-[250px]"
-                >
-                  <Heart className="w-10 h-10 mb-4 fill-primary" />
-                  <div className="text-2xl font-playfair font-black leading-tight">{philosophy.floatingText}</div>
-                </motion.div>
               </div>
             </motion.div>
 
@@ -154,7 +146,7 @@ export default function Home() {
               className="lg:w-1/2"
             >
               <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">{philosophy.badge}</div>
-              <h2 className="text-5xl md:text-7xl font-playfair font-black leading-[1.1] mb-10 text-primary">
+              <h2 className="text-3xl md:text-5xl font-playfair font-black leading-[1.1] mb-10 text-primary">
                 {philosophy.heading} <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">{philosophy.headingHighlight}</span> &amp; Character.
               </h2>
               <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
@@ -188,7 +180,7 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
           <header className="max-w-3xl mb-24">
-            <h2 className="text-5xl md:text-8xl font-playfair font-black mb-8 leading-tight">Expertly Designed <br /><span className="italic text-secondary">Campus Hubs.</span></h2>
+            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-8 leading-tight">Expertly Designed <br /><span className="italic text-secondary">Campus Hubs.</span></h2>
             <p className="text-xl text-gray-400 font-medium">Three specialized campuses tailored for different stages of development.</p>
           </header>
 
@@ -237,7 +229,7 @@ export default function Home() {
           className="bg-primary rounded-[5rem] p-16 md:p-32 text-center text-white relative overflow-hidden shadow-3xl"
         >
           <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <h2 className="text-5xl md:text-[7rem] font-playfair text-secondary leading-none mb-10">Start Your <span className="text-secondary italic">Future</span> Today.</h2>
+          <h2 className="text-3xl md:text-[7rem] font-playfair text-secondary leading-none mb-10">Start Your <span className="text-secondary italic">Future</span> Today.</h2>
           <p className="text-2xl text-white/60 mb-16 max-w-2xl mx-auto font-light leading-relaxed">Join a community of thousands already crafting their success stories at M.G. School.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-8">
             <Link href="/contact" className="bg-secondary text-primary px-16 py-6 rounded-[2rem] font-black text-xl hover:bg-white transition-all shadow-2xl active:scale-95">Enroll Now</Link>

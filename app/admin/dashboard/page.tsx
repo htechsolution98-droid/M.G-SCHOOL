@@ -26,7 +26,9 @@ import {
   Home,
   Save,
   Trash2,
+  Trash,
   Edit3,
+  Star
 } from "lucide-react";
 
 // ─── Sidebar Items ───
@@ -116,9 +118,8 @@ export default function AdminDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                  activeTab === item.id ? "bg-secondary text-primary shadow-lg" : "text-white/50 hover:text-white hover:bg-white/5"
-                }`}
+                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-secondary text-primary shadow-lg" : "text-white/50 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 <Icon size={20} />
                 {item.name}
@@ -404,9 +405,8 @@ function HomepageTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
@@ -699,6 +699,22 @@ const defaultAboutContent = {
     imageSmall1: "https://images.unsplash.com/photo-1509062522246-3755977927d7",
     imageSmall2: "https://images.unsplash.com/photo-1577891772447-b31528753a9c",
   },
+  excellence: [],
+  valuesScroll: {
+    heading: "Every Child, ",
+    headingHighlight: "Every Future.",
+    description: "\"Our commitment is to the unique potential within every student.\"",
+    features: [
+      { title: "Immersive Digital Classrooms", image: "" },
+      { title: "Holistic Character Building", image: "" },
+      { title: "Global Athletic Exposure", image: "" },
+      { title: "Creative & Performing Arts", image: "" },
+      { title: "Ethics-Driven Education", image: "" },
+      { title: "Sustainable Campus Living", image: "" },
+      { title: "Peer-to-Peer Mentorship", image: "" },
+      { title: "International Exchange", image: "" }
+    ]
+  }
 };
 
 function AboutTab() {
@@ -750,6 +766,8 @@ function AboutTab() {
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "legacy", name: "Legacy Section", icon: Building2 },
+    { id: "excellence", name: "Excellence in Education", icon: Star },
+    { id: "valuesScroll", name: "Values & Features", icon: BookOpen },
   ];
 
   return (
@@ -762,9 +780,8 @@ function AboutTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
@@ -792,6 +809,22 @@ function AboutTab() {
           legacy={content.legacy || defaultAboutContent.legacy}
           onSave={(legacy: any) => saveSection("legacy", { legacy })}
           saving={saving === "legacy"}
+        />
+      )}
+
+      {activeSection === "excellence" && content && (
+        <AboutExcellenceEditor
+          excellence={content.excellence || defaultAboutContent.excellence}
+          onSave={(excellence: any) => saveSection("excellence", { excellence })}
+          saving={saving === "excellence"}
+        />
+      )}
+
+      {activeSection === "valuesScroll" && content && (
+        <AboutValuesScrollEditor
+          valuesScroll={content.valuesScroll || defaultAboutContent.valuesScroll}
+          onSave={(valuesScroll: any) => saveSection("valuesScroll", { valuesScroll })}
+          saving={saving === "valuesScroll"}
         />
       )}
     </div>
@@ -851,14 +884,14 @@ function AboutLegacyEditor({ legacy, onSave, saving }: { legacy: any; onSave: (l
           <InputField label="Stat 1 Label" value={local.stat1Label} onChange={(v) => update("stat1Label", v)} />
           <InputField label="Stat 2 Value (e.g. 15k)" value={local.stat2Value} onChange={(v) => update("stat2Value", v)} />
           <InputField label="Stat 2 Label" value={local.stat2Label} onChange={(v) => update("stat2Label", v)} />
-          
+
           <div className="md:col-span-2 mt-6 mb-2">
             <h5 className="font-bold text-gray-700 uppercase text-xs tracking-widest border-b border-gray-100 pb-2">Archive / Small Images</h5>
           </div>
-          
+
           <InputField label="Archive Mini-Title" value={local.archiveYear} onChange={(v) => update("archiveYear", v)} />
           <InputField label="Archive Main Title" value={local.archiveTitle} onChange={(v) => update("archiveTitle", v)} />
-          
+
           <div className="md:col-span-2">
             <ImageUpload label="Main Archive Image (Large)" value={local.imageMain} onChange={(v) => update("imageMain", v)} />
           </div>
@@ -874,6 +907,107 @@ function AboutLegacyEditor({ legacy, onSave, saving }: { legacy: any; onSave: (l
         className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
         <Save size={18} /> {saving ? "Saving..." : "Save Legacy Section"}
       </button>
+    </div>
+  );
+}
+
+// ─── About Excellence Editor ───
+function AboutExcellenceEditor({ excellence, onSave, saving }: { excellence: any[]; onSave: (e: any[]) => void; saving: boolean }) {
+  const [local, setLocal] = useState(excellence);
+
+  const addItem = () => setLocal([...local, { title: "", description: "", image: "" }]);
+  const removeItem = (idx: number) => setLocal(local.filter((_, i) => i !== idx));
+  const updateItem = (idx: number, field: string, value: string) => {
+    const updated = [...local];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocal(updated);
+  };
+
+  return (
+    <div className="space-y-6">
+      {local.map((item: any, idx: number) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative group">
+          <button onClick={() => removeItem(idx)} className="absolute top-6 right-6 p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all cursor-pointer">
+            <Trash size={16} />
+          </button>
+          <h4 className="text-lg font-playfair font-black text-primary mb-6">Excellence Block {idx + 1}</h4>
+          <div className="grid grid-cols-1 gap-6">
+            <InputField label="Title" value={item.title} onChange={(v) => updateItem(idx, "title", v)} />
+            <TextareaField label="Description" value={item.description} onChange={(v) => updateItem(idx, "description", v)} />
+            <ImageUpload label="Image" value={item.image} onChange={(v) => updateItem(idx, "image", v)} />
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-4">
+        <button onClick={addItem} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Block
+        </button>
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Excellence Section"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── About Values Scroll Editor ───
+function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScroll: any; onSave: (v: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(valuesScroll);
+
+  const updateField = (field: string, value: string) => setLocal({ ...local, [field]: value });
+  
+  const addFeature = () => {
+    setLocal({ ...local, features: [...(local.features || []), { title: "", image: "" }] });
+  };
+  
+  const removeFeature = (idx: number) => {
+    setLocal({ ...local, features: local.features.filter((_: any, i: number) => i !== idx) });
+  };
+  
+  const updateFeature = (idx: number, field: string, value: string) => {
+    const newFeatures = [...(local.features || [])];
+    newFeatures[idx] = { ...newFeatures[idx], [field]: value };
+    setLocal({ ...local, features: newFeatures });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Values Section Overview</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={local.heading} onChange={(v) => updateField("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => updateField("headingHighlight", v)} />
+          <div className="md:col-span-2">
+            <TextareaField label="Description" value={local.description} onChange={(v) => updateField("description", v)} />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-lg font-playfair font-black text-primary px-2">Features / Values</h4>
+        {(local.features || []).map((feature: any, idx: number) => (
+          <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group flex flex-col md:flex-row gap-6 items-center">
+            <button onClick={() => removeFeature(idx)} className="absolute top-4 right-4 p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all cursor-pointer">
+              <Trash size={16} />
+            </button>
+            <div className="flex-1 w-full grid grid-cols-1 gap-4">
+              <InputField label={`Feature ${idx + 1} Title`} value={feature.title} onChange={(v) => updateFeature(idx, "title", v)} />
+              <ImageUpload label="Background Image (Optional)" value={feature.image} onChange={(v) => updateFeature(idx, "image", v)} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-4">
+        <button onClick={addFeature} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Feature
+        </button>
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Values Section"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -969,6 +1103,7 @@ function AcademicsTab() {
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "programs", name: "Programs Section", icon: BookOpen },
     { id: "activities", name: "Activities Section", icon: Building2 },
+    { id: "teacherDuties", name: "Teacher Duty Plan", icon: Users },
   ];
 
   return (
@@ -980,9 +1115,8 @@ function AcademicsTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
@@ -1020,6 +1154,14 @@ function AcademicsTab() {
           saving={saving === "activities"}
         />
       )}
+
+      {activeSection === "teacherDuties" && content && (
+        <AcademicsTeacherDutiesEditor
+          teacherDuties={content.teacherDuties || []}
+          onSave={(teacherDuties: any[]) => saveSection("teacherDuties", { teacherDuties })}
+          saving={saving === "teacherDuties"}
+        />
+      )}
     </div>
   );
 }
@@ -1035,9 +1177,26 @@ function AcademicsHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField label="Heading" value={local.heading} onChange={(v) => update("heading", v)} />
           <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
-          <div className="md:col-span-2">
-            <ImageUpload label="Hero Side Image" value={local.image} onChange={(v) => update("image", v)} />
+
+          <div className="md:col-span-2 mt-4">
+            <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-4 border-b border-gray-100 pb-2">Hero Slider Images</label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[0, 1, 2].map((imgIdx) => (
+                <ImageUpload
+                  key={imgIdx}
+                  label={`Slider Image ${imgIdx + 1}`}
+                  value={(local.images || [])[imgIdx] || ""}
+                  onChange={(v) => {
+                    const newImages = [...(local.images || [])];
+                    while (newImages.length <= imgIdx) newImages.push("");
+                    newImages[imgIdx] = v;
+                    update("images", newImages);
+                  }}
+                />
+              ))}
+            </div>
           </div>
+
           <div className="md:col-span-2">
             <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
           </div>
@@ -1136,16 +1295,16 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
           <div className="grid grid-cols-1 gap-6">
             <InputField label="Title" value={activity.title} onChange={(v) => updateActivity(idx, "title", v)} />
             <TextareaField label="Description" value={activity.description} onChange={(v) => updateActivity(idx, "description", v)} />
-            
+
             <div>
               <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-4 border-b border-gray-100 pb-2">Activity Images (Exactly 3 required for slider)</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[0, 1, 2].map((imgIdx) => (
-                  <ImageUpload 
-                    key={imgIdx} 
-                    label={`Image ${imgIdx + 1}`} 
-                    value={(activity.images || [])[imgIdx] || ""} 
-                    onChange={(v) => updateActivityImage(idx, imgIdx, v)} 
+                  <ImageUpload
+                    key={imgIdx}
+                    label={`Image ${imgIdx + 1}`}
+                    value={(activity.images || [])[imgIdx] || ""}
+                    onChange={(v) => updateActivityImage(idx, imgIdx, v)}
                   />
                 ))}
               </div>
@@ -1160,6 +1319,54 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
         <button onClick={() => onSave(localActivities)} disabled={saving}
           className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
           <Save size={18} /> {saving ? "Saving..." : "Save Activities"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AcademicsTeacherDutiesEditor({ teacherDuties, onSave, saving }: { teacherDuties: any[]; onSave: (d: any[]) => void; saving: boolean }) {
+  const [localDuties, setLocalDuties] = useState(teacherDuties);
+
+  const updateDuty = (idx: number, field: string, value: any) => {
+    const updated = [...localDuties];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocalDuties(updated);
+  };
+
+  const addDuty = () => {
+    setLocalDuties([...localDuties, { category: "", duty: "", teachers: "", description: "" }]);
+  };
+
+  const removeDuty = (idx: number) => {
+    setLocalDuties(localDuties.filter((_: any, i: number) => i !== idx));
+  };
+
+  return (
+    <div className="space-y-6">
+      {localDuties.map((duty: any, idx: number) => (
+        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-playfair font-black text-primary">Duty {idx + 1}: {duty.duty || "New Duty"}</h4>
+            <button onClick={() => removeDuty(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InputField label="Category" value={duty.category} onChange={(v) => updateDuty(idx, "category", v)} />
+            <InputField label="Duty" value={duty.duty} onChange={(v) => updateDuty(idx, "duty", v)} />
+            <InputField label="Teachers" value={duty.teachers} onChange={(v) => updateDuty(idx, "teachers", v)} />
+            <div className="md:col-span-2">
+              <TextareaField label="Description" value={duty.description} onChange={(v) => updateDuty(idx, "description", v)} />
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-4">
+        <button onClick={addDuty} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
+          <Plus size={18} /> Add Duty
+        </button>
+        <button onClick={() => onSave(localDuties)} disabled={saving}
+          className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
+          <Save size={18} /> {saving ? "Saving..." : "Save Teacher Duties"}
         </button>
       </div>
     </div>
@@ -1309,17 +1516,16 @@ function BranchesTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
           );
         })}
-        <button 
+        <button
           onClick={async () => {
-            if(confirm("Are you sure you want to reset all Branch content to defaults? This cannot be undone.")) {
+            if (confirm("Are you sure you want to reset all Branch content to defaults? This cannot be undone.")) {
               await axiosInstance.delete("/api/branches-content");
               window.location.reload();
             }
@@ -1342,11 +1548,11 @@ function BranchesTab() {
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm col-span-full">
             <h4 className="text-sm font-black text-secondary uppercase tracking-widest mb-4">Hero Summary</h4>
             <div className="flex flex-col md:flex-row gap-6 items-center">
-               <div className="flex-1">
-                  <p className="text-xl font-playfair font-black text-primary">{currentHero.heading} {currentHero.headingHighlight}</p>
-                  <p className="text-sm text-gray-500 mt-2 italic">"{currentHero.description}"</p>
-               </div>
-               <button onClick={() => setActiveSection("hero")} className="px-6 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all">Edit Hero</button>
+              <div className="flex-1">
+                <p className="text-xl font-playfair font-black text-primary">{currentHero.heading} {currentHero.headingHighlight}</p>
+                <p className="text-sm text-gray-500 mt-2 italic">"{currentHero.description}"</p>
+              </div>
+              <button onClick={() => setActiveSection("hero")} className="px-6 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all">Edit Hero</button>
             </div>
           </div>
 
@@ -1375,7 +1581,7 @@ function BranchesTab() {
                 </div>
               </div>
               <div className="mt-auto">
-                <button 
+                <button
                   onClick={() => setActiveSection(block.key)}
                   className="w-full py-2.5 rounded-xl bg-gray-50 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all"
                 >
@@ -1384,25 +1590,25 @@ function BranchesTab() {
               </div>
             </div>
           ))}
-          
+
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm col-span-full">
-             <div className="flex items-center justify-between mb-6">
-                <h4 className="text-sm font-black text-secondary uppercase tracking-widest">Branches Overview List ({currentBranches.length})</h4>
-                <button onClick={() => setActiveSection("branches")} className="text-xs font-bold text-primary hover:underline">Edit List</button>
-             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {currentBranches.map((b: any, i: number) => (
-                  <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-primary/10 transition-all">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-200 shrink-0">
-                      {b.image ? <img src={b.image} className="w-full h-full object-cover" /> : <Building2 className="w-full h-full p-3 text-gray-400" />}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-primary truncate">{b.name}</p>
-                      <p className="text-[10px] text-gray-400 truncate">{b.location}</p>
-                    </div>
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-sm font-black text-secondary uppercase tracking-widest">Branches Overview List ({currentBranches.length})</h4>
+              <button onClick={() => setActiveSection("branches")} className="text-xs font-bold text-primary hover:underline">Edit List</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {currentBranches.map((b: any, i: number) => (
+                <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-primary/10 transition-all">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-200 shrink-0">
+                    {b.image ? <img src={b.image} className="w-full h-full object-cover" /> : <Building2 className="w-full h-full p-3 text-gray-400" />}
                   </div>
-                ))}
-             </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-primary truncate">{b.name}</p>
+                    <p className="text-[10px] text-gray-400 truncate">{b.location}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -1540,7 +1746,7 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
           <div className="md:col-span-2">
             <TextareaField label="Description" value={local.description || ""} onChange={(v) => update("description", v)} />
           </div>
-          
+
           <div className="md:col-span-2">
             <label className="block text-sm font-bold text-gray-700 mb-2">Image Sliders</label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
@@ -1648,17 +1854,16 @@ function FacultyTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
           );
         })}
-        <button 
+        <button
           onClick={async () => {
-            if(confirm("Are you sure you want to reset all Faculty content to defaults? This cannot be undone.")) {
+            if (confirm("Are you sure you want to reset all Faculty content to defaults? This cannot be undone.")) {
               await axiosInstance.delete("/api/faculty-content");
               window.location.reload();
             }
@@ -1839,8 +2044,8 @@ function MessagesTab() {
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-           <h3 className="text-2xl font-playfair font-black text-primary">Inquiries & Messages</h3>
-           <p className="text-sm text-gray-400 font-medium">Manage student and parent inquiries</p>
+          <h3 className="text-2xl font-playfair font-black text-primary">Inquiries & Messages</h3>
+          <p className="text-sm text-gray-400 font-medium">Manage student and parent inquiries</p>
         </div>
         <span className="text-sm font-bold text-gray-400 bg-gray-100 px-4 py-2 rounded-xl">{messages.length} Total</span>
       </div>
@@ -1849,7 +2054,7 @@ function MessagesTab() {
         {messages.length === 0 ? (
           <div className="bg-white rounded-3xl p-16 text-center border border-gray-100 shadow-sm">
             <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
-               <MessageSquare size={36} className="text-gray-200" />
+              <MessageSquare size={36} className="text-gray-200" />
             </div>
             <h3 className="text-xl font-playfair font-black text-primary mb-2">No messages yet</h3>
             <p className="text-gray-400 font-medium max-w-xs mx-auto">When parents or students contact you via the website, their messages will appear here.</p>
@@ -1872,11 +2077,11 @@ function MessagesTab() {
                   <p className="text-sm text-gray-500 leading-relaxed bg-gray-50 p-5 rounded-2xl border border-gray-100 italic">"{msg.message}"</p>
                 </div>
                 <div className="flex lg:flex-col gap-2 shrink-0">
-                  <button onClick={() => toggleRead(msg._id, msg.isRead)} 
+                  <button onClick={() => toggleRead(msg._id, msg.isRead)}
                     className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-xs cursor-pointer ${msg.isRead ? "bg-gray-50 text-gray-400 hover:bg-gray-100" : "bg-secondary text-primary hover:bg-secondary/90 shadow-sm"}`}>
                     {msg.isRead ? "Unread" : "Mark Read"}
                   </button>
-                  <button onClick={() => deleteMsg(msg._id)} 
+                  <button onClick={() => deleteMsg(msg._id)}
                     className="p-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer border border-red-100 flex items-center justify-center">
                     <Trash2 size={20} />
                   </button>
@@ -1946,17 +2151,16 @@ function LifeAtMGTab() {
             <button
               key={s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === s.id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+                }`}
             >
               <Icon size={18} /> {s.name}
             </button>
           );
         })}
-        <button 
+        <button
           onClick={async () => {
-            if(confirm("Reset Life@MG content to defaults?")) {
+            if (confirm("Reset Life@MG content to defaults?")) {
               await axiosInstance.delete("/api/life-at-mg");
               window.location.reload();
             }
@@ -1979,16 +2183,16 @@ function LifeAtMGTab() {
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Hero Section</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent({...content, hero: {...content.hero, heading: v}})} />
+              <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
               <div className="md:col-span-2">
-                <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent({...content, hero: {...content.hero, image: v}})} />
+                <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Description (Small Text)</label>
-                <textarea 
+                <textarea
                   className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-xs font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all h-32"
-                  value={content.hero.description} 
-                  onChange={(e) => setContent({...content, hero: {...content.hero, description: e.target.value}})} 
+                  value={content.hero.description}
+                  onChange={(e) => setContent({ ...content, hero: { ...content.hero, description: e.target.value } })}
                 />
               </div>
             </div>
@@ -2008,8 +2212,8 @@ function LifeAtMGTab() {
               {content.slider.map((img: string, idx: number) => (
                 <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                   <img src={img} className="w-full h-full object-cover" />
-                  <button 
-                    onClick={() => setContent({...content, slider: content.slider.filter((_:any, i:number)=>i!==idx)})}
+                  <button
+                    onClick={() => setContent({ ...content, slider: content.slider.filter((_: any, i: number) => i !== idx) })}
                     className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 size={14} />
@@ -2017,7 +2221,7 @@ function LifeAtMGTab() {
                 </div>
               ))}
             </div>
-            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent({...content, slider: [...content.slider, v]})} />
+            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent({ ...content, slider: [...content.slider, v] })} />
           </div>
           <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
             className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
@@ -2074,16 +2278,15 @@ function GalleryTab() {
           <button
             key={id}
             onClick={() => setActiveSection(id)}
-            className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              activeSection === id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-            }`}
+            className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
+              }`}
           >
             {id.toUpperCase()}
           </button>
         ))}
-        <button 
+        <button
           onClick={async () => {
-            if(confirm("Reset Gallery?")) {
+            if (confirm("Reset Gallery?")) {
               await axiosInstance.delete("/api/gallery");
               window.location.reload();
             }
@@ -2109,21 +2312,21 @@ function GalleryTab() {
               {content.categories.map((cat: string, idx: number) => (
                 <div key={idx} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
                   <span className="text-sm font-bold text-gray-600">{cat}</span>
-                  <button onClick={() => setContent({...content, categories: content.categories.filter((_:any, i:number)=>i!==idx)})} className="text-red-400 hover:text-red-600"><X size={14} /></button>
+                  <button onClick={() => setContent({ ...content, categories: content.categories.filter((_: any, i: number) => i !== idx) })} className="text-red-400 hover:text-red-600"><X size={14} /></button>
                 </div>
               ))}
             </div>
             <div className="flex gap-4">
-              <input 
+              <input
                 id="new-cat"
-                type="text" 
-                placeholder="Add new category..." 
-                className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/30 w-full max-w-xs" 
+                type="text"
+                placeholder="Add new category..."
+                className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/30 w-full max-w-xs"
                 onKeyDown={(e) => {
-                  if(e.key === "Enter") {
+                  if (e.key === "Enter") {
                     const val = (e.target as HTMLInputElement).value;
-                    if(val) {
-                      setContent({...content, categories: [...content.categories, val]});
+                    if (val) {
+                      setContent({ ...content, categories: [...content.categories, val] });
                       (e.target as HTMLInputElement).value = "";
                     }
                   }
@@ -2131,8 +2334,8 @@ function GalleryTab() {
               />
               <button onClick={() => {
                 const input = document.getElementById("new-cat") as HTMLInputElement;
-                if(input.value) {
-                  setContent({...content, categories: [...content.categories, input.value]});
+                if (input.value) {
+                  setContent({ ...content, categories: [...content.categories, input.value] });
                   input.value = "";
                 }
               }} className="px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm">Add</button>
@@ -2150,8 +2353,8 @@ function GalleryTab() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {content.images.map((img: any, idx: number) => (
               <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
-                <button 
-                  onClick={() => setContent({...content, images: content.images.filter((_:any, i:number)=>i!==idx)})}
+                <button
+                  onClick={() => setContent({ ...content, images: content.images.filter((_: any, i: number) => i !== idx) })}
                   className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <Trash2 size={16} />
@@ -2163,16 +2366,16 @@ function GalleryTab() {
                   <InputField label="Title" value={img.title} onChange={(v) => {
                     const updated = [...content.images];
                     updated[idx].title = v;
-                    setContent({...content, images: updated});
+                    setContent({ ...content, images: updated });
                   }} />
                   <div>
                     <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 ml-1">Category</label>
-                    <select 
-                      value={img.category} 
+                    <select
+                      value={img.category}
                       onChange={(e) => {
                         const updated = [...content.images];
                         updated[idx].category = e.target.value;
-                        setContent({...content, images: updated});
+                        setContent({ ...content, images: updated });
                       }}
                       className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30"
                     >
@@ -2185,7 +2388,7 @@ function GalleryTab() {
             <div className="bg-primary/5 rounded-3xl p-8 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-center">
               <Plus size={32} className="text-primary/30 mb-4" />
               <p className="text-sm font-bold text-primary mb-6">Add New Archive</p>
-              <ImageUpload label="Upload Image" value="" onChange={(v) => setContent({...content, images: [...content.images, { src: v, title: "New Memory", category: content.categories[0] || "General" }]})} />
+              <ImageUpload label="Upload Image" value="" onChange={(v) => setContent({ ...content, images: [...content.images, { src: v, title: "New Memory", category: content.categories[0] || "General" }] })} />
             </div>
           </div>
           <button onClick={() => saveSection("images", { images: content.images })} disabled={saving === "images"}
@@ -2226,7 +2429,7 @@ function EventsTab() {
   };
 
   const deleteEvent = async (id: string) => {
-    if(!confirm("Delete event?")) return;
+    if (!confirm("Delete event?")) return;
     try {
       const res = await axiosInstance.delete(`/api/events?id=${id}`);
       if (res.data.success) {
@@ -2241,7 +2444,7 @@ function EventsTab() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-playfair font-black text-primary">School Events</h3>
-        <button 
+        <button
           onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", description: "", image: "", category: "Upcoming" }, ...events])}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
         >
@@ -2253,49 +2456,49 @@ function EventsTab() {
         {events.map((event, idx) => (
           <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-8 hover:shadow-md transition-all">
             <div className="md:col-span-1">
-               <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
-                 const updated = [...events];
-                 updated[idx].image = v;
-                 setEvents(updated);
-               }} />
+              <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
+                const updated = [...events];
+                updated[idx].image = v;
+                setEvents(updated);
+              }} />
             </div>
             <div className="md:col-span-2 space-y-4">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField label="Title" value={event.title} onChange={(v) => {
-                    const updated = [...events];
-                    updated[idx].title = v;
-                    setEvents(updated);
-                  }} />
-                  <InputField label="Date" value={event.date?.split('T')[0]} onChange={(v) => {
-                    const updated = [...events];
-                    updated[idx].date = v;
-                    setEvents(updated);
-                  }} />
-                  <InputField label="Location" value={event.location} onChange={(v) => {
-                    const updated = [...events];
-                    updated[idx].location = v;
-                    setEvents(updated);
-                  }} />
-                  <InputField label="Category" value={event.category} onChange={(v) => {
-                    const updated = [...events];
-                    updated[idx].category = v;
-                    setEvents(updated);
-                  }} />
-               </div>
-               <TextareaField label="Description" value={event.description} onChange={(v) => {
-                 const updated = [...events];
-                 updated[idx].description = v;
-                 setEvents(updated);
-               }} />
-               <div className="flex gap-4 pt-4">
-                  <button onClick={() => saveEvent(event)} disabled={saving === (event._id || "new")}
-                    className="flex-1 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-all shadow-lg">
-                    {saving === (event._id || "new") ? "Saving..." : "Persist Event"}
-                  </button>
-                  <button onClick={() => deleteEvent(event._id)} className="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
-                    <Trash2 size={20} />
-                  </button>
-               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField label="Title" value={event.title} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].title = v;
+                  setEvents(updated);
+                }} />
+                <InputField label="Date" value={event.date?.split('T')[0]} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].date = v;
+                  setEvents(updated);
+                }} />
+                <InputField label="Location" value={event.location} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].location = v;
+                  setEvents(updated);
+                }} />
+                <InputField label="Category" value={event.category} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].category = v;
+                  setEvents(updated);
+                }} />
+              </div>
+              <TextareaField label="Description" value={event.description} onChange={(v) => {
+                const updated = [...events];
+                updated[idx].description = v;
+                setEvents(updated);
+              }} />
+              <div className="flex gap-4 pt-4">
+                <button onClick={() => saveEvent(event)} disabled={saving === (event._id || "new")}
+                  className="flex-1 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-all shadow-lg">
+                  {saving === (event._id || "new") ? "Saving..." : "Persist Event"}
+                </button>
+                <button onClick={() => deleteEvent(event._id)} className="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
+                  <Trash2 size={20} />
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -2320,7 +2523,7 @@ function StudentsTab() {
   const saveStudent = async (student: any) => {
     setSaving(student._id || "new");
     try {
-      const res = student._id 
+      const res = student._id
         ? await axiosInstance.put("/api/students", student)
         : await axiosInstance.post("/api/students", student);
       if (res.data.success) fetchStudents();
@@ -2329,7 +2532,7 @@ function StudentsTab() {
   };
 
   const deleteStudent = async (id: string) => {
-    if(!confirm("Delete student record?")) return;
+    if (!confirm("Delete student record?")) return;
     try {
       await axiosInstance.delete(`/api/students?id=${id}`);
       fetchStudents();
@@ -2342,7 +2545,7 @@ function StudentsTab() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-playfair font-black text-primary">Student Management</h3>
-        <button 
+        <button
           onClick={() => setStudents([{ name: "New Student", grade: "Std 1", rollNo: "", section: "A", admissionNo: "", image: "" }, ...students])}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
         >
@@ -2353,48 +2556,48 @@ function StudentsTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {students.map((std, idx) => (
           <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
-             <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
-                   {std.image ? <img src={std.image} className="w-full h-full object-cover" /> : <Users className="w-full h-full p-4 text-gray-200" />}
-                </div>
-                <div className="min-w-0">
-                   <p className="text-lg font-black text-primary truncate">{std.name}</p>
-                   <p className="text-xs font-bold text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
-                </div>
-             </div>
-             <div className="space-y-4">
-                <InputField label="Full Name" value={std.name} onChange={(v) => {
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
+                {std.image ? <img src={std.image} className="w-full h-full object-cover" /> : <Users className="w-full h-full p-4 text-gray-200" />}
+              </div>
+              <div className="min-w-0">
+                <p className="text-lg font-black text-primary truncate">{std.name}</p>
+                <p className="text-xs font-bold text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <InputField label="Full Name" value={std.name} onChange={(v) => {
+                const updated = [...students];
+                updated[idx].name = v;
+                setStudents(updated);
+              }} />
+              <div className="grid grid-cols-2 gap-4">
+                <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
                   const updated = [...students];
-                  updated[idx].name = v;
+                  updated[idx].rollNo = v;
                   setStudents(updated);
                 }} />
-                <div className="grid grid-cols-2 gap-4">
-                   <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
-                     const updated = [...students];
-                     updated[idx].rollNo = v;
-                     setStudents(updated);
-                   }} />
-                   <InputField label="Admission No" value={std.admissionNo} onChange={(v) => {
-                     const updated = [...students];
-                     updated[idx].admissionNo = v;
-                     setStudents(updated);
-                   }} />
-                </div>
-                <ImageUpload label="Profile Photo" value={std.image} onChange={(v) => {
+                <InputField label="Admission No" value={std.admissionNo} onChange={(v) => {
                   const updated = [...students];
-                  updated[idx].image = v;
+                  updated[idx].admissionNo = v;
                   setStudents(updated);
                 }} />
-                <div className="flex gap-2 pt-2">
-                   <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
-                     className="flex-1 bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 shadow-sm transition-all">
-                     {saving === (std._id || "new") ? "..." : "Save Record"}
-                   </button>
-                   <button onClick={() => deleteStudent(std._id)} className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
-                     <Trash2 size={16} />
-                   </button>
-                </div>
-             </div>
+              </div>
+              <ImageUpload label="Profile Photo" value={std.image} onChange={(v) => {
+                const updated = [...students];
+                updated[idx].image = v;
+                setStudents(updated);
+              }} />
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
+                  className="flex-1 bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 shadow-sm transition-all">
+                  {saving === (std._id || "new") ? "..." : "Save Record"}
+                </button>
+                <button onClick={() => deleteStudent(std._id)} className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

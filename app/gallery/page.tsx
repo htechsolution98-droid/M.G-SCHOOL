@@ -53,7 +53,7 @@ const GalleryPage = () => {
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-8 tracking-tighter"
+            className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-8 tracking-tighter"
           >
             Visual <br/><span className="text-secondary italic">Chronicles.</span>
           </motion.h1>
@@ -136,7 +136,7 @@ const GalleryPage = () => {
                  <div className="p-4 bg-secondary text-primary rounded-2xl w-max mb-8 shadow-xl">
                     <Sparkles size={32} />
                  </div>
-                 <h2 className="text-5xl md:text-8xl font-playfair font-black text-primary leading-tight mb-8 tracking-tighter uppercase">Request High-Res <br/><span className="italic text-secondary">Archives.</span></h2>
+                 <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary leading-tight mb-8 tracking-tighter uppercase">Request High-Res <br/><span className="italic text-secondary">Archives.</span></h2>
                  <p className="text-xl text-gray-500 font-light leading-relaxed mb-10">Historical moments and event photography are available for parents and alumni via our portal.</p>
                  <button className="bg-primary text-white px-12 py-5 rounded-[2rem] font-bold shadow-2xl hover:bg-secondary hover:text-primary transition-all active:scale-95">Access Alumni Portal</button>
               </motion.div>

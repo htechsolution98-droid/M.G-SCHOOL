@@ -85,62 +85,65 @@ const Academics = () => {
 
   return (
     <div className="pt-24 min-h-screen mb-32">
-      {/* Dynamic Header - Split UI */}
-      <section className="bg-slate-50 py-20 md:py-32 overflow-hidden relative">
-        <div className="absolute inset-0 bg-pattern opacity-10" />
-        <div className="container-custom relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16 md:gap-24">
-            {/* Left Content */}
-            <div className="lg:w-1/2 text-left">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="p-4 bg-primary text-secondary rounded-2xl mb-10 shadow-2xl inline-block"
-              >
-                <Sparkles size={40} />
-              </motion.div>
-              <motion.h1 
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter"
-              >
-                {hero.heading} <br/><span className="text-secondary italic">{hero.headingHighlight}</span>
-              </motion.h1>
-              <motion.p 
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-xl md:text-2xl text-gray-400 font-light max-w-xl leading-relaxed"
-              >
-                {hero.description}
-              </motion.p>
-            </div>
+      {/* Dynamic Header - Full Background Slider UI */}
+      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden mt-[-6rem]">
+        {/* Background Slider */}
+        <div className="absolute inset-0 z-0">
+          <Swiper
+            modules={[Autoplay, EffectFade]}
+            effect="fade"
+            speed={1500}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            loop
+            className="w-full h-full"
+          >
+            {((hero.images && hero.images.length > 0) ? hero.images : [hero.image]).map((img: string, idx: number) => (
+              img && (
+                <SwiperSlide key={idx}>
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={img}
+                      alt={`Academics Hero ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={idx === 0}
+                    />
+                    <div className="absolute inset-0 bg-black/60" />
+                  </div>
+                </SwiperSlide>
+              )
+            ))}
+          </Swiper>
+        </div>
 
-            {/* Right Image */}
-            <div className="lg:w-1/2 relative">
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="relative z-10 glass p-4 rounded-[4rem] shadow-2xl"
-              >
-                <Image
-                  src={hero.image}
-                  alt="Academics"
-                  width={800}
-                  height={600}
-                  className="rounded-[3.5rem] object-cover h-[400px] md:h-[500px] w-full"
-                  priority
-                />
-                <div className="absolute -bottom-6 -right-6 bg-secondary p-6 rounded-[2rem] shadow-3xl hidden md:block">
-                  <div className="text-primary font-black text-xs uppercase tracking-widest">Enrollment Open</div>
-                  <div className="text-2xl font-playfair font-black text-primary">Session 2024-25</div>
-                </div>
-              </motion.div>
-              <div className="absolute -top-10 -right-10 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -z-10" />
-              <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
-            </div>
-          </div>
+        {/* Foreground Content */}
+        <div className="container-custom relative z-10 text-center text-white">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="p-4 bg-primary/80 backdrop-blur-sm text-secondary rounded-2xl mb-8 inline-block shadow-2xl"
+          >
+            <Sparkles size={40} />
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black leading-tight mb-8 tracking-tighter drop-shadow-xl"
+          >
+            {hero.heading} <br/><span className="text-secondary italic">{hero.headingHighlight}</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-xl md:text-2xl text-gray-200 font-light max-w-3xl mx-auto leading-relaxed drop-shadow-md"
+          >
+            {hero.description}
+          </motion.p>
         </div>
       </section>
 
@@ -160,7 +163,7 @@ const Academics = () => {
                   <div className="h-px w-20 bg-gray-200" />
                   <span className="text-xs uppercase tracking-[0.4em] font-black text-primary/40">{section.level}</span>
                 </div>
-                <h2 className="text-5xl md:text-7xl font-playfair font-black mb-8 leading-tight">{section.title}</h2>
+                <h2 className="text-3xl md:text-5xl font-playfair font-black mb-8 leading-tight">{section.title}</h2>
                 <div className="text-secondary text-lg font-bold uppercase tracking-widest mb-10">{section.tagline}</div>
                 <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
                   {section.description}
@@ -224,7 +227,7 @@ const Academics = () => {
                 <SwiperSlide key={idx}>
                   <div className="bg-white rounded-[4rem] p-10 md:p-16 shadow-xl border border-gray-100 mx-2 mb-10">
                     <div className="text-center mb-12">
-                      <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
+                      <h3 className="text-4xl md:text-4xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
                       <p className="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">{activity.description}</p>
                     </div>
                     
@@ -265,6 +268,52 @@ const Academics = () => {
         </div>
       </section>
 
+      {/* Teacher Duty Distribution Plan */}
+      {content?.teacherDuties && content.teacherDuties.length > 0 && (
+        <section className="section-padding container-custom mt-20">
+          <div className="mb-16 text-center">
+             <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-4">Notice / Updates</h2>
+             <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary">Teacher Duty Plan 2026–27</h3>
+          </div>
+          <div className="space-y-12">
+             {Object.entries(
+                content.teacherDuties.reduce((acc: any, duty: any) => {
+                   const cat = duty.category || "General Duties";
+                   if (!acc[cat]) acc[cat] = [];
+                   acc[cat].push(duty);
+                   return acc;
+                }, {})
+             ).map(([category, duties]: any, catIdx) => (
+                <div key={catIdx} className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100">
+                   <h4 className="text-2xl font-playfair font-black text-primary mb-8 border-b border-gray-100 pb-4">{category}</h4>
+                   <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                         <thead>
+                            <tr className="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-gray-100">
+                               <th className="pb-4 px-4 font-black w-16 text-center">Sr.</th>
+                               <th className="pb-4 px-4 font-black">Duty</th>
+                               <th className="pb-4 px-4 font-black">Teachers</th>
+                               <th className="pb-4 px-4 font-black">Responsibility Description</th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            {duties.map((duty: any, idx: number) => (
+                               <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors">
+                                  <td className="py-6 px-4 text-center font-bold text-gray-400">{idx + 1}</td>
+                                  <td className="py-6 px-4 font-bold text-primary whitespace-nowrap">{duty.duty}</td>
+                                  <td className="py-6 px-4 text-gray-600 font-medium whitespace-nowrap">{duty.teachers}</td>
+                                  <td className="py-6 px-4 text-gray-500 italic">{duty.description}</td>
+                               </tr>
+                            ))}
+                         </tbody>
+                      </table>
+                   </div>
+                </div>
+             ))}
+          </div>
+        </section>
+      )}
+
       {/* Advanced Call to Action */}
       <section className="section-padding overflow-hidden">
         <div className="container-custom">
@@ -275,7 +324,7 @@ const Academics = () => {
             className="bg-primary p-20 md:p-32 rounded-[6rem] text-center text-white relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-            <h2 className="text-5xl md:text-8xl font-playfair font-black mb-12 relative z-10">Unlocking <span className="text-secondary italic">Potential.</span></h2>
+            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-12 relative z-10">Unlocking <span className="text-secondary italic">Potential.</span></h2>
             <p className="text-2xl text-white/50 mb-16 max-w-2xl mx-auto font-light relative z-10">Admissions for the upcoming session are strictly by evaluation. Reserve your slot now.</p>
             <div className="flex flex-wrap justify-center gap-8 relative z-10">
               <button className="bg-white text-primary px-16 py-6 rounded-[2.5rem] font-black hover:bg-secondary transition-all shadow-2xl active:scale-95">Download Prospectus</button>

@@ -22,7 +22,7 @@ const SectionTitle = ({ title, subtitle, centered = true }: SectionTitleProps) =
         <span className="text-xs uppercase tracking-[0.5em] font-black text-primary/40">Excellence in Education</span>
         <div className="h-0.5 w-12 bg-secondary rounded-full" />
       </div>
-      <h2 className="text-5xl md:text-8xl font-playfair font-black text-primary mb-10 leading-[0.9] tracking-tighter uppercase underline decoration-secondary/20 underline-offset-[16px]">
+      <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary mb-10 leading-[0.9] tracking-tighter uppercase underline decoration-secondary/20 underline-offset-[16px]">
         {title}
       </h2>
       {subtitle && (

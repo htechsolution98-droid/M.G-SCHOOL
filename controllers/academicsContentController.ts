@@ -4,6 +4,7 @@ import {
   updateAcademicsHero,
   updateAcademicsPrograms,
   updateAcademicsActivities,
+  updateAcademicsTeacherDuties,
 } from "@/services/academicsContentService";
 
 export async function handleGetAcademicsContent() {
@@ -31,6 +32,9 @@ export async function handleUpdateAcademicsContent(req: NextRequest) {
         break;
       case "activities":
         content = await updateAcademicsActivities(sectionData.activities);
+        break;
+      case "teacherDuties":
+        content = await updateAcademicsTeacherDuties(sectionData.teacherDuties);
         break;
       default:
         return NextResponse.json({ success: false, error: "Invalid section" }, { status: 400 });
