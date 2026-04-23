@@ -14,6 +14,8 @@ import 'swiper/css/pagination';
 import { cn } from "@/lib/utils";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import ReadMore from "@/components/ReadMore";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 const Academics = () => {
   const [content, setContent] = useState<any>(null);
@@ -133,17 +135,17 @@ const Academics = () => {
           >
             <Sparkles size={40} />
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black leading-tight mb-8 tracking-tighter drop-shadow-xl"
           >
-            {hero.heading} <br/><span className="text-secondary italic">{hero.headingHighlight}</span>
+            {hero.heading} <br /><span className="text-secondary italic">{hero.headingHighlight}</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
@@ -151,6 +153,7 @@ const Academics = () => {
           >
             {hero.description}
           </motion.p>
+          <HeroAnnouncement />
         </div>
       </section>
 
@@ -159,7 +162,7 @@ const Academics = () => {
         <div className="container-custom space-y-32 md:space-y-48">
           {sections.map((section: any, idx: number) => (
             <div key={idx} className={`flex flex-col ${idx % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-20 items-center`}>
-              <motion.div 
+              <motion.div
                 initial={{ x: idx % 2 === 1 ? 50 : -50, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
                 viewport={{ once: true }}
@@ -173,13 +176,13 @@ const Academics = () => {
                 <h2 className="text-3xl md:text-5xl font-playfair font-black mb-8 leading-tight">{section.title}</h2>
                 <div className="text-secondary text-lg font-bold uppercase tracking-widest mb-10">{section.tagline}</div>
                 <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
-                  {section.description}
+                  <ReadMore text={section.description} limit={180} />
                 </p>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {(section.features || []).map((feature: string, fIdx: number) => (
-                    <motion.div 
-                      key={fIdx} 
+                    <motion.div
+                      key={fIdx}
                       whileHover={{ x: 10, backgroundColor: "#1E3A8A", color: "white" }}
                       className="flex items-center gap-4 bg-slate-50 p-6 rounded-[2rem] transition-all cursor-default border border-gray-100 group"
                     >
@@ -190,7 +193,7 @@ const Academics = () => {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
@@ -198,11 +201,11 @@ const Academics = () => {
               >
                 <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color || "from-primary/10 to-transparent")} />
                 <div className="relative overflow-hidden rounded-[5rem] shadow-3xl">
-                  <Image 
-                    src={section.image} 
-                    alt={section.title} 
-                    width={800} 
-                    height={1000} 
+                  <Image
+                    src={section.image}
+                    alt={section.title}
+                    width={800}
+                    height={1000}
                     className="object-cover h-[700px] w-full group-hover:scale-110 transition-transform duration-1000"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
@@ -216,11 +219,11 @@ const Academics = () => {
       {/* Dynamic Activities Section */}
       <section className="section-padding bg-slate-50 mt-32 rounded-[5rem] border border-gray-100">
         <div className="container-custom">
-          <SectionTitle 
-            title="Beyond the Classroom" 
+          <SectionTitle
+            title="Beyond the Classroom"
             subtitle="Engaging activities that foster creativity, leadership, and holistic development."
           />
-          
+
           <div className="mt-20 px-4 md:px-12 relative">
             <Swiper
               modules={[Autoplay, Navigation, Pagination]}
@@ -234,10 +237,12 @@ const Academics = () => {
                 <SwiperSlide key={idx}>
                   <div className="bg-white rounded-[4rem] p-10 md:p-16 shadow-xl border border-gray-100 mx-2 mb-10">
                     <div className="text-center mb-12">
-                      <h3 className="text-4xl md:text-4xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
-                      <p className="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">{activity.description}</p>
+                      <h3 className="text-4xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
+                      <p className="text-lg md:text-xl text-gray-500 leading-relaxed max-w-3xl mx-auto">
+                        <ReadMore text={activity.description} limit={150} />
+                      </p>
                     </div>
-                    
+
                     {activity.images && activity.images.length > 0 && (
                       <div className="rounded-[3rem] overflow-hidden shadow-lg">
                         <Swiper
@@ -253,7 +258,7 @@ const Academics = () => {
                             return (
                               <SwiperSlide key={imgIdx}>
                                 <div className="relative w-full h-full">
-                                  <Image 
+                                  <Image
                                     src={img}
                                     alt={`${activity.title} image ${imgIdx + 1}`}
                                     fill
@@ -279,44 +284,44 @@ const Academics = () => {
       {content?.teacherDuties && content.teacherDuties.length > 0 && (
         <section className="section-padding container-custom mt-20">
           <div className="mb-16 text-center">
-             <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-4">Notice / Updates</h2>
-             <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary">Teacher Duty Plan 2026–27</h3>
+            <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-4">Notice / Updates</h2>
+            <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary">Teacher Duty Plan 2026–27</h3>
           </div>
           <div className="space-y-12">
-             {Object.entries(
-                content.teacherDuties.reduce((acc: any, duty: any) => {
-                   const cat = duty.category || "General Duties";
-                   if (!acc[cat]) acc[cat] = [];
-                   acc[cat].push(duty);
-                   return acc;
-                }, {})
-             ).map(([category, duties]: any, catIdx) => (
-                <div key={catIdx} className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100">
-                   <h4 className="text-2xl font-playfair font-black text-primary mb-8 border-b border-gray-100 pb-4">{category}</h4>
-                   <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
-                         <thead>
-                            <tr className="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-gray-100">
-                               <th className="pb-4 px-4 font-black w-16 text-center">Sr.</th>
-                               <th className="pb-4 px-4 font-black">Duty</th>
-                               <th className="pb-4 px-4 font-black">Teachers</th>
-                               <th className="pb-4 px-4 font-black">Responsibility Description</th>
-                            </tr>
-                         </thead>
-                         <tbody>
-                            {duties.map((duty: any, idx: number) => (
-                               <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors">
-                                  <td className="py-6 px-4 text-center font-bold text-gray-400">{idx + 1}</td>
-                                  <td className="py-6 px-4 font-bold text-primary whitespace-nowrap">{duty.duty}</td>
-                                  <td className="py-6 px-4 text-gray-600 font-medium whitespace-nowrap">{duty.teachers}</td>
-                                  <td className="py-6 px-4 text-gray-500 italic">{duty.description}</td>
-                               </tr>
-                            ))}
-                         </tbody>
-                      </table>
-                   </div>
+            {Object.entries(
+              content.teacherDuties.reduce((acc: any, duty: any) => {
+                const cat = duty.category || "General Duties";
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(duty);
+                return acc;
+              }, {})
+            ).map(([category, duties]: any, catIdx) => (
+              <div key={catIdx} className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100">
+                <h4 className="text-2xl font-playfair font-black text-primary mb-8 border-b border-gray-100 pb-4">{category}</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-gray-100">
+                        <th className="pb-4 px-4 font-black w-16 text-center">Sr.</th>
+                        <th className="pb-4 px-4 font-black">Duty</th>
+                        <th className="pb-4 px-4 font-black">Teachers</th>
+                        <th className="pb-4 px-4 font-black">Responsibility Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {duties.map((duty: any, idx: number) => (
+                        <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors">
+                          <td className="py-6 px-4 text-center font-bold text-gray-400">{idx + 1}</td>
+                          <td className="py-6 px-4 font-bold text-primary whitespace-nowrap">{duty.duty}</td>
+                          <td className="py-6 px-4 text-gray-600 font-medium whitespace-nowrap">{duty.teachers}</td>
+                          <td className="py-6 px-4 text-gray-500 italic">{duty.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-             ))}
+              </div>
+            ))}
           </div>
         </section>
       )}
@@ -324,7 +329,7 @@ const Academics = () => {
       {/* Advanced Call to Action */}
       <section className="section-padding overflow-hidden">
         <div className="container-custom">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -345,3 +350,28 @@ const Academics = () => {
 };
 
 export default Academics;
+
+const CHAR_LIMIT = 150;
+
+function ActivityDescription({ description }: { description: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = description && description.length > CHAR_LIMIT;
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <p className="text-lg md:text-xl text-gray-500 leading-relaxed">
+        {isLong && !expanded
+          ? description.slice(0, CHAR_LIMIT) + "…"
+          : description}
+      </p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-4 inline-flex items-center gap-2 text-sm font-black text-primary uppercase tracking-widest hover:text-secondary transition-colors cursor-pointer"
+        >
+          {expanded ? "Read Less ▲" : "Read More ▼"}
+        </button>
+      )}
+    </div>
+  );
+}

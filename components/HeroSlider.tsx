@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 // Import Swiper styles
 import "swiper/css";
@@ -156,6 +157,9 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
           </button>
         </div>
       </Swiper>
+
+      {/* Announcement Overlay */}
+      <HeroAnnouncement />
 
       {/* Scroll Down Indicator */}
       <motion.div

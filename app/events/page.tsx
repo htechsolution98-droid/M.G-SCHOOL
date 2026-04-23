@@ -7,6 +7,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import ReadMore from "@/components/ReadMore";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -69,6 +71,7 @@ const EventsPage = () => {
                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -z-10" />
             </motion.div>
           </div>
+          <HeroAnnouncement />
         </div>
       </section>
 
@@ -121,7 +124,7 @@ const EventsPage = () => {
                    </header>
 
                    <p className="text-2xl text-gray-500 font-light leading-relaxed mb-12 italic">
-                      "{event.description}"
+                       "<ReadMore text={event.description} limit={160} />"
                    </p>
 
                    <button className="group flex items-center gap-6 w-max">

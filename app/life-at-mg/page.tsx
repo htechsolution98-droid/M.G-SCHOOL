@@ -6,6 +6,8 @@ import Image from "next/image";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import { Sparkles, Heart, Star, Camera } from "lucide-react";
+import ReadMore from "@/components/ReadMore";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 const LifeAtMGPage = () => {
   const [content, setContent] = useState<any>(null);
@@ -54,10 +56,11 @@ const LifeAtMGPage = () => {
               {hero.heading}
             </h1>
             <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed italic opacity-90">
-              "{hero.description}"
+              "<ReadMore text={hero.description} limit={130} />"
             </p>
           </motion.div>
         </div>
+        <HeroAnnouncement />
       </section>
 
       {/* Modern Slider Showcase */}

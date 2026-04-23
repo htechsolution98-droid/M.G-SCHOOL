@@ -111,3 +111,12 @@
 .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.4);
 }
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}

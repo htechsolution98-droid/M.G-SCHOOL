@@ -28,7 +28,8 @@ import {
   Trash2,
   Trash,
   Edit3,
-  Star
+  Star,
+  Megaphone
 } from "lucide-react";
 
 // ─── Sidebar Items ───
@@ -45,6 +46,7 @@ const sidebarItems = [
   { id: "events", name: "Events", icon: Calendar },
   { id: "messages", name: "Messages", icon: MessageSquare },
   { id: "enrollment", name: "Enrollment", icon: BookOpen },
+  { id: "announcement", name: "Announcement", icon: Megaphone },
   { id: "settings", name: "Settings", icon: Settings },
 ];
 
@@ -100,8 +102,8 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* ─── Sidebar Desktop ─── */}
-      <aside className="hidden lg:flex flex-col w-72 bg-primary min-h-screen fixed left-0 top-0 z-40">
-        <div className="p-8 border-b border-white/10 bg-white/10">
+      <aside className="hidden lg:flex flex-col w-72 bg-primary h-screen fixed left-0 top-0 z-40">
+        <div className="p-8 border-b border-white/10 bg-white/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="bg-white p-1 rounded-xl shadow-lg">
               <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
@@ -112,7 +114,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar pb-2">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -140,8 +142,8 @@ export default function AdminDashboard() {
         {sidebarOpen && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" />
-            <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary min-h-screen z-50 lg:hidden flex flex-col">
-              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/10">
+            <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary h-screen z-50 lg:hidden flex flex-col">
+              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/10 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="bg-white p-1 rounded-xl shadow-lg">
                     <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-8 h-8 object-contain" />
@@ -150,7 +152,7 @@ export default function AdminDashboard() {
                 </div>
                 <button onClick={() => setSidebarOpen(false)} className="text-white/50 cursor-pointer"><X size={24} /></button>
               </div>
-              <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
+              <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar pb-2">
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -205,6 +207,7 @@ export default function AdminDashboard() {
           {activeTab === "events" && <EventsTab />}
           {activeTab === "messages" && <MessagesTab />}
           {activeTab === "enrollment" && <EnrollmentTab />}
+          {activeTab === "announcement" && <AnnouncementTab />}
           {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
         </div>
       </main>
@@ -960,15 +963,15 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
   const [local, setLocal] = useState(valuesScroll);
 
   const updateField = (field: string, value: string) => setLocal({ ...local, [field]: value });
-  
+
   const addFeature = () => {
     setLocal({ ...local, features: [...(local.features || []), { title: "", image: "" }] });
   };
-  
+
   const removeFeature = (idx: number) => {
     setLocal({ ...local, features: local.features.filter((_: any, i: number) => i !== idx) });
   };
-  
+
   const updateFeature = (idx: number, field: string, value: string) => {
     const newFeatures = [...(local.features || [])];
     newFeatures[idx] = { ...newFeatures[idx], [field]: value };
@@ -2671,7 +2674,7 @@ function EnrollmentTab() {
       ]);
       if (configRes.data.success) setConfig(configRes.data.config);
       if (subRes.data.success) setSubmissions(subRes.data.submissions);
-    } catch (e) {}
+    } catch (e) { }
     setLoading(false);
   };
 
@@ -2695,7 +2698,7 @@ function EnrollmentTab() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  if (loading) return <div className="py-32 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full"/></div>;
+  if (loading) return <div className="py-32 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full" /></div>;
 
   return (
     <div className="space-y-8">
@@ -2743,9 +2746,9 @@ function EnrollmentFormBuilder({ config, setConfig, onSave, saving }: any) {
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h4 className="text-lg font-playfair font-black text-primary">Dynamic Fields</h4>
-          <button onClick={addField} className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center gap-2"><Plus size={14}/> Add Field</button>
+          <button onClick={addField} className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center gap-2"><Plus size={14} /> Add Field</button>
         </div>
-        
+
         <div className="space-y-4">
           {config.fields.map((field: any, idx: number) => (
             <div key={idx} className="p-4 border border-gray-100 rounded-2xl bg-gray-50 flex flex-col md:flex-row gap-4 items-start md:items-center">
@@ -2779,7 +2782,7 @@ function EnrollmentFormBuilder({ config, setConfig, onSave, saving }: any) {
           {config.fields.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No fields added yet.</p>}
         </div>
       </div>
-      
+
       <button onClick={onSave} disabled={saving} className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer">
         <Save size={18} /> {saving ? "Saving..." : "Save Form Config"}
       </button>
@@ -2810,3 +2813,116 @@ function EnrollmentSubmissionsList({ submissions }: { submissions: any[] }) {
     </div>
   );
 }
+
+// ─── Announcement Tab ───
+function AnnouncementTab() {
+  const defaultData = { text: "", isActive: false, bgColor: "#F59E0B", textColor: "#1E3A8A", link: "", linkLabel: "Learn More" };
+  const [data, setData] = useState<any>(defaultData);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    axiosInstance.get("/api/announcement")
+      .then((res) => { if (res.data.success) setData(res.data.announcement); })
+      .catch(() => { });
+  }, []);
+
+  const save = async () => {
+    setSaving(true);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/announcement", data);
+      if (res.data.success) setMessage("Saved successfully!");
+      else setMessage("Error saving.");
+    } catch { setMessage("Failed to save."); }
+    setSaving(false);
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
+        <h4 className="text-lg font-playfair font-black text-primary">Global Announcement Banner</h4>
+        <p className="text-sm text-gray-400">This banner appears on every page of the website. Enable it to show your announcement to all visitors in real time.</p>
+
+        {/* Active toggle */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setData({ ...data, isActive: !data.isActive })}
+            className={`relative w-14 h-7 rounded-full transition-colors cursor-pointer ${data.isActive ? "bg-primary" : "bg-gray-200"}`}
+          >
+            <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${data.isActive ? "translate-x-7" : "translate-x-0.5"}`} />
+          </button>
+          <span className={`font-black text-sm uppercase tracking-widest ${data.isActive ? "text-primary" : "text-gray-400"}`}>
+            {data.isActive ? "Banner Active" : "Banner Inactive"}
+          </span>
+        </div>
+
+        {/* Announcement text */}
+        <div>
+          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Announcement Text</label>
+          <textarea
+            value={data.text}
+            onChange={(e) => setData({ ...data, text: e.target.value })}
+            rows={3}
+            placeholder="e.g. 🎉 Admissions open for 2026-27! Limited seats available — Apply now."
+            className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
+          />
+        </div>
+
+        {/* Colors */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Background Color</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={data.bgColor} onChange={(e) => setData({ ...data, bgColor: e.target.value })} className="w-12 h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              <span className="text-sm font-mono text-gray-500">{data.bgColor}</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Text Color</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={data.textColor} onChange={(e) => setData({ ...data, textColor: e.target.value })} className="w-12 h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              <span className="text-sm font-mono text-gray-500">{data.textColor}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Optional link */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Link URL (optional)</label>
+            <input type="text" value={data.link} onChange={(e) => setData({ ...data, link: e.target.value })} placeholder="e.g. /enroll" className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+          </div>
+          <div>
+            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Link Label</label>
+            <input type="text" value={data.linkLabel} onChange={(e) => setData({ ...data, linkLabel: e.target.value })} placeholder="e.g. Apply Now" className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+          </div>
+        </div>
+
+        {/* Preview */}
+        {data.text && (
+          <div>
+            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Preview</label>
+            <div className="rounded-2xl overflow-hidden flex items-center gap-3 px-4 py-3" style={{ backgroundColor: data.bgColor }}>
+              <Megaphone size={16} style={{ color: data.textColor }} />
+              <span className="text-sm font-bold truncate" style={{ color: data.textColor }}>{data.text}</span>
+              {data.link && <span className="text-sm font-black underline ml-2 shrink-0" style={{ color: data.textColor }}>{data.linkLabel} →</span>}
+            </div>
+          </div>
+        )}
+
+        {message && <p className={`text-sm font-bold ${message.startsWith("Error") || message.startsWith("Failed") ? "text-red-500" : "text-emerald-600"}`}>{message}</p>}
+
+        <button
+          onClick={save}
+          disabled={saving}
+          className="flex items-center gap-3 bg-primary text-white px-8 py-3 rounded-2xl font-bold hover:bg-secondary hover:text-primary transition-all cursor-pointer disabled:opacity-60"
+        >
+          <Save size={18} /> {saving ? "Saving…" : "Save Announcement"}
+        </button>
+      </div>
+    </div>
+  );
+}
+

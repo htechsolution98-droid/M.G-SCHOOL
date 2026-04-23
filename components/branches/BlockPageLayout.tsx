@@ -12,6 +12,7 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import ReadMore from "@/components/ReadMore";
 
 export default function BlockPageLayout({ blockKey, children }: { blockKey: "blockA" | "blockB" | "blockC", children?: React.ReactNode }) {
   const [block, setBlock] = useState<any>(null);
@@ -136,7 +137,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
             
             {block.description && (
               <p className="text-xl text-gray-500 font-light leading-relaxed mb-12 italic">
-                &ldquo;{block.description}&rdquo;
+                &ldquo;<ReadMore text={block.description} limit={160} />&rdquo;
               </p>
             )}
 

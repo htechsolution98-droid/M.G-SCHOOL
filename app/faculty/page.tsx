@@ -6,6 +6,8 @@ import Image from "next/image";
 import { GraduationCap, Quote } from "lucide-react";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import ReadMore from "@/components/ReadMore";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 const FacultyPage = () => {
   const [content, setContent] = useState<any>(null);
@@ -51,30 +53,31 @@ const FacultyPage = () => {
       <section className="section-padding overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 -skew-x-12 translate-x-1/4" />
         <div className="container-custom relative z-10 flex flex-col md:flex-row items-center gap-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             className="md:w-1/2"
           >
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">
-              {hero.heading} <br/>
+              {hero.heading} <br />
               <span className="text-secondary italic">{hero.headingHighlight}</span>
             </h1>
             <p className="text-2xl text-gray-400 font-light leading-relaxed max-w-xl">
               "{hero.description}"
             </p>
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             className="md:w-1/2 relative"
           >
             <div className="organic-radius bg-secondary w-full aspect-square absolute top-4 left-4 -z-10 opacity-30 animate-pulse" />
             <div className="organic-radius border-8 border-white shadow-3xl overflow-hidden aspect-square relative">
-               <Image src={hero.image} alt="Mentors" fill className="object-cover" />
+              <Image src={hero.image} alt="Mentors" fill className="object-cover" />
             </div>
           </motion.div>
         </div>
+        <HeroAnnouncement />
       </section>
 
       {/* Faculty Profiles - Portfolio Layout */}
@@ -86,14 +89,14 @@ const FacultyPage = () => {
               <p className="text-lg text-gray-500 font-medium tracking-wide font-outfit uppercase">Our leadership remains dedicated to fostering an environment of innovation and ethics.</p>
             </div>
             <div className="flex gap-4">
-               <div className="w-16 h-1 bg-primary rounded-full" />
-               <div className="w-8 h-1 bg-secondary rounded-full" />
+              <div className="w-16 h-1 bg-primary rounded-full" />
+              <div className="w-8 h-1 bg-secondary rounded-full" />
             </div>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
             {facultyMembers.map((faculty: any, idx: number) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -118,7 +121,7 @@ const FacultyPage = () => {
                     <GraduationCap className="text-secondary" size={18} />
                     <span className="text-sm font-black text-primary uppercase tracking-widest">{faculty.education}</span>
                   </div>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium italic">"Specializing in {faculty.expertise}, fostering a dynamic classroom environment through modern pedagogical research."</p>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium italic">"<ReadMore text={`Specializing in ${faculty.expertise}, fostering a dynamic classroom environment through modern pedagogical research.`} limit={120} />"</p>
                 </div>
               </motion.div>
             ))}
@@ -129,7 +132,7 @@ const FacultyPage = () => {
       {/* Featured Philosophy Section */}
       <section className="section-padding overflow-hidden">
         <div className="container-custom">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}

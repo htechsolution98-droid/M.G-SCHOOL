@@ -10,6 +10,8 @@ import axiosInstance from "@/lib/axios";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import ReadMore from "@/components/ReadMore";
+import HeroAnnouncement from "@/components/HeroAnnouncement";
 
 export default function About() {
 
@@ -135,10 +137,12 @@ export default function About() {
               {hero.heading} <span className="italic text-secondary underline decoration-secondary decoration-4 underline-offset-8 font-black">{hero.headingHighlight}</span>
             </h1>
             <p className="text-2xl text-gray-300 font-light leading-relaxed max-w-2xl">
-              {hero.description}
+              <ReadMore text={hero.description} limit={120} />
             </p>
           </motion.div>
         </div>
+
+        <HeroAnnouncement />
 
         <motion.div
           animate={{ y: [0, 10, 0] }}
@@ -163,7 +167,7 @@ export default function About() {
               <div className="h-2 w-32 bg-primary mb-12 rounded-full" />
               <div className="space-y-6 text-xl text-gray-500 font-light leading-relaxed">
                 {legacy.paragraphs.map((p: string, i: number) => (
-                  <p key={i}>{p}</p>
+                  <p key={i}><ReadMore text={p} limit={160} /></p>
                 ))}
                 <div className="pt-10 grid grid-cols-2 gap-10">
                   <div className="p-8 bg-slate-50 rounded-[3rem] border border-gray-100">
@@ -225,7 +229,7 @@ export default function About() {
                   </div>
                   <div className="p-10">
                     <h3 className="text-3xl font-playfair font-black mb-4 text-primary">{item.title}</h3>
-                    <p className="text-gray-500 leading-relaxed font-light">{item.description}</p>
+                    <p className="text-gray-500 leading-relaxed font-light"><ReadMore text={item.description} limit={140} /></p>
                   </div>
                 </motion.div>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, GraduationCap, ArrowRight, ChevronDown } from "lucide-react";
@@ -13,11 +13,24 @@ const Navbar = () => {
   const [branchesOpen, setBranchesOpen] = useState(false);
   const [mobileBranchesOpen, setMobileBranchesOpen] = useState(false);
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setBranchesOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const navLinks = [
@@ -64,7 +77,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               link.hasDropdown ? (
-                <div key={link.href} className="relative">
+                <div key={link.href} className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setBranchesOpen(!branchesOpen)}
                     className={cn(
@@ -88,6 +101,7 @@ const Navbar = () => {
                         {/* All Branches link */}
                         <Link
                           href="/branches"
+                          prefetch={true}
                           onClick={() => setBranchesOpen(false)}
                           className="block px-6 py-4 text-sm font-black text-primary hover:bg-primary/5 transition-all border-b border-gray-100"
                         >
@@ -99,6 +113,7 @@ const Navbar = () => {
                           <Link
                             key={sub.href}
                             href={sub.href}
+                            prefetch={true}
                             onClick={() => setBranchesOpen(false)}
                             className="flex items-center gap-4 px-6 py-4 hover:bg-primary/5 transition-all group/item"
                           >
@@ -117,6 +132,7 @@ const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={true}
                   className={cn(
                     "px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:bg-primary/5",
                     pathname === link.href ? "text-primary bg-primary/10" : "text-gray-600 hover:text-primary"
@@ -190,6 +206,7 @@ const Navbar = () => {
                               <Link
                                 key={sub.href}
                                 href={sub.href}
+                                prefetch={true}
                                 onClick={() => { setIsOpen(false); setMobileBranchesOpen(false); }}
                                 className="flex items-center gap-3 py-2"
                               >
@@ -207,6 +224,7 @@ const Navbar = () => {
                   ) : (
                     <Link
                       href={link.href}
+                      prefetch={true}
                       onClick={() => setIsOpen(false)}
                       className={cn(
                         "text-4xl font-playfair font-bold block py-2",

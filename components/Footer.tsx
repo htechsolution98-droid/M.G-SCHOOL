@@ -29,12 +29,12 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               {[
-                { icon: <Facebook />, label: "Facebook" },
-                { icon: <Twitter />, label: "Twitter" },
-                { icon: <Instagram />, label: "Instagram" },
-                { icon: <Youtube />, label: "Youtube" }
+                { icon: <Facebook />, label: "Facebook", href: "#" },
+                { icon: <Twitter />, label: "Twitter", href: "#" },
+                { icon: <Instagram />, label: "Instagram", href: "https://www.instagram.com/mahatma_gandhi_primary_school?igsh=aW01eGo5amJ1MmY4" },
+                { icon: <Youtube />, label: "Youtube", href: "#" }
               ].map((social, i) => (
-                <Link key={i} href="#" className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-500 border border-white/10 group">
+                <Link key={i} href={social.href} target={social.href !== "#" ? "_blank" : "_self"} rel={social.href !== "#" ? "noopener noreferrer" : ""} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-500 border border-white/10 group">
                    <span className="w-5 h-5 group-hover:scale-110 transition-transform">{social.icon}</span>
                 </Link>
               ))}
@@ -48,11 +48,17 @@ const Footer = () => {
                  <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Institutional
               </h3>
               <ul className="space-y-4">
-                {["History", "Acedemics", "Faculty Portfolio", "Campus Branches", "Admissions"].map((link, i) => (
+                {[
+                  { name: "About Us", href: "/about" },
+                  { name: "Academics", href: "/academics" },
+                  { name: "Faculty Portfolio", href: "/faculty" },
+                  { name: "Campus Branches", href: "/branches" },
+                  { name: "Admissions", href: "/enroll" }
+                ].map((link, i) => (
                   <li key={i}>
-                    <Link href={`/${link.toLowerCase().replace(' ', '-')}`} className="text-white/60 hover:text-white transition-colors font-medium flex items-center gap-2 group">
+                    <Link href={link.href} className="text-white/60 hover:text-white transition-colors font-medium flex items-center gap-2 group">
                       <ArrowRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-secondary" />
-                      {link}
+                      {link.name}
                     </Link>
                   </li>
                 ))}
@@ -64,11 +70,17 @@ const Footer = () => {
                  <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Programs
               </h3>
               <ul className="space-y-4">
-                {["Primary Block", "Secondary Elite", "Higher Secondary", "Bilingual Academy", "Global Sports"].map((link, i) => (
+                {[
+                  { name: "Primary Block", href: "/branches/block-a" },
+                  { name: "Secondary Elite", href: "/branches/block-b" },
+                  { name: "Higher Secondary", href: "/branches/block-c" },
+                  { name: "Bilingual Academy", href: "/academics" },
+                  { name: "Global Sports", href: "/life-at-mg" }
+                ].map((link, i) => (
                   <li key={i}>
-                    <Link href="/academics" className="text-white/60 hover:text-white transition-colors font-medium flex items-center gap-2 group">
+                    <Link href={link.href} className="text-white/60 hover:text-white transition-colors font-medium flex items-center gap-2 group">
                       <ArrowRight size={14} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-secondary" />
-                      {link}
+                      {link.name}
                     </Link>
                   </li>
                 ))}
