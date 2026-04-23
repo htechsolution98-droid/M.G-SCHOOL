@@ -7,18 +7,56 @@ import { Target, Eye, ShieldCheck, History, ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import axiosInstance from "@/lib/axios";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useSocketSync } from "@/hooks/useSocketSync";
+
 export default function About() {
 
 
   const [content, setContent] = useState<any>(null);
 
-  React.useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/about-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
       })
       .catch(() => { });
   }, []);
+
+  React.useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
+
+  const sectionRef = React.useRef(null);
+  const containerRef = React.useRef(null);
+
+  React.useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (sectionRef.current && content?.valuesScroll?.features?.length > 0) {
+      let ctx = gsap.context(() => {
+        const cards = gsap.utils.toArray(".value-card");
+        
+        gsap.from(cards, {
+          y: 100,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse"
+          }
+        });
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }
+  }, [content]);
 
   const hero = content?.hero || {
     image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
@@ -223,33 +261,28 @@ export default function About() {
         </div>
       </section> */}
 
-      {/* Values Scroll - Organic feel */}
-      <section className="section-padding overflow-hidden">
+      {/* Values Section */}
+      <section ref={sectionRef} className="section-padding bg-gray-50">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center mb-24">
-            <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary mb-10 leading-tight">{valuesScroll.heading} <br /><span className="text-secondary italic underline">{valuesScroll.headingHighlight}</span></h2>
-            <p className="text-2xl text-gray-400 font-light italic">{valuesScroll.description}</p>
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-6xl font-playfair font-black text-gray-900 mb-6 leading-tight">{valuesScroll.heading}</h2>
+            <p className="text-xl md:text-2xl text-gray-500 font-light italic">{valuesScroll.description}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {(valuesScroll.features || []).map((item: any, i: number) => (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-primary p-10 rounded-[3rem] text-white flex flex-col justify-between h-[300px] group hover:bg-secondary transition-all relative overflow-hidden"
+                className="value-card h-[350px] p-10 rounded-[3rem] border border-gray-100 shadow-xl flex flex-col justify-end group transition-all relative overflow-hidden bg-white hover:shadow-2xl hover:-translate-y-2 cursor-default"
               >
                 {item.image && (
                   <>
-                    <Image src={item.image} alt={item.title} fill className="object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-500 z-0" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent z-0" />
+                    <Image src={item.image} alt={item.title} fill className="object-cover opacity-10 group-hover:opacity-30 transition-opacity duration-500 z-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent z-0" />
                   </>
                 )}
-                <div className="relative z-10 w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-secondary font-black text-3xl group-hover:bg-primary/20">{i + 1}</div>
-                <h4 className="relative z-10 text-2xl font-playfair font-bold text-white group-hover:text-primary leading-tight">{item.title}</h4>
-              </motion.div>
+                <h4 className="relative z-10 text-2xl md:text-3xl font-playfair font-bold text-gray-900 leading-tight group-hover:text-black">{item.title}</h4>
+              </div>
             ))}
           </div>
         </div>

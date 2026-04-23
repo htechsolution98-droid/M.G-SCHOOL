@@ -6,12 +6,13 @@ import { Calendar, MapPin, Clock, ArrowRight, Zap, Sparkles } from "lucide-react
 import Image from "next/image";
 import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
+import { useSocketSync } from "@/hooks/useSocketSync";
 
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/events")
       .then((res) => {
         if (res.data.success) {
@@ -21,6 +22,12 @@ const EventsPage = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

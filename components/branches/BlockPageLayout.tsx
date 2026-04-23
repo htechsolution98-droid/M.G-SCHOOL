@@ -11,13 +11,13 @@ import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { useSocketSync } from "@/hooks/useSocketSync";
 
 export default function BlockPageLayout({ blockKey, children }: { blockKey: "blockA" | "blockB" | "blockC", children?: React.ReactNode }) {
   const [block, setBlock] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/branches-content")
       .then((res) => {
         if (res.data.success && res.data.content && res.data.content[blockKey]) {
@@ -29,6 +29,12 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
         setLoading(false);
       });
   }, [blockKey]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   if (loading) {
     return (
@@ -63,9 +69,6 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
         <div className="flex flex-col lg:flex-row gap-20 items-center">
           {/* Slider Side */}
           <div className="lg:w-1/2 relative w-full">
-            <div className="absolute top-0 left-0 w-24 h-24 bg-secondary -translate-x-4 lg:-translate-x-12 -translate-y-4 lg:-translate-y-12 rounded-[2rem] z-10 flex items-center justify-center text-primary shadow-xl">
-              <GraduationCap size={40} />
-            </div>
             
             {block.images && block.images.length > 0 ? (
               <div className="relative h-[500px] lg:h-[650px] w-full overflow-hidden rounded-[3rem] lg:rounded-[4.5rem] shadow-2xl">
@@ -186,6 +189,39 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
             )}
           </div>
         </div>
+
+        {/* Faculty Section */}
+        {block.faculty && block.faculty.length > 0 && (
+          <div className="mt-32">
+            <div className="text-center mb-16">
+              <div className="text-secondary text-xs font-black uppercase tracking-[0.3em] mb-4">Dedicated Educators</div>
+              <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary">Our Faculty</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {block.faculty.map((member: any, idx: number) => (
+                <div key={idx} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center group">
+                  <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-50 group-hover:border-secondary/20 transition-colors">
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-full h-full p-6 text-gray-400 bg-gray-100" />
+                    )}
+                  </div>
+                  <h5 className="text-xl font-bold text-primary mb-2">{member.name}</h5>
+                  <p className="text-secondary text-xs font-black uppercase tracking-widest mb-4">{member.role}</p>
+                  <div className="w-full pt-4 border-t border-gray-100 space-y-2">
+                    {member.education && (
+                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Education</span> <span className="font-medium text-gray-700 truncate ml-2">{member.education}</span></p>
+                    )}
+                    {member.subject && (
+                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Subject</span> <span className="font-medium text-gray-700 truncate ml-2">{member.subject}</span></p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </motion.section>
 
       {children && (

@@ -7,13 +7,14 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Camera, Sparkles } from "lucide-react";
 import axiosInstance from "@/lib/axios";
+import { useSocketSync } from "@/hooks/useSocketSync";
 
 const GalleryPage = () => {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("All Chronicles");
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/gallery")
       .then((res) => {
         if (res.data.success) {
@@ -23,6 +24,12 @@ const GalleryPage = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

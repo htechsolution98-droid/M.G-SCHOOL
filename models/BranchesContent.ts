@@ -16,6 +16,14 @@ export interface IBranchCard {
   image: string;
 }
 
+export interface IFacultyMember {
+  image: string;
+  name: string;
+  role: string;
+  education: string;
+  subject: string;
+}
+
 export interface IBlockContent {
   name: string;
   subtitle: string;
@@ -26,6 +34,7 @@ export interface IBlockContent {
   location: string;
   principal: string;
   specialties: string[];
+  faculty: IFacultyMember[];
 }
 
 export interface IBranchesContent extends Document {
@@ -47,6 +56,16 @@ const BlockContentSchema = new Schema<IBlockContent>({
   location: { type: String, default: "" },
   principal: { type: String, default: "" },
   specialties: { type: [String], default: [] },
+  faculty: {
+    type: [{
+      image: { type: String, default: "" },
+      name: { type: String, default: "" },
+      role: { type: String, default: "" },
+      education: { type: String, default: "" },
+      subject: { type: String, default: "" }
+    }],
+    default: []
+  }
 });
 
 const BranchesContentSchema = new Schema<IBranchesContent>({

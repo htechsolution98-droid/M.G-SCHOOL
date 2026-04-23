@@ -13,17 +13,24 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { cn } from "@/lib/utils";
 import axiosInstance from "@/lib/axios";
+import { useSocketSync } from "@/hooks/useSocketSync";
 
 const Academics = () => {
   const [content, setContent] = useState<any>(null);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/academics-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
       })
       .catch(() => { });
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   const hero = content?.hero || {
     heading: "Elite",

@@ -128,7 +128,7 @@ const Navbar = () => {
             ))}
             <div className="w-px h-6 bg-gray-200 mx-4" />
             <Link 
-              href="/contact" 
+              href="/enroll" 
               className="bg-primary text-white pl-6 pr-4 py-3 rounded-2xl font-bold text-sm hover:bg-secondary hover:text-primary transition-all flex items-center gap-2 group shadow-xl"
             >
               Enroll Now
@@ -221,7 +221,7 @@ const Navbar = () => {
             </div>
             
             <Link 
-              href="/contact"
+              href="/enroll"
               onClick={() => setIsOpen(false)}
               className="bg-secondary text-primary w-full py-6 rounded-[2rem] font-black text-xl text-center shadow-2xl active:scale-95 transition-transform"
             >

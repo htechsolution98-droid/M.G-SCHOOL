@@ -4,13 +4,14 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
+import { useSocketSync } from "@/hooks/useSocketSync";
 import { Sparkles, Heart, Star, Camera } from "lucide-react";
 
 const LifeAtMGPage = () => {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/life-at-mg")
       .then((res) => {
         if (res.data.success) {
@@ -20,6 +21,12 @@ const LifeAtMGPage = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

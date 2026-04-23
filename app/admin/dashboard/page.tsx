@@ -44,6 +44,7 @@ const sidebarItems = [
   { id: "gallery", name: "Gallery", icon: ImageIcon },
   { id: "events", name: "Events", icon: Calendar },
   { id: "messages", name: "Messages", icon: MessageSquare },
+  { id: "enrollment", name: "Enrollment", icon: BookOpen },
   { id: "settings", name: "Settings", icon: Settings },
 ];
 
@@ -100,10 +101,10 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 flex">
       {/* ─── Sidebar Desktop ─── */}
       <aside className="hidden lg:flex flex-col w-72 bg-primary min-h-screen fixed left-0 top-0 z-40">
-        <div className="p-8 border-b border-white/10">
+        <div className="p-8 border-b border-white/10 bg-white/10">
           <div className="flex items-center gap-3">
-            <div className="bg-white/10 p-2.5 rounded-2xl">
-              <GraduationCap className="text-secondary w-7 h-7" />
+            <div className="bg-white p-1 rounded-xl shadow-lg">
+              <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
             </div>
             <div>
               <div className="text-lg font-playfair font-black text-white tracking-tight">M.G. SCHOOL</div>
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -140,14 +141,16 @@ export default function AdminDashboard() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" />
             <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary min-h-screen z-50 lg:hidden flex flex-col">
-              <div className="p-8 border-b border-white/10 flex items-center justify-between">
+              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/10">
                 <div className="flex items-center gap-3">
-                  <div className="bg-white/10 p-2 rounded-xl"><GraduationCap className="text-secondary w-6 h-6" /></div>
+                  <div className="bg-white p-1 rounded-xl shadow-lg">
+                    <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-8 h-8 object-contain" />
+                  </div>
                   <span className="text-lg font-playfair font-black text-white">M.G. SCHOOL</span>
                 </div>
                 <button onClick={() => setSidebarOpen(false)} className="text-white/50 cursor-pointer"><X size={24} /></button>
               </div>
-              <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
+              <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -201,6 +204,7 @@ export default function AdminDashboard() {
           {activeTab === "gallery" && <GalleryTab />}
           {activeTab === "events" && <EventsTab />}
           {activeTab === "messages" && <MessagesTab />}
+          {activeTab === "enrollment" && <EnrollmentTab />}
           {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
         </div>
       </main>
@@ -975,10 +979,9 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
     <div className="space-y-6">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <h4 className="text-lg font-playfair font-black text-primary mb-6">Values Section Overview</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <InputField label="Heading" value={local.heading} onChange={(v) => updateField("heading", v)} />
-          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => updateField("headingHighlight", v)} />
-          <div className="md:col-span-2">
+          <div>
             <TextareaField label="Description" value={local.description} onChange={(v) => updateField("description", v)} />
           </div>
         </div>
@@ -1729,6 +1732,20 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
     update("images", (local.images || []).filter((_: any, i: number) => i !== idx));
   };
 
+  const addFaculty = () => {
+    update("faculty", [...(local.faculty || []), { image: "", name: "", role: "", education: "", subject: "" }]);
+  };
+
+  const updateFaculty = (idx: number, field: string, value: any) => {
+    const updatedFaculty = [...(local.faculty || [])];
+    updatedFaculty[idx] = { ...updatedFaculty[idx], [field]: value };
+    update("faculty", updatedFaculty);
+  };
+
+  const removeFaculty = (idx: number) => {
+    update("faculty", (local.faculty || []).filter((_: any, i: number) => i !== idx));
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
@@ -1763,6 +1780,36 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
           </div>
         </div>
       </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-lg font-playfair font-black text-primary">Faculty Section</h4>
+          <button onClick={addFaculty} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all cursor-pointer">
+            <Plus size={14} /> Add Faculty
+          </button>
+        </div>
+        <div className="space-y-6">
+          {(local.faculty || []).map((member: any, idx: number) => (
+            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative">
+              <button onClick={() => removeFaculty(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
+              <h5 className="text-sm font-bold text-primary mb-4">Faculty Member {idx + 1}</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField label="Name" value={member.name} onChange={(v) => updateFaculty(idx, "name", v)} />
+                <InputField label="Role" value={member.role} onChange={(v) => updateFaculty(idx, "role", v)} />
+                <InputField label="Education" value={member.education} onChange={(v) => updateFaculty(idx, "education", v)} />
+                <InputField label="Subject" value={member.subject} onChange={(v) => updateFaculty(idx, "subject", v)} />
+                <div className="md:col-span-2">
+                  <ImageUpload label="Profile Image" value={member.image} onChange={(v) => updateFaculty(idx, "image", v)} />
+                </div>
+              </div>
+            </div>
+          ))}
+          {(!local.faculty || local.faculty.length === 0) && (
+            <p className="text-sm text-gray-400 text-center py-4">No faculty members added yet.</p>
+          )}
+        </div>
+      </div>
+
       <button onClick={() => onSave(local)} disabled={saving}
         className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
         <Save size={18} /> {saving ? "Saving..." : "Save Block"}
@@ -2601,6 +2648,165 @@ function StudentsTab() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+// ════════════════════════════════════════
+// ENROLLMENT TAB
+// ════════════════════════════════════════
+function EnrollmentTab() {
+  const [activeSection, setActiveSection] = useState("fields");
+  const [config, setConfig] = useState<any>(null);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [configRes, subRes] = await Promise.all([
+        axiosInstance.get("/api/enrollment-config"),
+        axiosInstance.get("/api/enrollment-submissions")
+      ]);
+      if (configRes.data.success) setConfig(configRes.data.config);
+      if (subRes.data.success) setSubmissions(subRes.data.submissions);
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const saveConfig = async () => {
+    setSaving(true);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/enrollment-config", config);
+      if (res.data.success) {
+        setConfig(res.data.config);
+        setMessage("Saved successfully!");
+      } else setMessage("Error saving.");
+    } catch {
+      setMessage("Failed to save.");
+    }
+    setSaving(false);
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  if (loading) return <div className="py-32 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full"/></div>;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex gap-3">
+        <button onClick={() => setActiveSection("fields")} className={`px-6 py-3 rounded-2xl text-sm font-bold ${activeSection === "fields" ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-100"}`}>Form Builder</button>
+        <button onClick={() => setActiveSection("submissions")} className={`px-6 py-3 rounded-2xl text-sm font-bold ${activeSection === "submissions" ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-100"}`}>Submissions ({submissions.length})</button>
+      </div>
+
+      {message && <div className="px-6 py-3 rounded-2xl text-sm font-bold bg-emerald-50 text-emerald-600">{message}</div>}
+
+      {activeSection === "fields" && config && (
+        <EnrollmentFormBuilder config={config} setConfig={setConfig} onSave={saveConfig} saving={saving} />
+      )}
+
+      {activeSection === "submissions" && (
+        <EnrollmentSubmissionsList submissions={submissions} />
+      )}
+    </div>
+  );
+}
+
+function EnrollmentFormBuilder({ config, setConfig, onSave, saving }: any) {
+  const addField = () => {
+    setConfig({ ...config, fields: [...config.fields, { id: "field_" + Date.now(), label: "New Field", type: "text", required: false, options: [] }] });
+  };
+  const updateField = (idx: number, key: string, val: any) => {
+    const newFields = [...config.fields];
+    newFields[idx] = { ...newFields[idx], [key]: val };
+    setConfig({ ...config, fields: newFields });
+  };
+  const removeField = (idx: number) => {
+    setConfig({ ...config, fields: config.fields.filter((_: any, i: number) => i !== idx) });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Form Details</h4>
+        <div className="grid grid-cols-1 gap-6">
+          <InputField label="Form Title" value={config.title} onChange={(v) => setConfig({ ...config, title: v })} />
+          <TextareaField label="Description" value={config.description} onChange={(v) => setConfig({ ...config, description: v })} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex justify-between items-center mb-6">
+          <h4 className="text-lg font-playfair font-black text-primary">Dynamic Fields</h4>
+          <button onClick={addField} className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center gap-2"><Plus size={14}/> Add Field</button>
+        </div>
+        
+        <div className="space-y-4">
+          {config.fields.map((field: any, idx: number) => (
+            <div key={idx} className="p-4 border border-gray-100 rounded-2xl bg-gray-50 flex flex-col md:flex-row gap-4 items-start md:items-center">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+                <InputField label="Field Label" value={field.label} onChange={(v) => updateField(idx, "label", v)} />
+                <InputField label="Field ID (unique)" value={field.id} onChange={(v) => updateField(idx, "id", v.replace(/\s+/g, "_").toLowerCase())} />
+                <div>
+                  <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Type</label>
+                  <select value={field.type} onChange={(e) => updateField(idx, "type", e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-700">
+                    <option value="text">Text</option>
+                    <option value="email">Email</option>
+                    <option value="tel">Phone</option>
+                    <option value="textarea">Long Text</option>
+                    <option value="select">Dropdown</option>
+                    <option value="date">Date</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 pt-8">
+                  <input type="checkbox" id={`req-${idx}`} checked={field.required} onChange={(e) => updateField(idx, "required", e.target.checked)} className="w-4 h-4 text-primary" />
+                  <label htmlFor={`req-${idx}`} className="text-sm font-bold text-gray-600">Required</label>
+                </div>
+              </div>
+              {field.type === "select" && (
+                <div className="w-full md:w-1/3">
+                  <InputField label="Options (comma separated)" value={(field.options || []).join(", ")} onChange={(v) => updateField(idx, "options", v.split(",").map((s: string) => s.trim()).filter(Boolean))} />
+                </div>
+              )}
+              <button onClick={() => removeField(idx)} className="p-2 text-red-400 hover:bg-red-100 rounded-xl mt-6"><Trash2 size={16} /></button>
+            </div>
+          ))}
+          {config.fields.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No fields added yet.</p>}
+        </div>
+      </div>
+      
+      <button onClick={onSave} disabled={saving} className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer">
+        <Save size={18} /> {saving ? "Saving..." : "Save Form Config"}
+      </button>
+    </div>
+  );
+}
+
+function EnrollmentSubmissionsList({ submissions }: { submissions: any[] }) {
+  if (submissions.length === 0) return <div className="text-center py-12 text-gray-500">No submissions yet.</div>;
+  return (
+    <div className="space-y-4">
+      {submissions.map((sub: any) => (
+        <div key={sub._id} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row gap-6">
+          <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Object.entries(sub.data).map(([key, val]: any) => (
+              <div key={key}>
+                <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">{key}</p>
+                <p className="text-sm font-medium text-gray-800">{val || "-"}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col justify-between items-end border-l border-gray-100 pl-6">
+            <span className="text-xs font-bold px-3 py-1 bg-gray-100 text-gray-600 rounded-full mb-2">{new Date(sub.createdAt).toLocaleDateString()}</span>
+            <span className={`text-xs font-bold px-3 py-1 rounded-full ${sub.status === "Pending" ? "bg-yellow-50 text-yellow-600" : "bg-emerald-50 text-emerald-600"}`}>{sub.status}</span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

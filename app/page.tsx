@@ -17,6 +17,8 @@ const iconMap: Record<string, React.ReactNode> = {
   Heart: <Heart size={20} />,
 };
 
+import { useSocketSync } from "@/hooks/useSocketSync";
+
 const featureIconMap: Record<string, React.ReactNode> = {
   "Intellectual Rigor": <BookOpen className="text-secondary" />,
   "Ethical Leadership": <ShieldCheck className="text-secondary" />,
@@ -27,13 +29,19 @@ const featureIconMap: Record<string, React.ReactNode> = {
 export default function Home() {
   const [content, setContent] = useState<any>(null);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/home-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   // Fallback data while loading
   const stats = content?.stats || [

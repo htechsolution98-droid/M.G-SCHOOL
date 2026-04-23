@@ -5,12 +5,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { GraduationCap, Quote } from "lucide-react";
 import axiosInstance from "@/lib/axios";
+import { useSocketSync } from "@/hooks/useSocketSync";
 
 const FacultyPage = () => {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/faculty-content")
       .then((res) => {
         if (res.data.success) {
@@ -20,6 +21,12 @@ const FacultyPage = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useSocketSync(fetchData);
 
   if (loading) {
     return (
