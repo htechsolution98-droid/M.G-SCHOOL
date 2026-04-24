@@ -63,14 +63,14 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
-            <div className="flex flex-col">
-              <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
-                M.G. SCHOOL
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-secondary">
-                Legacy of Excellence
-              </span>
-            </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
+                  M.G. SCHOOL
+                </span>
+                <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
+                  Legacy of Excellence
+                </span>
+              </div>
           </Link>
 
           {/* Desktop Nav */}
@@ -174,7 +174,7 @@ const Navbar = () => {
             className="fixed inset-4 top-24 bg-primary rounded-[3rem] p-12 z-50 pointer-events-auto shadow-3xl lg:hidden flex flex-col justify-between overflow-y-auto"
           >
             <div className="space-y-4">
-              <div className="text-secondary text-xs font-black uppercase tracking-[0.4em] mb-10 text-center">Main Navigation</div>
+              <div className="text-secondary text-sm font-black uppercase tracking-[0.4em] mb-10 text-center">Main Navigation</div>
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.href}

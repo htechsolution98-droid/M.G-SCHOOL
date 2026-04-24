@@ -11,10 +11,10 @@ const Footer = () => {
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary/50 to-transparent opacity-30" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
-      
+
       <div className="container-custom relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-          
+
           {/* Brand & Vision */}
           <div className="lg:col-span-4 space-y-10">
             <Link href="/" className="flex items-center gap-4 group">
@@ -35,7 +35,7 @@ const Footer = () => {
                 { icon: <Youtube />, label: "Youtube", href: "https://youtube.com/@mgshs_1948?si=2RVNKub5hPA9wjMR" }
               ].map((social, i) => (
                 <Link key={i} href={social.href} target={social.href !== "#" ? "_blank" : "_self"} rel={social.href !== "#" ? "noopener noreferrer" : ""} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-500 border border-white/10 group">
-                   <span className="w-5 h-5 group-hover:scale-110 transition-transform">{social.icon}</span>
+                  <span className="w-5 h-5 group-hover:scale-110 transition-transform">{social.icon}</span>
                 </Link>
               ))}
             </div>
@@ -44,8 +44,8 @@ const Footer = () => {
           {/* Links Grid */}
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-16">
             <div>
-              <h3 className="text-xs font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
-                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Institutional
+              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+                <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Institutional
               </h3>
               <ul className="space-y-4">
                 {[
@@ -66,8 +66,8 @@ const Footer = () => {
             </div>
 
             <div>
-              <h3 className="text-xs font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
-                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Programs
+              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+                <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Programs
               </h3>
               <ul className="space-y-4">
                 {[
@@ -88,25 +88,27 @@ const Footer = () => {
             </div>
 
             <div className="space-y-8">
-              <h3 className="text-xs font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
-                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Reach Us
+              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+                <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Reach Us
               </h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <MapPin className="text-secondary shrink-0" size={20} />
                   <p className="text-sm font-medium text-white/60 leading-relaxed italic">
-                    Education Square, Central Hub, <br/>Sector 15, MG School Road.
+                    Education Square, Central Hub, <br />Sector 15, MG School Road.
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <Phone className="text-secondary shrink-0" size={20} />
                   <p className="text-sm font-black">+91 98765 43210</p>
                 </div>
-                <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                   <div className="flex items-center gap-2 text-secondary text-[10px] font-black uppercase tracking-widest mb-2">
-                      <ShieldCheck size={12} /> Institutional Trust
-                   </div>
-                   <p className="text-[10px] text-white/40 leading-relaxed">Accredited by the Global Academic Board, ensuring excellence in every lesson.</p>
+                <div className="pt-4">
+                  <div className="flex items-center gap-2 text-secondary text-[12px] font-black uppercase tracking-widest mb-2">
+                    <ShieldCheck size={12} /> Institutional Trust
+                  </div>
+                  <p className="text-white/40 text-xs leading-relaxed italic">
+                    Commitment to global standards of pedagogical excellence.
+                  </p>
                 </div>
               </div>
             </div>
@@ -114,13 +116,18 @@ const Footer = () => {
         </div>
 
         {/* Lower Footer */}
-        <div className="mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em] order-2 md:order-1">
-            © {new Date().getFullYear()} M.G. School – Where Dreams Take Flight.
-          </p>
+        <div className="mt-16 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col gap-2 order-2 md:order-1 text-center md:text-left">
+            <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">
+              © {new Date().getFullYear()} M.G. School – Where Dreams Take Flight.
+            </p>
+            <p className="text-white/20 text-[9px] uppercase tracking-[0.2em] font-medium">
+              Accredited by the Global Academic Board, ensuring excellence in every lesson.
+            </p>
+          </div>
           <div className="flex gap-12 order-1 md:order-2">
-             <Link href="#" className="text-white/30 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-colors">Privacy Policy</Link>
-             <Link href="#" className="text-white/30 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-colors">Terms of Use</Link>
+            <Link href="#" className="text-white/30 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-colors">Privacy Policy</Link>
+            <Link href="#" className="text-white/30 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-colors">Terms of Use</Link>
           </div>
         </div>
       </div>

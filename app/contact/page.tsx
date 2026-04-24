@@ -10,12 +10,6 @@ import { useRef, useState } from "react";
 export default function Contact() {
   const branches = [
     {
-      name: "Main Campus (Block C)",
-      address: "Education Square, Central Hub, Sector 15",
-      phone: "+91 98765 43210",
-      email: "main.campus@mgschool.edu.in",
-    },
-    {
       name: "Primary Branch (Block A)",
       address: "MG Road, East Campus, Sector 4",
       phone: "+91 98765 43211",
@@ -26,6 +20,12 @@ export default function Contact() {
       address: "Scholars Lane, West Campus, Sector 9",
       phone: "+91 98765 43212",
       email: "secondary@mgschool.edu.in",
+    },
+    {
+      name: "Main Campus (Block C)",
+      address: "Education Square, Central Hub, Sector 15",
+      phone: "+91 98765 43210",
+      email: "main.campus@mgschool.edu.in",
     }
   ];
 
@@ -132,9 +132,9 @@ export default function Contact() {
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-600 block">Preferred Campus Hub</label>
                   <select name="campus" required className="w-full bg-white border border-gray-200 px-5 py-3.5 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all font-medium text-primary shadow-sm appearance-none cursor-pointer">
-                    <option value="Block C (International Hub)">Block C (International Hub)</option>
                     <option value="Block A (Primary Foundation)">Block A (Primary Foundation)</option>
                     <option value="Block B (Secondary Excellence)">Block B (Secondary Excellence)</option>
+                    <option value="Block C (International Hub)">Block C (International Hub)</option>
                   </select>
                 </div>
 

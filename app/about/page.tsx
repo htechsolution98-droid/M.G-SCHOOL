@@ -11,7 +11,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 export default function About() {
 
@@ -41,7 +41,7 @@ export default function About() {
     if (sectionRef.current && content?.valuesScroll?.features?.length > 0) {
       let ctx = gsap.context(() => {
         const cards = gsap.utils.toArray(".value-card");
-        
+
         gsap.from(cards, {
           y: 100,
           opacity: 0,
@@ -142,14 +142,14 @@ export default function About() {
           </motion.div>
         </div>
 
-        <HeroAnnouncement />
+
 
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 bg-white/10 backdrop-blur-md p-4 rounded-full border border-white/20"
         >
-          <ArrowDown className="text-white" />
+          <ArrowDown className="text-white" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 6
         </motion.div>
       </section>
 

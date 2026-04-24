@@ -7,7 +7,7 @@ import { GraduationCap, Quote } from "lucide-react";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 const FacultyPage = () => {
   const [content, setContent] = useState<any>(null);
@@ -77,7 +77,7 @@ const FacultyPage = () => {
             </div>
           </motion.div>
         </div>
-        <HeroAnnouncement />
+
       </section>
 
       {/* Faculty Profiles - Portfolio Layout */}

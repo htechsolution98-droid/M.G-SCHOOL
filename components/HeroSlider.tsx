@@ -7,7 +7,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 // Import Swiper styles
 import "swiper/css";
@@ -104,7 +104,7 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
                     <div className="p-2 bg-secondary/20 rounded-lg">
                       <Sparkles className="text-secondary w-5 h-5" />
                     </div>
-                    <span className="text-secondary font-black tracking-[0.4em] uppercase text-xs">
+                    <span className="text-secondary font-black tracking-[0.4em] uppercase text-sm">
                       {slide.tagline}
                     </span>
                   </motion.div>
@@ -159,7 +159,7 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
       </Swiper>
 
       {/* Announcement Overlay */}
-      <HeroAnnouncement />
+
 
       {/* Scroll Down Indicator */}
       <motion.div
@@ -167,7 +167,7 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
         transition={{ repeat: Infinity, duration: 2 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/50">Scroll</span>
+        <span className="text-xs uppercase tracking-[0.4em] font-bold text-white/50">Scroll</span>
         <div className="w-px h-12 bg-gradient-to-b from-secondary to-transparent" />
       </motion.div>
 

@@ -95,7 +95,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
                 </Swiper>
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none" />
                 <div className="absolute bottom-12 left-12 z-20 pointer-events-none">
-                  <div className="text-secondary text-xs font-black uppercase tracking-[0.4em] mb-4">
+                  <div className="text-secondary text-sm font-black uppercase tracking-[0.4em] mb-4">
                     Campus Detail
                   </div>
                   <div className="text-3xl md:text-4xl text-white font-playfair font-black drop-shadow-lg">
@@ -195,7 +195,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
         {block.faculty && block.faculty.length > 0 && (
           <div className="mt-32">
             <div className="text-center mb-16">
-              <div className="text-secondary text-xs font-black uppercase tracking-[0.3em] mb-4">Dedicated Educators</div>
+              <div className="text-secondary text-sm font-black uppercase tracking-[0.3em] mb-4">Dedicated Educators</div>
               <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary">Our Faculty</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -209,7 +209,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
                     )}
                   </div>
                   <h5 className="text-xl font-bold text-primary mb-2">{member.name}</h5>
-                  <p className="text-secondary text-xs font-black uppercase tracking-widest mb-4">{member.role}</p>
+                  <p className="text-secondary text-sm font-black uppercase tracking-widest mb-4">{member.role}</p>
                   <div className="w-full pt-4 border-t border-gray-100 space-y-2">
                     {member.education && (
                       <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Education</span> <span className="font-medium text-gray-700 truncate ml-2">{member.education}</span></p>

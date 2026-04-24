@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -71,7 +71,7 @@ const EventsPage = () => {
                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -z-10" />
             </motion.div>
           </div>
-          <HeroAnnouncement />
+
         </div>
       </section>
 

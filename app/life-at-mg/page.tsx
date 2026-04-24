@@ -7,7 +7,7 @@ import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import { Sparkles, Heart, Star, Camera } from "lucide-react";
 import ReadMore from "@/components/ReadMore";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 const LifeAtMGPage = () => {
   const [content, setContent] = useState<any>(null);
@@ -60,7 +60,7 @@ const LifeAtMGPage = () => {
             </p>
           </motion.div>
         </div>
-        <HeroAnnouncement />
+
       </section>
 
       {/* Modern Slider Showcase */}

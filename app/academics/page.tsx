@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
-import HeroAnnouncement from "@/components/HeroAnnouncement";
+
 
 const Academics = () => {
   const [content, setContent] = useState<any>(null);
@@ -153,7 +153,7 @@ const Academics = () => {
           >
             {hero.description}
           </motion.p>
-          <HeroAnnouncement />
+
         </div>
       </section>
 
