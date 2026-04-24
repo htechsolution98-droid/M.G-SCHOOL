@@ -3,11 +3,7 @@ import { initSocket, getSocket } from './socket';
 
 // Determine the base URL based on environment
 const baseURL = process.env.NEXT_PUBLIC_API_URL || 
-                (typeof window !== 'undefined' 
-                  ? '' // Use relative path on client
-                  : (process.env.NODE_ENV === 'production' 
-                      ? 'https://m-g-school-s4iv.vercel.app' 
-                      : 'http://localhost:3000'));
+                (typeof window !== 'undefined' ? '' : 'http://localhost:3000');
 
 const axiosInstance = axios.create({
   baseURL,
