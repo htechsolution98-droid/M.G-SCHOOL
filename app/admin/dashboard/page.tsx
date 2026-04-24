@@ -841,7 +841,7 @@ function AboutTab() {
 // ─── About Hero Editor ───
 function AboutHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(hero);
-  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   return (
     <div className="space-y-6">
@@ -1174,7 +1174,7 @@ function AcademicsTab() {
 
 function AcademicsHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(hero);
-  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   return (
     <div className="space-y-6">
@@ -1649,7 +1649,7 @@ function BranchesTab() {
 
 function BranchesHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(hero);
-  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   return (
     <div className="space-y-6">
@@ -1952,7 +1952,7 @@ function FacultyTab() {
 
 function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(hero);
-  const update = (field: string, value: string) => setLocal({ ...local, [field]: value });
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   return (
     <div className="space-y-6">

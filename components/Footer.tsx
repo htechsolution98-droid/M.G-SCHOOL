@@ -32,7 +32,7 @@ const Footer = () => {
                 { icon: <Facebook />, label: "Facebook", href: "#" },
                 { icon: <Twitter />, label: "Twitter", href: "#" },
                 { icon: <Instagram />, label: "Instagram", href: "https://www.instagram.com/mahatma_gandhi_primary_school?igsh=aW01eGo5amJ1MmY4" },
-                { icon: <Youtube />, label: "Youtube", href: "#" }
+                { icon: <Youtube />, label: "Youtube", href: "https://youtube.com/@mgshs_1948?si=2RVNKub5hPA9wjMR" }
               ].map((social, i) => (
                 <Link key={i} href={social.href} target={social.href !== "#" ? "_blank" : "_self"} rel={social.href !== "#" ? "noopener noreferrer" : ""} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-500 border border-white/10 group">
                    <span className="w-5 h-5 group-hover:scale-110 transition-transform">{social.icon}</span>

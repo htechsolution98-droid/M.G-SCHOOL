@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   getBranchesContent,
+  updateBranchesHero,
   updateBranchesList,
   updateBlockContent,
   deleteBranchesContent
