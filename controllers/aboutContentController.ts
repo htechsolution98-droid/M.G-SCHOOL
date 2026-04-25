@@ -6,6 +6,7 @@ import {
   updateAboutExcellence,
   updateAboutValuesScroll,
   updatePrincipalMessage,
+  updateAboutWhyChooseUs,
 } from "@/services/aboutContentService";
 
 export async function handleGetAboutContent() {
@@ -40,6 +41,9 @@ export async function handleUpdateAboutContent(req: NextRequest) {
         break;
       case "principalMessage":
         content = await updatePrincipalMessage(sectionData.principalMessage);
+        break;
+      case "whyChooseUs":
+        content = await updateAboutWhyChooseUs(sectionData.whyChooseUs);
         break;
       default:
         throw new Error("Invalid section");

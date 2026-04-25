@@ -65,6 +65,15 @@ const defaultAboutContent = {
     qualifications: "B.A., M.A. (English Literature, Education)",
     designation: "MG Primary School",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976"
+  },
+  whyChooseUs: {
+    heading: "Why to study in M. G. School?",
+    headingHighlight: "Why we are best?",
+    reasons: [
+      { title: "Expert Faculty", description: "Learn from highly qualified and experienced educators dedicated to student success." },
+      { title: "Modern Facilities", description: "Our campus is equipped with state-of-the-art labs, libraries, and smart classrooms." },
+      { title: "Holistic Development", description: "We focus on academic, physical, and character growth through diverse programs." }
+    ]
   }
 };
 
@@ -158,6 +167,19 @@ export async function updatePrincipalMessage(principalMessage: any) {
   } else {
     content.principalMessage = { ...principalMessage };
     content.markModified("principalMessage");
+    content.updatedAt = new Date();
+    await content.save();
+  }
+  return content;
+}
+
+export async function updateAboutWhyChooseUs(whyChooseUs: any) {
+  await connectDB();
+  let content = await AboutContent.findOne();
+  if (!content) {
+    content = await AboutContent.create({ ...defaultAboutContent, whyChooseUs });
+  } else {
+    content.whyChooseUs = whyChooseUs;
     content.updatedAt = new Date();
     await content.save();
   }

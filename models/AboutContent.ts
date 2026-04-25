@@ -36,6 +36,13 @@ export interface IValuesScrollFeature {
   images: string[]; // multiple images slideshow
 }
 
+export interface IAboutValuesScroll {
+  heading: string;
+  headingHighlight: string;
+  description: string;
+  features: IValuesScrollFeature[];
+}
+
 export interface IWhyChooseReason {
   title: string;
   description: string;
@@ -62,7 +69,7 @@ export interface IAboutContent extends Document {
   whyChooseUs: IWhyChooseUs;
   principalMessage: IPrincipalMessage;
   excellence: IExcellenceItem[];
-  valuesScroll: IValuesScroll;
+  valuesScroll: IAboutValuesScroll;
   updatedAt: Date;
 }
 
