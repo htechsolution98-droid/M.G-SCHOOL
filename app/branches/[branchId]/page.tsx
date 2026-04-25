@@ -15,10 +15,25 @@ export default function BranchDetailPage({ params }: { params: { branchId: strin
   useEffect(() => {
     axiosInstance.get("/api/branches-content")
       .then((res) => {
-        if (res.data.success && res.data.content && res.data.content.branches) {
-          const found = res.data.content.branches.find((b: any) => b.id === params.branchId);
-          if (found) {
-            setBranch(found);
+        if (res.data.success && res.data.content) {
+          const content = res.data.content;
+          const { branchId } = params;
+          
+          // Map URL ID (block-a) to Model Key (blockA)
+          const blockKey = branchId.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+          const blockData = content[blockKey];
+          
+          // Also find the basic info from branchesList for things like subtitle
+          const basicInfo = (content.branchesList || []).find((b: any) => b.id === branchId);
+
+          if (blockData) {
+            // Merge basic info and detailed block data
+            setBranch({
+              ...basicInfo,
+              ...blockData,
+              // Ensure the first image from images array is used if basic image is missing
+              image: basicInfo?.image || (blockData.images && blockData.images[0]) || ""
+            });
           } else {
             setBranch(null);
           }

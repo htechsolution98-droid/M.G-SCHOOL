@@ -56,7 +56,7 @@ const Navbar = () => {
 
   const aboutSubLinks = [
     { name: "Principal's Message", subtitle: "Welcome Address", href: "/about/principal-message" },
-    { name: "Why Choose Us", subtitle: "Future-Ready Education", href: "/about#why-choose" },
+    { name: "Why Choose Us", subtitle: "Future-Ready Education", href: "/about/why-choose-us" },
   ];
 
   return (

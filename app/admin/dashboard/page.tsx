@@ -1841,6 +1841,7 @@ function BranchesTab() {
 
       {["blockA", "blockB", "blockC"].includes(activeSection) && content && (
         <BlockContentEditor
+          key={activeSection}
           blockName={activeSection}
           blockData={content[activeSection] || defaultBranchesContent[activeSection as keyof typeof defaultBranchesContent]}
           onSave={(blockContent: any) => saveSection(activeSection, { blockContent })}

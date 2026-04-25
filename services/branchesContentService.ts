@@ -113,6 +113,7 @@ export async function updateBlockContent(blockKey: "blockA" | "blockB" | "blockC
     content = await BranchesContent.create({ ...defaultBranchesContent, [blockKey]: blockData });
   } else {
     content[blockKey] = blockData;
+    content.markModified(blockKey);
     content.updatedAt = new Date();
     await content.save();
   }

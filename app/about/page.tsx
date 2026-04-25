@@ -227,44 +227,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section id="why-choose" className="section-padding bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 -skew-x-12 translate-x-1/2 z-0" />
-        <div className="container-custom relative z-10">
-          <header className="max-w-4xl mb-20">
-            <h2 className="text-2xl md:text-5xl font-playfair font-black mb-6 leading-tight">
-              {whyChooseUs.heading} <br />
-              <span className="text-secondary italic">{whyChooseUs.headingHighlight}</span>
-            </h2>
-            <div className="h-2 w-32 bg-secondary rounded-full" />
-          </header>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(whyChooseUs.reasons || []).map((reason: any, i: number) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                className="flex flex-col gap-6 p-10 bg-white/5 rounded-[3rem] border border-white/10 hover:bg-white/10 hover:border-secondary/30 transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary font-black shrink-0 group-hover:bg-secondary group-hover:text-primary transition-all">
-                    {i + 1}
-                  </div>
-                  <h4 className="text-xl font-playfair font-black text-white group-hover:text-secondary transition-colors leading-tight">
-                    {reason.title}
-                  </h4>
-                </div>
-                <p className="text-lg text-white/50 leading-relaxed font-light group-hover:text-white/80 transition-colors">
-                  {reason.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Excellence Section */}
       {excellence && excellence.length > 0 && (
