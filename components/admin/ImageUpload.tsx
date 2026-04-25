@@ -70,12 +70,11 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
       {value && (
         <div className="relative mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
           <div className="relative h-40 w-full">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={value}
               alt="Preview"
-              fill
-              className="object-cover"
-              unoptimized
+              className="w-full h-full object-cover"
             />
           </div>
           <button
@@ -89,6 +88,7 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
           </div>
         </div>
       )}
+
 
       {/* Upload Area */}
       <div

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiImageUpload from "@/components/admin/MultiImageUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
@@ -29,7 +30,9 @@ import {
   Trash,
   Edit3,
   Star,
-  Megaphone
+  Megaphone,
+  History,
+  HelpCircle
 } from "lucide-react";
 
 // ─── Sidebar Items ───
@@ -393,7 +396,9 @@ function HomepageTab() {
     { id: "stats", name: "Stats Bar", icon: TrendingUp },
     { id: "philosophy", name: "Philosophy Section", icon: BookOpen },
     { id: "campusHubs", name: "Campus Hubs", icon: Building2 },
+    { id: "background", name: "School Background", icon: History },
   ];
+
 
   return (
     <div className="space-y-8">
@@ -464,7 +469,17 @@ function HomepageTab() {
           saving={saving === "campusHubs"}
         />
       )}
+
+      {/* Background Editor */}
+      {activeSection === "background" && content && (
+        <HomeBackgroundEditor
+          background={content.background}
+          onSave={(data: any) => saveSection("background", { background: data })}
+          saving={saving === "background"}
+        />
+      )}
     </div>
+
   );
 }
 
@@ -472,7 +487,7 @@ function HomepageTab() {
 function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (s: any[]) => void; saving: boolean }) {
   const [localSlides, setLocalSlides] = useState(slides);
 
-  const updateSlide = (idx: number, field: string, value: string) => {
+  const updateSlide = (idx: number, field: string, value: string | string[]) => {
     const updated = [...localSlides];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalSlides(updated);
@@ -500,7 +515,15 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
             <InputField label="CTA Button Text" value={slide.cta} onChange={(v: string) => updateSlide(idx, "cta", v)} />
             <InputField label="CTA Link" value={slide.link} onChange={(v: string) => updateSlide(idx, "link", v)} />
             <div className="md:col-span-2">
-              <ImageUpload label="Slide Image" value={slide.image} onChange={(v: string) => updateSlide(idx, "image", v)} />
+              <MultiImageUpload
+                label="Slide Images (multiple images will auto-cycle as background)"
+                values={slide.images && slide.images.length > 0 ? slide.images : (slide.image ? [slide.image] : [])}
+                onChange={(urls: string[]) => {
+                  updateSlide(idx, "images", urls);
+                  if (urls.length > 0) updateSlide(idx, "image", urls[0]);
+                }}
+                maxImages={8}
+              />
             </div>
             <div className="md:col-span-2">
               <TextareaField label="Description" value={slide.description} onChange={(v: string) => updateSlide(idx, "description", v)} />
@@ -643,7 +666,7 @@ function PlaceholderTab({ title, description }: { title: string; description: st
 function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: any[]) => void; saving: boolean }) {
   const [localHubs, setLocalHubs] = useState(hubs);
 
-  const updateHub = (idx: number, field: string, value: string) => {
+  const updateHub = (idx: number, field: string, value: string | string[]) => {
     const updated = [...localHubs];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalHubs(updated);
@@ -662,7 +685,15 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
               <InputField label="Title" value={hub.title} onChange={(v: string) => updateHub(idx, "title", v)} />
               <InputField label="Page Link ID (e.g. block-a)" value={hub.id} onChange={(v: string) => updateHub(idx, "id", v)} />
               <div className="md:col-span-2">
-                <ImageUpload label="Campus Image" value={hub.img} onChange={(v: string) => updateHub(idx, "img", v)} />
+                <MultiImageUpload
+                  label="Campus Images (slides inside the hub card)"
+                  values={hub.images && hub.images.length > 0 ? hub.images : (hub.img ? [hub.img] : [])}
+                  onChange={(urls: string[]) => {
+                    updateHub(idx, "images", urls);
+                    if (urls.length > 0) updateHub(idx, "img", urls[0]);
+                  }}
+                  maxImages={6}
+                />
               </div>
               <div className="md:col-span-2">
                 <TextareaField label="Description" value={hub.desc} onChange={(v: string) => updateHub(idx, "desc", v)} />
@@ -769,10 +800,11 @@ function AboutTab() {
       </div>
     );
   }
-
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "legacy", name: "Legacy Section", icon: Building2 },
+    { id: "principalMessage", name: "Principal's Message", icon: MessageSquare },
+    { id: "whyChooseUs", name: "Why Choose Us", icon: HelpCircle },
     { id: "excellence", name: "Excellence in Education", icon: Star },
     { id: "valuesScroll", name: "Values & Features", icon: BookOpen },
   ];
@@ -819,6 +851,14 @@ function AboutTab() {
         />
       )}
 
+      {activeSection === "whyChooseUs" && content && (
+        <AboutWhyChooseUsEditor
+          whyChooseUs={content.whyChooseUs}
+          onSave={(data: any) => saveSection("whyChooseUs", { whyChooseUs: data })}
+          saving={saving === "whyChooseUs"}
+        />
+      )}
+
       {activeSection === "excellence" && content && (
         <AboutExcellenceEditor
           excellence={content.excellence || defaultAboutContent.excellence}
@@ -832,6 +872,14 @@ function AboutTab() {
           valuesScroll={content.valuesScroll || defaultAboutContent.valuesScroll}
           onSave={(valuesScroll: any) => saveSection("valuesScroll", { valuesScroll })}
           saving={saving === "valuesScroll"}
+        />
+      )}
+
+      {activeSection === "principalMessage" && content && (
+        <AboutPrincipalMessageEditor
+          principalMessage={content.principalMessage || (defaultAboutContent as any).principalMessage}
+          onSave={(data: any) => saveSection("principalMessage", { principalMessage: data })}
+          saving={saving === "principalMessage"}
         />
       )}
     </div>
@@ -848,13 +896,14 @@ function AboutHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any)
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <h4 className="text-lg font-playfair font-black text-primary mb-6">About Us: Hero Section</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Heading Prefix" value={local.heading} onChange={(v) => update("heading", v)} />
-          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
+          <InputField label="Subheading (Badge Text)" value={local.subheading} onChange={(v: string) => update("subheading", v)} />
+          <InputField label="Heading Prefix" value={local.heading} onChange={(v: string) => update("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v: string) => update("headingHighlight", v)} />
           <div className="md:col-span-2">
-            <ImageUpload label="Hero Background Image" value={local.image} onChange={(v) => update("image", v)} />
+            <ImageUpload label="Hero Background Image" value={local.image} onChange={(v: string) => update("image", v)} />
           </div>
           <div className="md:col-span-2">
-            <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
+            <TextareaField label="Description" value={local.description} onChange={(v: string) => update("description", v)} />
           </div>
         </div>
       </div>
@@ -893,20 +942,21 @@ function AboutLegacyEditor({ legacy, onSave, saving }: { legacy: any; onSave: (l
           <InputField label="Stat 2 Label" value={local.stat2Label} onChange={(v) => update("stat2Label", v)} />
 
           <div className="md:col-span-2 mt-6 mb-2">
-            <h5 className="font-bold text-gray-700 uppercase text-xs tracking-widest border-b border-gray-100 pb-2">Archive / Small Images</h5>
+            <h5 className="font-bold text-gray-700 uppercase text-xs tracking-widest border-b border-gray-100 pb-2">Archive Images (Slideshow)</h5>
           </div>
 
           <InputField label="Archive Mini-Title" value={local.archiveYear} onChange={(v) => update("archiveYear", v)} />
           <InputField label="Archive Main Title" value={local.archiveTitle} onChange={(v) => update("archiveTitle", v)} />
 
           <div className="md:col-span-2">
-            <ImageUpload label="Main Archive Image (Large)" value={local.imageMain} onChange={(v) => update("imageMain", v)} />
-          </div>
-          <div className="md:col-span-2">
-            <ImageUpload label="Small Image 1 (Top right)" value={local.imageSmall1} onChange={(v) => update("imageSmall1", v)} />
-          </div>
-          <div className="md:col-span-2">
-            <ImageUpload label="Small Image 2 (Bottom right)" value={local.imageSmall2} onChange={(v) => update("imageSmall2", v)} />
+            <MultiImageUpload
+              label="Legacy Section Images (will slide in the right column)"
+              values={local.images && local.images.length > 0 ? local.images : [local.imageMain, local.imageSmall1, local.imageSmall2].filter(Boolean)}
+              onChange={(urls: string[]) => {
+                update("images", urls);
+              }}
+              maxImages={8}
+            />
           </div>
         </div>
       </div>
@@ -917,6 +967,71 @@ function AboutLegacyEditor({ legacy, onSave, saving }: { legacy: any; onSave: (l
     </div>
   );
 }
+
+// ─── About Why Choose Us Editor ───
+function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: any; onSave: (w: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(whyChooseUs || {
+    heading: "Why Choose Our School",
+    headingHighlight: "A Destination for Bright Futures",
+    reasons: []
+  });
+
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  const addReason = () => update("reasons", [...(local.reasons || []), { title: "", description: "" }]);
+  const removeReason = (idx: number) => update("reasons", (local.reasons || []).filter((_: any, i: number) => i !== idx));
+  const updateReason = (idx: number, subField: string, val: string) => {
+    const updated = [...(local.reasons || [])];
+    updated[idx] = { ...updated[idx], [subField]: val };
+    update("reasons", updated);
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6 border-b border-gray-50 pb-4">Heading Content</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
+          <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v: string) => update("headingHighlight", v)} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
+          <h4 className="text-lg font-playfair font-black text-primary">Reasons (Cards)</h4>
+          <button onClick={addReason} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add Reason
+          </button>
+        </div>
+        <div className="space-y-6">
+          {(local.reasons || []).map((reason: any, idx: number) => (
+            <div key={idx} className="flex gap-4 items-start p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
+              <span className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-primary font-bold text-sm shrink-0">{idx + 1}</span>
+              <div className="flex-1 grid grid-cols-1 gap-4">
+                <InputField label="Reason Title" value={reason.title} onChange={(v: string) => updateReason(idx, "title", v)} />
+                <TextareaField label="Reason Description" value={reason.description} onChange={(v: string) => updateReason(idx, "description", v)} />
+              </div>
+              <button onClick={() => removeReason(idx)} className="p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer">
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+          {local.reasons?.length === 0 && (
+             <div className="text-center py-10 text-gray-400 font-medium italic">No reasons added yet.</div>
+          )}
+        </div>
+      </div>
+
+      <div className="pt-6">
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
+          <Save size={18} /> {saving ? "Saving..." : "Save Why Choose Us Content"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
 // ─── About Excellence Editor ───
 function AboutExcellenceEditor({ excellence, onSave, saving }: { excellence: any[]; onSave: (e: any[]) => void; saving: boolean }) {
@@ -972,7 +1087,7 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
     setLocal({ ...local, features: local.features.filter((_: any, i: number) => i !== idx) });
   };
 
-  const updateFeature = (idx: number, field: string, value: string) => {
+  const updateFeature = (idx: number, field: string, value: string | string[]) => {
     const newFeatures = [...(local.features || [])];
     newFeatures[idx] = { ...newFeatures[idx], [field]: value };
     setLocal({ ...local, features: newFeatures });
@@ -999,7 +1114,15 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
             </button>
             <div className="flex-1 w-full grid grid-cols-1 gap-4">
               <InputField label={`Feature ${idx + 1} Title`} value={feature.title} onChange={(v) => updateFeature(idx, "title", v)} />
-              <ImageUpload label="Background Image (Optional)" value={feature.image} onChange={(v) => updateFeature(idx, "image", v)} />
+              <MultiImageUpload
+                label="Feature Images (slides in the card)"
+                values={feature.images && feature.images.length > 0 ? feature.images : (feature.image ? [feature.image] : [])}
+                onChange={(urls: string[]) => {
+                  updateFeature(idx, "images", urls);
+                  if (urls.length > 0) updateFeature(idx, "image", urls[0]);
+                }}
+                maxImages={5}
+              />
             </div>
           </div>
         ))}
@@ -1108,6 +1231,7 @@ function AcademicsTab() {
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
     { id: "programs", name: "Programs Section", icon: BookOpen },
+    { id: "journey", name: "Academic Journey", icon: History },
     { id: "activities", name: "Activities Section", icon: Building2 },
     { id: "teacherDuties", name: "Teacher Duty Plan", icon: Users },
   ];
@@ -1150,6 +1274,14 @@ function AcademicsTab() {
           programs={content.programs || defaultAcademicsContent.programs}
           onSave={(programs: any[]) => saveSection("programs", { programs })}
           saving={saving === "programs"}
+        />
+      )}
+
+      {activeSection === "journey" && content && (
+        <AcademicsJourneyEditor
+          journey={content.journey}
+          onSave={(data: any) => saveSection("journey", { journey: data })}
+          saving={saving === "journey"}
         />
       )}
 
@@ -1325,6 +1457,78 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
         <button onClick={() => onSave(localActivities)} disabled={saving}
           className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
           <Save size={18} /> {saving ? "Saving..." : "Save Activities"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Academics Journey Editor ───
+function AcademicsJourneyEditor({ journey, onSave, saving }: { journey: any; onSave: (j: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(journey || {
+    title: "A Journey of Excellence in Education",
+    subtitle: "M. G. School Journey so far… milestones in last 6 decades:",
+    paragraphs: [],
+    milestones: []
+  });
+
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  const addMilestone = () => update("milestones", [...(local.milestones || []), { year: "", achievement: "" }]);
+  const removeMilestone = (idx: number) => update("milestones", (local.milestones || []).filter((_: any, i: number) => i !== idx));
+  const updateMilestone = (idx: number, field: string, val: string) => {
+    const updated = [...(local.milestones || [])];
+    updated[idx] = { ...updated[idx], [field]: val };
+    update("milestones", updated);
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6 border-b border-gray-50 pb-4">Journey Content</h4>
+        <div className="grid grid-cols-1 gap-6">
+          <InputField label="Title" value={local.title} onChange={(v: string) => update("title", v)} />
+          <InputField label="Milestones Subtitle" value={local.subtitle} onChange={(v: string) => update("subtitle", v)} />
+          <div>
+            <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Paragraphs (Separate with | character)</label>
+            <textarea
+              value={(local.paragraphs || []).join(" | ")}
+              onChange={(e) => update("paragraphs", e.target.value.split("|").map(s => s.trim()).filter(Boolean))}
+              rows={8}
+              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all resize-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
+          <h4 className="text-lg font-playfair font-black text-primary">Milestones (Timeline)</h4>
+          <button onClick={addMilestone} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add Milestone
+          </button>
+        </div>
+        <div className="space-y-4">
+          {(local.milestones || []).map((ms: any, idx: number) => (
+            <div key={idx} className="flex gap-4 items-center p-4 bg-slate-50 rounded-2xl border border-gray-100">
+              <div className="w-24">
+                <InputField label="Year" value={ms.year} onChange={(v: string) => updateMilestone(idx, "year", v)} />
+              </div>
+              <div className="flex-1">
+                <InputField label="Achievement" value={ms.achievement} onChange={(v: string) => updateMilestone(idx, "achievement", v)} />
+              </div>
+              <button onClick={() => removeMilestone(idx)} className="p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer mt-5">
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-6">
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
+          <Save size={18} /> {saving ? "Saving..." : "Save Journey Content"}
         </button>
       </div>
     </div>
@@ -3009,6 +3213,47 @@ function AnnouncementTab() {
           className="flex items-center gap-3 bg-primary text-white px-8 py-3 rounded-2xl font-bold hover:bg-secondary hover:text-primary transition-all cursor-pointer disabled:opacity-60"
         >
           <Save size={18} /> {saving ? "Saving…" : "Save Announcement"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── About Principal Message Editor ───
+function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { principalMessage: any; onSave: (p: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(principalMessage || {
+    heading: "Principal Message",
+    message: "",
+    name: "",
+    qualifications: "",
+    designation: "",
+    image: ""
+  });
+
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6 border-b border-gray-50 pb-4">Principal's Details</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
+          <InputField label="Principal Name" value={local.name} onChange={(v: string) => update("name", v)} />
+          <InputField label="Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
+          <InputField label="Designation / School" value={local.designation} onChange={(v: string) => update("designation", v)} />
+          <div className="md:col-span-2">
+            <ImageUpload label="Principal Photo" value={local.image} onChange={(v: string) => update("image", v)} />
+          </div>
+          <div className="md:col-span-2">
+            <TextareaField label="Message Content (Use double enter for paragraphs)" value={local.message} onChange={(v: string) => update("message", v)} />
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-6">
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
+          <Save size={18} /> {saving ? "Saving..." : "Save Principal Message"}
         </button>
       </div>
     </div>

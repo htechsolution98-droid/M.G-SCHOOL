@@ -4,6 +4,7 @@ import AboutContent, { IAboutContent } from "@/models/AboutContent";
 const defaultAboutContent = {
   hero: {
     image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+    subheading: "About M.G. School",
     heading: "Our Journey of ",
     headingHighlight: "Success.",
     description: "Three decades of academic excellence, carving a legacy that inspires generations.",
@@ -56,6 +57,14 @@ const defaultAboutContent = {
       { title: "Peer-to-Peer Mentorship", image: "" },
       { title: "International Exchange", image: "" }
     ]
+  },
+  principalMessage: {
+    heading: "Principal Message",
+    message: "Dear Staff and Parents,\n\nWarm greetings to you all.\n\nAs we begin a new academic year at MG Primary School, I would like to share our vision rooted in the timeless values of Ahimsa (non-violence) and Truthfulness, inspired by Mahatma Gandhiji. These principles are not only ideals but essential life skills that help shape responsible and compassionate human beings.\n\nAt our school, we strive to create a safe, respectful, and inclusive environment where every child learns the importance of kindness, empathy, honesty, and integrity. By practicing Ahimsa, we encourage our students to show care and respect towards others in thought, word, and action. Through Truthfulness, we guide them to always stand by honesty and develop strong moral character.\n\nOur dedicated staff members play a crucial role in nurturing these values alongside academic excellence. I sincerely appreciate their continuous efforts and commitment.\n\nTo our dear parents, your support and cooperation are invaluable. When school and home work together, children receive the right guidance to grow into ethical and confident individuals.\n\nLet us join hands to instill these noble values in our children so that they not only succeed in academics but also become good human beings who contribute positively to society.\n\nWishing you all a peaceful, truthful, and successful academic year ahead.",
+    name: "Namrata Motwani",
+    qualifications: "B.A., M.A. (English Literature, Education)",
+    designation: "MG Primary School",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976"
   }
 };
 
@@ -64,11 +73,29 @@ export async function getAboutContent() {
   let content = await AboutContent.findOne();
   if (!content) {
     content = await AboutContent.create(defaultAboutContent);
-  } else if (!content.excellence || content.excellence.length === 0) {
-    content.excellence = defaultAboutContent.excellence as any;
+    return content;
+  }
+
+  // Ensure all sections exist (for older documents)
+  let updated = false;
+  if (!content.hero) { content.hero = defaultAboutContent.hero; updated = true; }
+  if (!content.legacy) { content.legacy = defaultAboutContent.legacy; updated = true; }
+  if (!content.whyChooseUs) { content.whyChooseUs = defaultAboutContent.whyChooseUs; updated = true; }
+  if (!content.principalMessage || !content.principalMessage.heading) { 
+    content.principalMessage = (defaultAboutContent as any).principalMessage; 
+    updated = true; 
+  }
+  if (!content.excellence || content.excellence.length === 0) { 
+    content.excellence = defaultAboutContent.excellence as any; 
+    updated = true; 
+  }
+  if (!content.valuesScroll) { content.valuesScroll = defaultAboutContent.valuesScroll; updated = true; }
+
+  if (updated) {
     await content.save();
   }
-  return content;
+  
+  return content.toObject ? content.toObject() : content;
 }
 
 export async function updateAboutHero(hero: any) {
@@ -117,6 +144,20 @@ export async function updateAboutValuesScroll(valuesScroll: any) {
     content = await AboutContent.create({ ...defaultAboutContent, valuesScroll });
   } else {
     content.valuesScroll = valuesScroll;
+    content.updatedAt = new Date();
+    await content.save();
+  }
+  return content;
+}
+
+export async function updatePrincipalMessage(principalMessage: any) {
+  await connectDB();
+  let content = await AboutContent.findOne();
+  if (!content) {
+    content = await AboutContent.create({ ...defaultAboutContent, principalMessage });
+  } else {
+    content.principalMessage = { ...principalMessage };
+    content.markModified("principalMessage");
     content.updatedAt = new Date();
     await content.save();
   }

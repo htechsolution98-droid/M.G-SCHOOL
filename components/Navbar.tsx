@@ -11,9 +11,12 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [branchesOpen, setBranchesOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [mobileBranchesOpen, setMobileBranchesOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const aboutDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -26,6 +29,9 @@ const Navbar = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setBranchesOpen(false);
       }
+      if (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target as Node)) {
+        setAboutOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -34,7 +40,7 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "About", href: "/about" },
+    { name: "About", href: "/about", hasDropdown: true },
     { name: "Academics", href: "/academics" },
     { name: "Branches", href: "/branches", hasDropdown: true },
     { name: "Faculty", href: "/faculty" },
@@ -46,6 +52,11 @@ const Navbar = () => {
     { name: "Block A", subtitle: "Foundation Campus", href: "/branches/block-a" },
     { name: "Block B", subtitle: "Academic Center", href: "/branches/block-b" },
     { name: "Block C", subtitle: "International Hub", href: "/branches/block-c" },
+  ];
+
+  const aboutSubLinks = [
+    { name: "Principal's Message", subtitle: "Welcome Address", href: "/about/principal-message" },
+    { name: "Why Choose Us", subtitle: "Future-Ready Education", href: "/about#why-choose" },
   ];
 
   return (
@@ -77,20 +88,28 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               link.hasDropdown ? (
-                <div key={link.href} className="relative" ref={dropdownRef}>
+                <div key={link.href} className="relative" ref={link.name === "Branches" ? dropdownRef : aboutDropdownRef}>
                   <button
-                    onClick={() => setBranchesOpen(!branchesOpen)}
+                    onClick={() => {
+                      if (link.name === "Branches") {
+                        setBranchesOpen(!branchesOpen);
+                        setAboutOpen(false);
+                      } else {
+                        setAboutOpen(!aboutOpen);
+                        setBranchesOpen(false);
+                      }
+                    }}
                     className={cn(
                       "px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:bg-primary/5 flex items-center gap-1.5 cursor-pointer",
-                      pathname.startsWith("/branches") ? "text-primary bg-primary/10" : "text-gray-600 hover:text-primary"
+                      pathname.startsWith(link.href) ? "text-primary bg-primary/10" : "text-gray-600 hover:text-primary"
                     )}
                   >
                     {link.name}
-                    <ChevronDown size={14} className={cn("transition-transform duration-300", branchesOpen && "rotate-180")} />
+                    <ChevronDown size={14} className={cn("transition-transform duration-300", (link.name === "Branches" ? branchesOpen : aboutOpen) && "rotate-180")} />
                   </button>
 
                   <AnimatePresence>
-                    {branchesOpen && (
+                    {((link.name === "Branches" && branchesOpen) || (link.name === "About" && aboutOpen)) && (
                       <motion.div
                         initial={{ opacity: 0, y: 8, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -98,23 +117,23 @@ const Navbar = () => {
                         transition={{ duration: 0.2 }}
                         className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
                       >
-                        {/* All Branches link */}
+                        {/* All link */}
                         <Link
-                          href="/branches"
+                          href={link.href}
                           prefetch={true}
-                          onClick={() => setBranchesOpen(false)}
+                          onClick={() => { setBranchesOpen(false); setAboutOpen(false); }}
                           className="block px-6 py-4 text-sm font-black text-primary hover:bg-primary/5 transition-all border-b border-gray-100"
                         >
-                          All Branches
+                          {link.name === "About" ? "Overview" : "All Branches"}
                         </Link>
 
                         {/* Sub-links */}
-                        {branchSubLinks.map((sub) => (
+                        {(link.name === "About" ? aboutSubLinks : branchSubLinks).map((sub) => (
                           <Link
                             key={sub.href}
                             href={sub.href}
                             prefetch={true}
-                            onClick={() => setBranchesOpen(false)}
+                            onClick={() => { setBranchesOpen(false); setAboutOpen(false); }}
                             className="flex items-center gap-4 px-6 py-4 hover:bg-primary/5 transition-all group/item"
                           >
                             <div className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0 group-hover/item:scale-125 transition-transform" />
@@ -185,29 +204,37 @@ const Navbar = () => {
                   {link.hasDropdown ? (
                     <>
                       <button
-                        onClick={() => setMobileBranchesOpen(!mobileBranchesOpen)}
+                        onClick={() => {
+                          if (link.name === "Branches") {
+                            setMobileBranchesOpen(!mobileBranchesOpen);
+                            setMobileAboutOpen(false);
+                          } else {
+                            setMobileAboutOpen(!mobileAboutOpen);
+                            setMobileBranchesOpen(false);
+                          }
+                        }}
                         className={cn(
                           "text-4xl font-playfair font-bold py-2 flex items-center gap-3 w-full text-left cursor-pointer",
-                          pathname.startsWith("/branches") ? "text-secondary" : "text-white/60 hover:text-white"
+                          pathname.startsWith(link.href) ? "text-secondary" : "text-white/60 hover:text-white"
                         )}
                       >
                         {link.name}
-                        <ChevronDown size={24} className={cn("transition-transform duration-300", mobileBranchesOpen && "rotate-180")} />
+                        <ChevronDown size={24} className={cn("transition-transform duration-300", (link.name === "Branches" ? mobileBranchesOpen : mobileAboutOpen) && "rotate-180")} />
                       </button>
                       <AnimatePresence>
-                        {mobileBranchesOpen && (
+                        {((link.name === "Branches" && mobileBranchesOpen) || (link.name === "About" && mobileAboutOpen)) && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden ml-6 space-y-2"
                           >
-                            {branchSubLinks.map((sub) => (
+                            {(link.name === "About" ? aboutSubLinks : branchSubLinks).map((sub) => (
                               <Link
                                 key={sub.href}
                                 href={sub.href}
                                 prefetch={true}
-                                onClick={() => { setIsOpen(false); setMobileBranchesOpen(false); }}
+                                onClick={() => { setIsOpen(false); setMobileBranchesOpen(false); setMobileAboutOpen(false); }}
                                 className="flex items-center gap-3 py-2"
                               >
                                 <div className="w-2 h-2 rounded-full bg-secondary" />

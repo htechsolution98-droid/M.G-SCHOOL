@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import HeroSlider from "@/components/HeroSlider";
+import CampusHubCard from "@/components/CampusHubCard";
 import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -88,6 +89,29 @@ export default function Home() {
       img: "/images/school3 (1).jpg"
     }
   ];
+
+  const background = content?.background || {
+    badge: "Established 1948",
+    title: "Background of",
+    titleHighlight: "The School.",
+    description: "",
+    history: [
+      "After Independence Sindhis migrated from Sindh, strived for their basic facilities & needs. In these difficult times great personalities like Dr. Choithram Gidwani, Shri Jairamdas Doulatram, Shri Jivanlal Jairamdas, Prof. Ghanshyam Shivdasani, Prof. Gurbaxani, Shri Mansingh Chuharmal, Shri Gianchand Jodhani & others came forward and worked hard and successfully established the first Sindhi School named Mahatma Gandhi High School at Kubernagar on 5th August, 1948.",
+      "Though Devlali (Nasik) was selected initially, it was shifted to Ahmedabad as Sindhi population was thick here. At Sardarnagar became a separate entity under same management in 1959 known as Dr. Choithram Gidwani High School. Presently we are having four schools in Kuber Nagar (Two in Sindhi Medium & Two in English Medium)."
+    ],
+    approvedCentreTitle: "Approved Centre",
+    approvedCentreDesc: "Official centre for SCOPE and GKS courses.",
+    sindhiMediumTitle: "A. Sindhi Medium",
+    sindhiSchools: [
+      { name: "M.G. Secondary & Higher Secondary School", details: "(Grant in aid)", subDetails: "[Std. VIII to XII (General and Science Stream)] [With XI Science English Medium from June'10]" },
+      { name: "M.G. Primary School", details: "(Non-Granted)", subDetails: "(Std. IV to VII)" }
+    ],
+    englishMediumTitle: "B. English Medium",
+    englishSchools: [
+      { name: "Saint Mira English School", details: "(Non-Granted)", subDetails: "(Nursery to Std. VII)" },
+      { name: "M.G. Secondary School", details: "(Non-Granted)", subDetails: "Std. VIII to Std. X" }
+    ]
+  };
 
   const heroSlides = content?.heroSlides || null;
 
@@ -194,57 +218,119 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {campusHubs.map((item: any, idx: number) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="group relative h-[600px] rounded-[4rem] overflow-hidden shadow-2xl cursor-pointer"
-              >
-                <Image 
-                  src={item.img} 
-                  alt={item.name} 
-                  fill 
-                  className="object-cover group-hover:scale-110 transition-transform duration-1000" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent" />
-                
-                <div className="absolute inset-x-0 bottom-0 p-10 flex flex-col justify-end h-1/2">
-                  <div className="glass p-8 rounded-[3rem] border border-white/20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className="text-secondary text-[10px] font-black uppercase tracking-[0.4em] mb-3">{item.hub}</div>
-                    <h3 className="text-3xl font-playfair font-black text-primary mb-4">{item.name}: <span className="italic">{item.title}</span></h3>
-                    <p className="text-gray-500 text-sm font-medium leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2">
-                      {item.desc}
-                    </p>
-                    <Link href={`/branches/${item.id}`} className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest hover:text-secondary transition-colors">
-                      Enter Campus <ArrowRight size={16} />
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
+              <CampusHubCard key={item.id} item={item} delay={idx * 0.1} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Modern CTA */}
-      <section className="section-padding container-custom">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="bg-primary rounded-[5rem] p-16 md:p-32 text-center text-white relative overflow-hidden shadow-3xl"
-        >
-          <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <h2 className="text-3xl md:text-[7rem] font-playfair text-secondary leading-none mb-10">Start Your <span className="text-secondary italic">Future</span> Today.</h2>
-          <p className="text-2xl text-white/60 mb-16 max-w-2xl mx-auto font-light leading-relaxed">Join a community of thousands already crafting their success stories at M.G. School.</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-8">
-            <Link href="/contact" className="bg-secondary text-primary px-16 py-6 rounded-[2rem] font-black text-xl hover:bg-white transition-all shadow-2xl active:scale-95">Enroll Now</Link>
-            <Link href="/academics" className="border border-white/30 text-white px-16 py-6 rounded-[2rem] font-black text-xl hover:bg-white hover:text-primary transition-all shadow-2xl active:scale-95">View Academy</Link>
+
+      {/* Background of the School - Legacy & Structure */}
+      <section className="section-padding bg-white relative overflow-hidden">
+        <div className="container-custom">
+          <div className="flex flex-col lg:flex-row gap-20 items-start">
+            {/* Left Column: History */}
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-1/2"
+            >
+              <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">
+                {background.badge}
+              </div>
+              <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-10 leading-tight">
+                {background.title} <br />
+                <span className="italic text-secondary">{background.titleHighlight}</span>
+              </h2>
+              <div className="space-y-6 text-lg text-gray-500 font-light leading-relaxed">
+                {(background.history || []).length > 0 ? (
+                  background.history.map((para: string, i: number) => (
+                    <p key={i}>{para}</p>
+                  ))
+                ) : (
+                  <p>{background.description}</p>
+                )}
+              </div>
+
+              <div className="mt-12 p-8 bg-slate-50 rounded-[3rem] border border-gray-100 flex items-center gap-6">
+                <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center text-primary shadow-xl">
+                  <Award size={32} />
+                </div>
+                <div>
+                  <h4 className="text-xl font-playfair font-black text-primary">
+                    {background.approvedCentreTitle}
+                  </h4>
+                  <p className="text-gray-400 text-sm">
+                    {background.approvedCentreDesc}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column: School Structure */}
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-1/2 grid grid-cols-1 gap-8"
+            >
+              {/* Sindhi Medium Card */}
+              <div className="bg-primary rounded-[3rem] p-10 text-white shadow-3xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-primary">
+                    <BookOpen size={24} />
+                  </div>
+                  <h3 className="text-2xl font-playfair font-black">
+                    {background.sindhiMediumTitle}
+                  </h3>
+                </div>
+                <ul className="space-y-6">
+                  {(background.sindhiSchools || []).map((school: any, i: number) => (
+                    <li key={i} className="flex gap-4">
+                      <span className="text-secondary font-black">{i + 1}.</span>
+                      <div>
+                        <p className="font-bold text-lg">{school.name}</p>
+                        <p className="text-white/60 text-sm">{school.details}</p>
+                        <p className="text-white/40 text-xs mt-1">{school.subDetails}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* English Medium Card */}
+              <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+                    <Users size={24} />
+                  </div>
+                  <h3 className="text-2xl font-playfair font-black text-primary">
+                    {background.englishMediumTitle}
+                  </h3>
+                </div>
+                <ul className="space-y-6 text-primary">
+                  {(background.englishSchools || []).map((school: any, i: number) => (
+                    <li key={i} className="flex gap-4">
+                      <span className="text-secondary font-black">{i + 1}.</span>
+                      <div>
+                        <p className="font-bold text-lg">{school.name}</p>
+                        <p className="text-gray-400 text-sm">{school.details}</p>
+                        <p className="text-gray-400 text-xs mt-1">{school.subDetails}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </section>
+
+
+
     </div>
   );
 }

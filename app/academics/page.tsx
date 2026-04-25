@@ -80,17 +80,28 @@ const Academics = () => {
     { icon: <Globe className="w-10 h-10" />, name: "Global Language Lab" },
   ];
 
-  const activities = (content?.activities && content.activities.length > 0) ? content.activities : [
-    {
-      title: "Extracurricular Programs",
-      description: "Our comprehensive extracurricular programs run throughout the academic year, fostering teamwork, leadership, and physical excellence across multiple disciplines.",
-      images: [
-        "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
-        "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
+  const journeyData = content?.journey;
+  const journey = {
+    title: journeyData?.title || "A Journey of Excellence in Education",
+    subtitle: journeyData?.subtitle || "M. G. School Journey so far… milestones in last 6 decades:",
+    paragraphs: (journeyData?.paragraphs && journeyData.paragraphs.length > 0)
+      ? journeyData.paragraphs
+      : [
+        "M. G. School stands as a premier institution with over 62 years of excellence in education. From its humble beginning in 1948 with just 36 students, the school has grown into one of the largest institutions in the Sindhi community in India, proudly serving over 1500 students while earning the trust and confidence of society.",
+        "We believe in personalized learning, where every child matters. With limited class sizes, teachers provide individual attention, and dedicated mentoring ensures that each student, including slow learners, receives the guidance they need to succeed.",
+        "Our approach promotes balanced and stress-free education through interactive learning methods, including reading programs, spoken English, educational software, projects, and experiential activities such as visits and excursions. This ensures the overall development of every student.",
+      ],
+    milestones: (journeyData?.milestones && journeyData.milestones.length > 0)
+      ? journeyData.milestones
+      : [
+        { year: "1948", achievement: "Starting M. G. School" },
+        { year: "1976", achievement: "10+2 Pattern: starting Science & General streams" },
+        { year: "1995", achievement: "Introduced Computer Education" },
+        { year: "2000", achievement: "Starting English Medium" },
+        { year: "2009", achievement: "Infrastructure Accelerated" },
+        { year: "2010", achievement: "XI, XII Science stream converted to English medium (Granted)" }
       ]
-    }
-  ];
+  };
 
   return (
     <div className="pt-24 min-h-screen mb-32">
@@ -216,73 +227,61 @@ const Academics = () => {
         </div>
       </section>
 
-      {/* Dynamic Activities Section */}
-      <section className="section-padding bg-slate-50 mt-32 rounded-[5rem] border border-gray-100">
-        <div className="container-custom">
-          <SectionTitle
-            title="Beyond the Classroom"
-            subtitle="Engaging activities that foster creativity, leadership, and holistic development."
-          />
-
-          <div className="mt-20 px-4 md:px-12 relative">
-            <Swiper
-              modules={[Autoplay, Navigation, Pagination]}
-              spaceBetween={40}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              className="pb-16"
+      {/* Academic Journey & Milestones */}
+      <section className="section-padding bg-slate-50 mt-20 rounded-[5rem] border border-gray-100 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col lg:flex-row gap-20">
+            {/* Left: Journey Text */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-3/5"
             >
-              {activities.map((activity: any, idx: number) => (
-                <SwiperSlide key={idx}>
-                  <div className="bg-white rounded-[4rem] p-10 md:p-16 shadow-xl border border-gray-100 mx-2 mb-10">
-                    <div className="text-center mb-12">
-                      <h3 className="text-4xl font-playfair font-black text-primary mb-6">{activity.title}</h3>
-                      <p className="text-lg md:text-xl text-gray-500 leading-relaxed max-w-3xl mx-auto">
-                        <ReadMore text={activity.description} limit={150} />
-                      </p>
-                    </div>
+              <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-6">Our Legacy</h2>
+              <h3 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-12 leading-tight">
+                {journey.title}
+              </h3>
+              <div className="space-y-8 text-xl text-gray-500 font-light leading-relaxed">
+                {(journey.paragraphs || []).map((p: string, i: number) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            </motion.div>
 
-                    {activity.images && activity.images.length > 0 && (
-                      <div className="rounded-[3rem] overflow-hidden shadow-lg">
-                        <Swiper
-                          modules={[Autoplay, EffectFade]}
-                          effect="fade"
-                          speed={1000}
-                          autoplay={{ delay: 3000, disableOnInteraction: false }}
-                          loop
-                          className="w-full h-[400px] md:h-[500px]"
-                        >
-                          {activity.images.map((img: string, imgIdx: number) => {
-                            if (!img) return null;
-                            return (
-                              <SwiperSlide key={imgIdx}>
-                                <div className="relative w-full h-full">
-                                  <Image
-                                    src={img}
-                                    alt={`${activity.title} image ${imgIdx + 1}`}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                                </div>
-                              </SwiperSlide>
-                            );
-                          })}
-                        </Swiper>
-                      </div>
-                    )}
+            {/* Right: Milestones Timeline */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-2/5 bg-white rounded-[4rem] p-12 shadow-2xl border border-gray-100"
+            >
+              <h4 className="text-xl font-playfair font-black text-primary mb-12 border-b border-gray-100 pb-6">
+                {journey.subtitle}
+              </h4>
+              <div className="space-y-10 relative">
+                <div className="absolute left-[23px] top-2 bottom-2 w-0.5 bg-gray-100" />
+                {(journey.milestones || []).map((ms: any, i: number) => (
+                  <div key={i} className="flex gap-8 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-secondary font-black shrink-0 shadow-lg border-4 border-white">
+                      {ms.year.slice(-2)}
+                    </div>
+                    <div>
+                      <div className="text-primary font-black text-lg mb-1">{ms.year}</div>
+                      <div className="text-gray-500 font-medium leading-relaxed">{ms.achievement}</div>
+                    </div>
                   </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Teacher Duty Distribution Plan */}
       {content?.teacherDuties && content.teacherDuties.length > 0 && (
-        <section className="section-padding container-custom mt-20">
+        <section className="pb-24 md:pb-32 pt-10 container-custom">
           <div className="mb-16 text-center">
             <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-4">Notice / Updates</h2>
             <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary">Teacher Duty Plan 2026–27</h3>

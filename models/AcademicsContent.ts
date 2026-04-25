@@ -31,10 +31,21 @@ export interface ITeacherDuty {
   description: string;
 }
 
+export interface IAcademicsJourney {
+  title: string;
+  subtitle: string;
+  paragraphs: string[];
+  milestones: {
+    year: string;
+    achievement: string;
+  }[];
+}
+
 export interface IAcademicsContent extends Document {
   hero: IAcademicsHero;
   programs: IAcademicsProgram[];
   activities: IAcademicsActivity[];
+  journey: IAcademicsJourney;
   teacherDuties: ITeacherDuty[];
   updatedAt: Date;
 }
@@ -73,6 +84,17 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
       description: { type: String, default: "" },
     }
   ],
+  journey: {
+    title: { type: String, default: "A Journey of Excellence in Education" },
+    subtitle: { type: String, default: "M. G. School Journey so far… milestones in last 6 decades" },
+    paragraphs: [{ type: String }],
+    milestones: [
+      {
+        year: { type: String },
+        achievement: { type: String }
+      }
+    ]
+  },
   updatedAt: { type: Date, default: Date.now },
 });
 

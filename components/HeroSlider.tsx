@@ -18,6 +18,7 @@ import "swiper/css/effect-fade";
 const defaultSlides = [
   {
     image: "/images/kids-school (1).jpg",
+    images: [],
     tagline: "Premier Education",
     title: "Where Dreams Take Flight",
     description: "Developing global leaders through a perfect blend of tradition and innovation since 1995.",
@@ -26,6 +27,7 @@ const defaultSlides = [
   },
   {
     image: "/images/proud-teacher-with-her-elementary-students (1).jpg",
+    images: [],
     tagline: "Academic Rigor",
     title: "A Tradition of Excellence",
     description: "Empowering every student with the tools to excel in an ever-evolving world.",
@@ -34,6 +36,7 @@ const defaultSlides = [
   },
   {
     image: "/images/school3 (1).jpg",
+    images: [],
     tagline: "Holistic Growth",
     title: "Nurturing Every Talent",
     description: "Beyond textbooks: cultivating creativity, sportsmanship, and moral integrity.",
@@ -44,6 +47,61 @@ const defaultSlides = [
 
 interface HeroSliderProps {
   slides?: any[] | null;
+}
+
+/** Inner component that cycles through multiple background images for a single slide */
+function SlideBackground({ slide }: { slide: any }) {
+  const allImages: string[] = (slide.images && slide.images.length > 0)
+    ? slide.images
+    : (slide.image ? [slide.image] : []);
+
+  const [imgIdx, setImgIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (allImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setImgIdx((prev) => (prev + 1) % allImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [allImages.length]);
+
+  if (allImages.length === 0) return null;
+
+  return (
+    <>
+      {allImages.map((src, i) => (
+        <motion.div
+          key={src + i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: i === imgIdx ? 1 : 0 }}
+          transition={{ duration: 1.2 }}
+          className="absolute inset-0"
+          style={{ zIndex: i === imgIdx ? 1 : 0 }}
+        >
+          <Image
+            src={src}
+            alt={slide.title}
+            fill
+            className="object-cover brightness-[0.4]"
+            priority={i === 0}
+            sizes="100vw"
+          />
+        </motion.div>
+      ))}
+      {/* Image counter dots */}
+      {allImages.length > 1 && (
+        <div className="absolute top-6 right-6 z-10 flex gap-1.5">
+          {allImages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setImgIdx(i)}
+              className={`h-2 rounded-full transition-all cursor-pointer ${i === imgIdx ? "bg-secondary w-5" : "bg-white/40 w-2"}`}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
 }
 
 const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
@@ -73,27 +131,13 @@ const HeroSlider = ({ slides: propSlides }: HeroSliderProps) => {
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
             <div className="relative h-full w-full flex items-center">
-              {/* Background with Zoom Effect */}
-              <motion.div
-                initial={{ scale: 1.1 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 10, ease: "linear" }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={slide.image}
-                  alt={slide.title}
-                  fill
-                  className="object-cover brightness-[0.4]"
-                  priority={index === 0}
-                  sizes="100vw"
-                />
-              </motion.div>
+              {/* Multi-image cycling background */}
+              <SlideBackground slide={slide} />
 
               {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent z-10" />
 
-              <div className="container-custom relative z-10">
+              <div className="container-custom relative z-20">
                 <div className="max-w-3xl">
                   <motion.div
                     initial={{ y: 20, opacity: 0 }}

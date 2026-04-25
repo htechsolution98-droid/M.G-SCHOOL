@@ -5,11 +5,13 @@ import {
   updateAboutLegacy,
   updateAboutExcellence,
   updateAboutValuesScroll,
+  updatePrincipalMessage,
 } from "@/services/aboutContentService";
 
 export async function handleGetAboutContent() {
   try {
     const content = await getAboutContent();
+    console.log("RETURNING ABOUT CONTENT KEYS:", Object.keys(content));
     return NextResponse.json({ success: true, content });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -35,6 +37,9 @@ export async function handleUpdateAboutContent(req: NextRequest) {
         break;
       case "valuesScroll":
         content = await updateAboutValuesScroll(sectionData.valuesScroll);
+        break;
+      case "principalMessage":
+        content = await updatePrincipalMessage(sectionData.principalMessage);
         break;
       default:
         throw new Error("Invalid section");
