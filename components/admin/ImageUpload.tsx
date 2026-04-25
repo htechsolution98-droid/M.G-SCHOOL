@@ -9,9 +9,11 @@ interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   label?: string;
+  contain?: boolean;
+  compact?: boolean;
 }
 
-export default function ImageUpload({ value, onChange, label = "Image" }: ImageUploadProps) {
+export default function ImageUpload({ value, onChange, label = "Image", contain = false, compact = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState("");
@@ -62,19 +64,19 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
 
   return (
     <div>
-      <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">
+      <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400 mb-2">
         {label}
       </label>
 
       {/* Preview */}
       {value && (
-        <div className="relative mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
-          <div className="relative h-40 w-full">
+        <div className="relative mb-3 rounded-2xl overflow-hidden border border-gray-100 bg-slate-50">
+          <div className={`relative ${compact ? "h-32" : "h-48"} w-full flex items-center justify-center p-2`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={value}
               alt="Preview"
-              className="w-full h-full object-cover"
+              className={`max-w-full max-h-full ${contain ? "object-contain" : "object-cover w-full h-full"}`}
             />
           </div>
           <button
@@ -83,8 +85,8 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
           >
             <X size={14} />
           </button>
-          <div className="px-4 py-2 bg-white border-t border-gray-100">
-            <p className="text-[11px] text-gray-400 font-medium truncate">{value}</p>
+          <div className="px-3 py-1.5 bg-white border-t border-gray-100">
+            <p className="text-[9px] text-gray-400 font-medium truncate">{value}</p>
           </div>
         </div>
       )}
@@ -96,7 +98,7 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+        className={`relative border-2 border-dashed rounded-2xl ${compact ? "p-4" : "p-6"} text-center cursor-pointer transition-all ${
           dragOver
             ? "border-primary bg-primary/5"
             : "border-gray-200 hover:border-primary/30 hover:bg-gray-50"
@@ -104,20 +106,29 @@ export default function ImageUpload({ value, onChange, label = "Image" }: ImageU
       >
         {uploading ? (
           <div className="flex flex-col items-center gap-2">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
-            <span className="text-xs font-bold text-gray-400">Uploading...</span>
+            <Loader2 className={`text-primary animate-spin ${compact ? "w-6 h-6" : "w-8 h-8"}`} />
+            <span className="text-[10px] font-bold text-gray-400">Uploading...</span>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center">
-              <Upload className="w-5 h-5 text-primary" />
+            <div className={`${compact ? "w-8 h-8" : "w-12 h-12"} rounded-xl bg-primary/5 flex items-center justify-center`}>
+              <Upload className={`${compact ? "w-4 h-4" : "w-5 h-5"} text-primary`} />
             </div>
-            <p className="text-xs font-bold text-gray-500">
-              Click to upload or drag & drop
-            </p>
-            <p className="text-[10px] text-gray-300 font-medium">
-              JPG, PNG, WebP, GIF • Max 5MB
-            </p>
+            {!compact && (
+              <>
+                <p className="text-xs font-bold text-gray-500">
+                  Click to upload
+                </p>
+                <p className="text-[10px] text-gray-300 font-medium">
+                  Max 5MB
+                </p>
+              </>
+            )}
+            {compact && (
+              <p className="text-[10px] font-bold text-gray-400">
+                Upload
+              </p>
+            )}
           </div>
         )}
 

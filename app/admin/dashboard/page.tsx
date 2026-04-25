@@ -1996,24 +1996,35 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
             <Plus size={14} /> Add Faculty
           </button>
         </div>
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {(local.faculty || []).map((member: any, idx: number) => (
-            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative">
-              <button onClick={() => removeFaculty(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
-              <h5 className="text-sm font-bold text-primary mb-4">Faculty Member {idx + 1}</h5>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div key={idx} className="p-5 border border-gray-100 rounded-3xl bg-gray-50 relative flex flex-col sm:flex-row gap-5">
+              <button onClick={() => removeFaculty(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-100 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
+              
+              {/* Image Column */}
+              <div className="w-full sm:w-28 shrink-0">
+                <ImageUpload 
+                  label="Photo" 
+                  value={member.image} 
+                  onChange={(v) => updateFaculty(idx, "image", v)} 
+                  contain={true}
+                  compact={true}
+                />
+              </div>
+
+              {/* Info Column */}
+              <div className="flex-1 space-y-3">
                 <InputField label="Name" value={member.name} onChange={(v) => updateFaculty(idx, "name", v)} />
                 <InputField label="Role" value={member.role} onChange={(v) => updateFaculty(idx, "role", v)} />
-                <InputField label="Education" value={member.education} onChange={(v) => updateFaculty(idx, "education", v)} />
-                <InputField label="Subject" value={member.subject} onChange={(v) => updateFaculty(idx, "subject", v)} />
-                <div className="md:col-span-2">
-                  <ImageUpload label="Profile Image" value={member.image} onChange={(v) => updateFaculty(idx, "image", v)} />
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Education" value={member.education} onChange={(v) => updateFaculty(idx, "education", v)} />
+                  <InputField label="Subject" value={member.subject} onChange={(v) => updateFaculty(idx, "subject", v)} />
                 </div>
               </div>
             </div>
           ))}
           {(!local.faculty || local.faculty.length === 0) && (
-            <p className="text-sm text-gray-400 text-center py-4">No faculty members added yet.</p>
+            <p className="text-sm text-gray-400 text-center py-4 lg:col-span-2">No faculty members added yet.</p>
           )}
         </div>
       </div>
@@ -2201,36 +2212,49 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
 
   return (
     <div className="space-y-6">
-      {localMembers.map((member, idx) => (
-        <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
-          <div className="flex items-center justify-between mb-6">
-            <h4 className="text-lg font-playfair font-black text-primary">Faculty Member {idx + 1}: {member.name || "New Member"}</h4>
-            <button onClick={() => removeMember(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InputField label="Full Name" value={member.name} onChange={(v) => updateMember(idx, "name", v)} />
-            <InputField label="Designation" value={member.designation} onChange={(v) => updateMember(idx, "designation", v)} />
-            <InputField label="Expertise" value={member.expertise} onChange={(v) => updateMember(idx, "expertise", v)} />
-            <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
-            <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
-            <div>
-              <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Campus Block</label>
-              <select
-                value={member.block}
-                onChange={(e) => updateMember(idx, "block", e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
-              >
-                <option value="Block A">Block A</option>
-                <option value="Block B">Block B</option>
-                <option value="Block C">Block C</option>
-              </select>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {localMembers.map((member, idx) => (
+          <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative flex flex-col sm:flex-row gap-5">
+            <button onClick={() => removeMember(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
+            
+            {/* Image Column */}
+            <div className="w-full sm:w-28 shrink-0">
+              <ImageUpload 
+                label="Photo" 
+                value={member.image} 
+                onChange={(v) => updateMember(idx, "image", v)} 
+                contain={true}
+                compact={true}
+              />
             </div>
-            <div className="md:col-span-2">
-              <ImageUpload label="Profile Photo" value={member.image} onChange={(v) => updateMember(idx, "image", v)} />
+
+            {/* Info Column */}
+            <div className="flex-1 space-y-3">
+              <InputField label="Full Name" value={member.name} onChange={(v) => updateMember(idx, "name", v)} />
+              <InputField label="Designation" value={member.designation} onChange={(v) => updateMember(idx, "designation", v)} />
+              <div className="grid grid-cols-2 gap-3">
+                <InputField label="Expertise" value={member.expertise} onChange={(v) => updateMember(idx, "expertise", v)} />
+                <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Block</label>
+                  <select
+                    value={member.block}
+                    onChange={(e) => updateMember(idx, "block", e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+                  >
+                    <option value="Block A">Block A</option>
+                    <option value="Block B">Block B</option>
+                    <option value="Block C">Block C</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       <div className="flex gap-4">
         <button onClick={addMember} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
           <Plus size={18} /> Add Faculty Member
@@ -2808,50 +2832,53 @@ function StudentsTab() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
         {students.map((std, idx) => (
-          <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
-                {std.image ? <img src={std.image} className="w-full h-full object-cover" /> : <Users className="w-full h-full p-4 text-gray-200" />}
-              </div>
-              <div className="min-w-0">
-                <p className="text-lg font-black text-primary truncate">{std.name}</p>
-                <p className="text-xs font-bold text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
-              </div>
+          <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg flex flex-col sm:flex-row gap-5">
+            {/* Image Column */}
+            <div className="w-full sm:w-28 shrink-0">
+              <ImageUpload 
+                label="Photo" 
+                value={std.image} 
+                onChange={(v) => {
+                  const updated = [...students];
+                  updated[idx].image = v;
+                  setStudents(updated);
+                }} 
+                contain={true}
+                compact={true}
+              />
             </div>
-            <div className="space-y-4">
+
+            {/* Info Column */}
+            <div className="flex-1 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
+                <button onClick={() => deleteStudent(std._id)} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100">
+                  <Trash2 size={14} />
+                </button>
+              </div>
               <InputField label="Full Name" value={std.name} onChange={(v) => {
                 const updated = [...students];
                 updated[idx].name = v;
                 setStudents(updated);
               }} />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
                   const updated = [...students];
                   updated[idx].rollNo = v;
                   setStudents(updated);
                 }} />
-                <InputField label="Admission No" value={std.admissionNo} onChange={(v) => {
+                <InputField label="Admission" value={std.admissionNo} onChange={(v) => {
                   const updated = [...students];
                   updated[idx].admissionNo = v;
                   setStudents(updated);
                 }} />
               </div>
-              <ImageUpload label="Profile Photo" value={std.image} onChange={(v) => {
-                const updated = [...students];
-                updated[idx].image = v;
-                setStudents(updated);
-              }} />
-              <div className="flex gap-2 pt-2">
-                <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
-                  className="flex-1 bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 shadow-sm transition-all">
-                  {saving === (std._id || "new") ? "..." : "Save Record"}
-                </button>
-                <button onClick={() => deleteStudent(std._id)} className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
+                className="w-full bg-primary text-white py-2 rounded-xl text-[10px] font-bold hover:opacity-90 shadow-sm transition-all mt-2">
+                {saving === (std._id || "new") ? "..." : "Save Record"}
+              </button>
             </div>
           </div>
         ))}
@@ -3237,17 +3264,29 @@ function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { pri
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <h4 className="text-lg font-playfair font-black text-primary mb-6 border-b border-gray-50 pb-4">Principal's Details</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
-          <InputField label="Principal Name" value={local.name} onChange={(v: string) => update("name", v)} />
-          <InputField label="Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
-          <InputField label="Designation / School" value={local.designation} onChange={(v: string) => update("designation", v)} />
-          <div className="md:col-span-2">
-            <ImageUpload label="Principal Photo" value={local.image} onChange={(v: string) => update("image", v)} />
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-1/3">
+            <ImageUpload 
+              label="Principal Photo" 
+              value={local.image} 
+              onChange={(v: string) => update("image", v)} 
+              contain={true}
+              compact={true}
+            />
           </div>
-          <div className="md:col-span-2">
-            <TextareaField label="Message Content (Use double enter for paragraphs)" value={local.message} onChange={(v: string) => update("message", v)} />
+          <div className="flex-1 space-y-4">
+            <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField label="Principal Name" value={local.name} onChange={(v: string) => update("name", v)} />
+              <InputField label="Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
+              <div className="md:col-span-2">
+                <InputField label="Designation / School" value={local.designation} onChange={(v: string) => update("designation", v)} />
+              </div>
+            </div>
           </div>
+        </div>
+        <div className="mt-6">
+          <TextareaField label="Message Content (Use double enter for paragraphs)" value={local.message} onChange={(v: string) => update("message", v)} />
         </div>
       </div>
 
