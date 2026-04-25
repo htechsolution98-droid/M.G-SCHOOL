@@ -483,6 +483,137 @@ function HomepageTab() {
   );
 }
 
+// ─── Home Background Editor ───
+function HomeBackgroundEditor({ background, onSave, saving }: { background: any; onSave: (b: any) => void; saving: boolean }) {
+  const [local, setLocal] = useState(background || {});
+
+  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  const updateHistory = (idx: number, value: string) => {
+    const newHistory = [...(local.history || [])];
+    newHistory[idx] = value;
+    update("history", newHistory);
+  };
+
+  const addHistory = () => update("history", [...(local.history || []), ""]);
+  const removeHistory = (idx: number) => update("history", (local.history || []).filter((_: any, i: number) => i !== idx));
+
+  const updateSchool = (type: "sindhiSchools" | "englishSchools", idx: number, field: string, value: string) => {
+    const schools = [...(local[type] || [])];
+    schools[idx] = { ...schools[idx], [field]: value };
+    update(type, schools);
+  };
+
+  const addSchool = (type: "sindhiSchools" | "englishSchools") => update(type, [...(local[type] || []), { name: "", details: "", subDetails: "" }]);
+  const removeSchool = (type: "sindhiSchools" | "englishSchools", idx: number) => update(type, (local[type] || []).filter((_: any, i: number) => i !== idx));
+
+  return (
+    <div className="space-y-8">
+      {/* Overview Section */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Background: Section Overview</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <InputField label="Section Badge" value={local.badge} onChange={(v) => update("badge", v)} />
+          <InputField label="Heading Prefix" value={local.title} onChange={(v) => update("title", v)} />
+          <InputField label="Heading Highlight" value={local.titleHighlight} onChange={(v) => update("titleHighlight", v)} />
+          <div className="md:col-span-3">
+            <TextareaField label="Main Description" value={local.description} onChange={(v) => update("description", v)} />
+          </div>
+        </div>
+      </div>
+
+      {/* History Paragraphs */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-lg font-playfair font-black text-primary">History Paragraphs</h4>
+          <button onClick={addHistory} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add Paragraph
+          </button>
+        </div>
+        <div className="space-y-4">
+          {(local.history || []).map((p: string, idx: number) => (
+            <div key={idx} className="flex gap-4 items-start">
+              <div className="flex-1">
+                <TextareaField label={`Paragraph ${idx + 1}`} value={p} onChange={(v) => updateHistory(idx, v)} />
+              </div>
+              <button onClick={() => removeHistory(idx)} className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all cursor-pointer mt-8">
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Approved Centre Section */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Approved Centre Details</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Centre Heading" value={local.approvedCentreTitle} onChange={(v) => update("approvedCentreTitle", v)} />
+          <InputField label="Centre Description" value={local.approvedCentreDesc} onChange={(v) => update("approvedCentreDesc", v)} />
+        </div>
+      </div>
+
+      {/* Sindhi Medium Schools */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-lg font-playfair font-black text-primary">Sindhi Medium: School List</h4>
+          <button onClick={() => addSchool("sindhiSchools")} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add School
+          </button>
+        </div>
+        <div className="mb-6">
+          <InputField label="Sindhi Medium Title" value={local.sindhiMediumTitle} onChange={(v) => update("sindhiMediumTitle", v)} />
+        </div>
+        <div className="space-y-6">
+          {(local.sindhiSchools || []).map((s: any, idx: number) => (
+            <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
+              <button onClick={() => removeSchool("sindhiSchools", idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <InputField label="School Name" value={s.name} onChange={(v) => updateSchool("sindhiSchools", idx, "name", v)} />
+                <InputField label="Details" value={s.details} onChange={(v) => updateSchool("sindhiSchools", idx, "details", v)} />
+                <InputField label="Additional Details" value={s.subDetails} onChange={(v) => updateSchool("sindhiSchools", idx, "subDetails", v)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* English Medium Schools */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-lg font-playfair font-black text-primary">English Medium: School List</h4>
+          <button onClick={() => addSchool("englishSchools")} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add School
+          </button>
+        </div>
+        <div className="mb-6">
+          <InputField label="English Medium Title" value={local.englishMediumTitle} onChange={(v) => update("englishMediumTitle", v)} />
+        </div>
+        <div className="space-y-6">
+          {(local.englishSchools || []).map((s: any, idx: number) => (
+            <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
+              <button onClick={() => removeSchool("englishSchools", idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <InputField label="School Name" value={s.name} onChange={(v) => updateSchool("englishSchools", idx, "name", v)} />
+                <InputField label="Details" value={s.details} onChange={(v) => updateSchool("englishSchools", idx, "details", v)} />
+                <InputField label="Additional Details" value={s.subDetails} onChange={(v) => updateSchool("englishSchools", idx, "subDetails", v)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-6">
+        <button onClick={() => onSave(local)} disabled={saving}
+          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
+          <Save size={18} /> {saving ? "Saving..." : "Save Background Content"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 // ─── Hero Slides Editor ───
 function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (s: any[]) => void; saving: boolean }) {
   const [localSlides, setLocalSlides] = useState(slides);
@@ -3294,135 +3425,6 @@ function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { pri
         <button onClick={() => onSave(local)} disabled={saving}
           className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
           <Save size={18} /> {saving ? "Saving..." : "Save Principal Message"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function HomeBackgroundEditor({ background, onSave, saving }: { background: any; onSave: (b: any) => void; saving: boolean }) {
-  const [local, setLocal] = useState(background || {});
-
-  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
-
-  const updateHistory = (idx: number, value: string) => {
-    const newHistory = [...(local.history || [])];
-    newHistory[idx] = value;
-    update("history", newHistory);
-  };
-
-  const addHistory = () => update("history", [...(local.history || []), ""]);
-  const removeHistory = (idx: number) => update("history", (local.history || []).filter((_: any, i: number) => i !== idx));
-
-  const updateSchool = (type: "sindhiSchools" | "englishSchools", idx: number, field: string, value: string) => {
-    const schools = [...(local[type] || [])];
-    schools[idx] = { ...schools[idx], [field]: value };
-    update(type, schools);
-  };
-
-  const addSchool = (type: "sindhiSchools" | "englishSchools") => update(type, [...(local[type] || []), { name: "", details: "", subDetails: "" }]);
-  const removeSchool = (type: "sindhiSchools" | "englishSchools", idx: number) => update(type, (local[type] || []).filter((_: any, i: number) => i !== idx));
-
-  return (
-    <div className="space-y-8">
-      {/* Overview Section */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <h4 className="text-lg font-playfair font-black text-primary mb-6">Background: Section Overview</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <InputField label="Section Badge" value={local.badge} onChange={(v) => update("badge", v)} />
-          <InputField label="Heading Prefix" value={local.title} onChange={(v) => update("title", v)} />
-          <InputField label="Heading Highlight" value={local.titleHighlight} onChange={(v) => update("titleHighlight", v)} />
-          <div className="md:col-span-3">
-            <TextareaField label="Main Description" value={local.description} onChange={(v) => update("description", v)} />
-          </div>
-        </div>
-      </div>
-
-      {/* History Paragraphs */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-playfair font-black text-primary">History Paragraphs</h4>
-          <button onClick={addHistory} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
-            <Plus size={14} /> Add Paragraph
-          </button>
-        </div>
-        <div className="space-y-4">
-          {(local.history || []).map((p: string, idx: number) => (
-            <div key={idx} className="flex gap-4 items-start">
-              <div className="flex-1">
-                <TextareaField label={`Paragraph ${idx + 1}`} value={p} onChange={(v) => updateHistory(idx, v)} />
-              </div>
-              <button onClick={() => removeHistory(idx)} className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all cursor-pointer mt-8">
-                <Trash2 size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Approved Centre Section */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <h4 className="text-lg font-playfair font-black text-primary mb-6">Approved Centre Details</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Centre Heading" value={local.approvedCentreTitle} onChange={(v) => update("approvedCentreTitle", v)} />
-          <InputField label="Centre Description" value={local.approvedCentreDesc} onChange={(v) => update("approvedCentreDesc", v)} />
-        </div>
-      </div>
-
-      {/* Sindhi Medium Schools */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-playfair font-black text-primary">Sindhi Medium: School List</h4>
-          <button onClick={() => addSchool("sindhiSchools")} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
-            <Plus size={14} /> Add School
-          </button>
-        </div>
-        <div className="mb-6">
-          <InputField label="Sindhi Medium Title" value={local.sindhiMediumTitle} onChange={(v) => update("sindhiMediumTitle", v)} />
-        </div>
-        <div className="space-y-6">
-          {(local.sindhiSchools || []).map((s: any, idx: number) => (
-            <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
-              <button onClick={() => removeSchool("sindhiSchools", idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <InputField label="School Name" value={s.name} onChange={(v) => updateSchool("sindhiSchools", idx, "name", v)} />
-                <InputField label="Details" value={s.details} onChange={(v) => updateSchool("sindhiSchools", idx, "details", v)} />
-                <InputField label="Additional Details" value={s.subDetails} onChange={(v) => updateSchool("sindhiSchools", idx, "subDetails", v)} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* English Medium Schools */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-playfair font-black text-primary">English Medium: School List</h4>
-          <button onClick={() => addSchool("englishSchools")} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
-            <Plus size={14} /> Add School
-          </button>
-        </div>
-        <div className="mb-6">
-          <InputField label="English Medium Title" value={local.englishMediumTitle} onChange={(v) => update("englishMediumTitle", v)} />
-        </div>
-        <div className="space-y-6">
-          {(local.englishSchools || []).map((s: any, idx: number) => (
-            <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
-              <button onClick={() => removeSchool("englishSchools", idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <InputField label="School Name" value={s.name} onChange={(v) => updateSchool("englishSchools", idx, "name", v)} />
-                <InputField label="Details" value={s.details} onChange={(v) => updateSchool("englishSchools", idx, "details", v)} />
-                <InputField label="Additional Details" value={s.subDetails} onChange={(v) => updateSchool("englishSchools", idx, "subDetails", v)} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="pt-6">
-        <button onClick={() => onSave(local)} disabled={saving}
-          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
-          <Save size={18} /> {saving ? "Saving..." : "Save Background Content"}
         </button>
       </div>
     </div>
