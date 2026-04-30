@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function AnnouncementBanner() {
   const [announcement, setAnnouncement] = useState<any>(null);
   const [dismissed, setDismissed] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const prevTextRef = useRef<string>("");
 
   const fetchData = useCallback(() => {
@@ -107,12 +108,30 @@ export default function AnnouncementBanner() {
 
             {/* Description */}
             {announcement.description && (
-              <p
-                className="text-xs leading-relaxed mb-3 font-medium opacity-80"
-                style={{ color: announcement.textColor || "#1E3A8A" }}
-              >
-                {announcement.description}
-              </p>
+              <div className="mb-3">
+                <div
+                  className="text-xs leading-relaxed font-medium opacity-80 space-y-1"
+                  style={{ color: announcement.textColor || "#1E3A8A" }}
+                >
+                  {(isExpanded || announcement.description.length <= 150 
+                    ? announcement.description 
+                    : announcement.description.substring(0, 150) + "..."
+                  ).split('\n').map((line: string, i: number) => (
+                    <div key={i} className={line.trim() === '' ? 'h-1.5' : ''}>
+                      {line}
+                    </div>
+                  ))}
+                </div>
+                {announcement.description.length > 150 && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-[10px] font-black mt-1 opacity-90 hover:opacity-100 cursor-pointer"
+                    style={{ color: announcement.textColor || "#1E3A8A" }}
+                  >
+                    {isExpanded ? "Read less" : "Read more"}
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Marquee text (main announcement text) */}

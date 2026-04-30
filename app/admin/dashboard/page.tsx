@@ -3193,6 +3193,7 @@ function AnnouncementTab() {
   const [data, setData] = useState<any>(defaultData);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [previewExpanded, setPreviewExpanded] = useState(false);
 
   useEffect(() => {
     axiosInstance.get("/api/announcement")
@@ -3247,7 +3248,7 @@ function AnnouncementTab() {
 
         {/* Description */}
         <div>
-          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Description</label>
+          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Description (Use enter for paragraphs / points)</label>
           <textarea
             value={data.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
@@ -3344,7 +3345,25 @@ function AnnouncementTab() {
                   </div>
                 </div>
                 {data.description && (
-                  <p className="text-[11px] opacity-80 leading-relaxed" style={{ color: data.textColor }}>{data.description}</p>
+                  <div className="mb-2">
+                    <div className="text-[11px] opacity-80 leading-relaxed space-y-1" style={{ color: data.textColor }}>
+                      {(previewExpanded || data.description.length <= 150
+                        ? data.description
+                        : data.description.substring(0, 150) + "..."
+                      ).split('\n').map((line: string, i: number) => (
+                        <div key={i} className={line.trim() === '' ? 'h-1.5' : ''}>{line}</div>
+                      ))}
+                    </div>
+                    {data.description.length > 150 && (
+                      <button
+                        onClick={() => setPreviewExpanded(!previewExpanded)}
+                        className="text-[10px] font-black mt-1 opacity-90 hover:opacity-100 cursor-pointer"
+                        style={{ color: data.textColor }}
+                      >
+                        {previewExpanded ? "Read less" : "Read more"}
+                      </button>
+                    )}
+                  </div>
                 )}
                 {data.text && (
                   <div className="overflow-hidden">
