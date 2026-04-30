@@ -3,7 +3,7 @@
 import React from "react";
 import SectionTitle from "@/components/SectionTitle";
 import Image from "next/image";
-import { Target, Eye, ShieldCheck, History, ArrowDown, MessageSquare } from "lucide-react";
+import { Target, Eye, ShieldCheck, History, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
@@ -177,13 +177,7 @@ export default function About() {
 
 
 
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 bg-white/10 backdrop-blur-md p-4 rounded-full border border-white/20"
-        >
-          <ArrowDown className="text-white" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 6
-        </motion.div>
+
       </section>
 
       {/* Legacy Section - Sophisticated Split */}

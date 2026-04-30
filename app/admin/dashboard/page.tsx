@@ -40,6 +40,7 @@ const sidebarItems = [
   { id: "overview", name: "Overview", icon: LayoutDashboard },
   { id: "homepage", name: "Homepage", icon: Home },
   { id: "about", name: "About Us", icon: BookOpen },
+  { id: "trustees", name: "Trustees", icon: Users },
   { id: "academics", name: "Academics", icon: GraduationCap },
   { id: "students", name: "Students", icon: Users },
   { id: "branches", name: "Branches", icon: Building2 },
@@ -201,6 +202,7 @@ export default function AdminDashboard() {
           {activeTab === "overview" && <OverviewTab />}
           {activeTab === "homepage" && <HomepageTab />}
           {activeTab === "about" && <AboutTab />}
+          {activeTab === "trustees" && <TrusteesTab />}
           {activeTab === "academics" && <AcademicsTab />}
           {activeTab === "students" && <StudentsTab />}
           {activeTab === "branches" && <BranchesTab />}
@@ -3445,6 +3447,121 @@ function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { pri
           className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
           <Save size={18} /> {saving ? "Saving..." : "Save Principal Message"}
         </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Trustees Tab ───
+function TrusteesTab() {
+  const [content, setContent] = useState<any>({ hero: { heading: "Our Trustees", description: "", image: "" }, trustees: [] });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    axiosInstance.get("/api/trustees-content")
+      .then((res) => {
+        if (res.data.success) setContent(res.data.content);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const save = async () => {
+    setSaving(true);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/trustees-content", content);
+      if (res.data.success) {
+        setMessage("Saved successfully!");
+      } else {
+        setMessage("Error saving.");
+      }
+    } catch {
+      setMessage("Failed to save.");
+    }
+    setSaving(false);
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  const addTrustee = () => {
+    setContent({
+      ...content,
+      trustees: [...content.trustees, { name: "New Trustee", designation: "", description: "", image: "" }]
+    });
+  };
+
+  const updateTrustee = (idx: number, field: string, val: string) => {
+    const updated = [...content.trustees];
+    updated[idx][field] = val;
+    setContent({ ...content, trustees: updated });
+  };
+
+  const removeTrustee = (idx: number) => {
+    if (confirm("Remove this trustee?")) {
+      const updated = content.trustees.filter((_: any, i: number) => i !== idx);
+      setContent({ ...content, trustees: updated });
+    }
+  };
+
+  if (loading) return <div className="py-20 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full" /></div>;
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-playfair font-black text-primary">Trustees Management</h3>
+          <p className="text-sm text-gray-500 mt-1">Manage the trustees page content and list of trustees.</p>
+        </div>
+        <button onClick={save} disabled={saving} className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm shadow-lg hover:bg-primary/90 transition-all cursor-pointer">
+          <Save size={18} /> {saving ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
+
+      {message && <div className={`p-4 rounded-xl text-sm font-bold ${message.startsWith("Error") || message.startsWith("Failed") ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-600"}`}>{message}</div>}
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
+        <h4 className="text-lg font-playfair font-black text-primary border-b border-gray-50 pb-4">Hero Section</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Heading" value={content.hero?.heading || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
+          <InputField label="Description" value={content.hero?.description || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, description: v } })} />
+          <div className="md:col-span-2">
+            <ImageUpload label="Hero Background Image" value={content.hero?.image || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
+        <div className="flex items-center justify-between border-b border-gray-50 pb-4">
+          <h4 className="text-lg font-playfair font-black text-primary">Trustees List</h4>
+          <button onClick={addTrustee} className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-colors cursor-pointer">
+            <Plus size={14} /> Add Trustee
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          {content.trustees.map((t: any, idx: number) => (
+            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group">
+              <button onClick={() => removeTrustee(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-colors cursor-pointer opacity-0 group-hover:opacity-100">
+                <Trash2 size={16} />
+              </button>
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="w-full md:w-1/4">
+                  <ImageUpload label="Photo" value={t.image} onChange={(v) => updateTrustee(idx, "image", v)} contain={true} compact={true} />
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InputField label="Name" value={t.name} onChange={(v) => updateTrustee(idx, "name", v)} />
+                    <InputField label="Designation" value={t.designation} onChange={(v) => updateTrustee(idx, "designation", v)} />
+                  </div>
+                  <TextareaField label="Description (Paragraphs allowed)" value={t.description} onChange={(v) => updateTrustee(idx, "description", v)} />
+                </div>
+              </div>
+            </div>
+          ))}
+          {content.trustees.length === 0 && <p className="text-center text-sm text-gray-400 py-4">No trustees added yet.</p>}
+        </div>
       </div>
     </div>
   );

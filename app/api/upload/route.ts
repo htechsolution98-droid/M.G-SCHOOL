@@ -20,7 +20,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file size (max 2MB for Base64 storage)
+    // In development, save to public/uploads to avoid massive Base64 strings crashing Next.js dev server
+    if (process.env.NODE_ENV === "development") {
+      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '-')}`;
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(path.join(uploadDir, filename), buffer);
+
+      return NextResponse.json({
+        success: true,
+        url: `/uploads/${filename}`,
+        filename: file.name,
+        size: file.size,
+      });
+    }
+
+    // In production (Vercel), we must use Base64 because the filesystem is read-only
     const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
@@ -29,7 +46,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Convert file to buffer then to Base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64 = buffer.toString('base64');
