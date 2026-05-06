@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2, Star } from "lucide-react";
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
 
@@ -85,8 +85,13 @@ export default function ImageUpload({ value, onChange, label = "Image", contain 
           >
             <X size={14} />
           </button>
-          <div className="px-3 py-1.5 bg-white border-t border-gray-100">
-            <p className="text-[9px] text-gray-400 font-medium truncate">{value}</p>
+          <div className="px-3 py-1.5 bg-white border-t border-gray-100 flex items-center justify-between gap-4 overflow-hidden">
+            <p className="text-[9px] text-gray-400 font-medium truncate flex-1 min-w-0">
+              {value.startsWith("data:") ? "Base64 Image Data (Too long to display)" : value}
+            </p>
+            <div className="shrink-0 text-[8px] font-bold text-primary/40 uppercase tracking-tighter">
+              {value.length > 1000 ? `${(value.length / 1024).toFixed(1)} KB` : "External Link"}
+            </div>
           </div>
         </div>
       )}
@@ -142,13 +147,27 @@ export default function ImageUpload({ value, onChange, label = "Image", contain 
       </div>
 
       {/* Manual URL input */}
-      <div className="mt-3">
+      <div className="mt-3 relative">
         <input
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          value={value && value.startsWith("data:") ? "Base64 Data Attached" : (value || "")}
+          onChange={(e) => {
+            if (!value?.startsWith("data:")) {
+              onChange(e.target.value);
+            }
+          }}
+          readOnly={value && value.startsWith("data:") ? true : false}
           placeholder="Or paste image URL/path..."
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-medium text-gray-500 focus:outline-none focus:border-primary/30 focus:bg-white transition-all"
+          className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none transition-all ${
+            value && value.startsWith("data:") 
+              ? "text-emerald-500 border-emerald-100 bg-emerald-50/30 cursor-default" 
+              : "text-gray-500 focus:border-primary/30 focus:bg-white"
+          }`}
         />
+        {value && value.startsWith("data:") && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Star size={12} className="text-emerald-400 fill-emerald-400" />
+          </div>
+        )}
       </div>
 
       {/* Error */}

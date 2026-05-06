@@ -178,9 +178,9 @@ export default function AdminDashboard() {
       </AnimatePresence>
 
       {/* ─── Main Content ─── */}
-      <main className="flex-1 lg:ml-72 min-h-screen">
+      <main className="flex-1 lg:ml-72 min-h-screen w-full min-w-0 overflow-x-hidden flex flex-col">
         <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 lg:px-10 py-5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between max-w-[1600px] mx-auto w-full">
             <div className="flex items-center gap-4">
               <button className="lg:hidden p-2.5 rounded-xl bg-primary text-white cursor-pointer" onClick={() => setSidebarOpen(true)}><Menu size={20} /></button>
               <div>
@@ -198,22 +198,24 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        <div className="p-6 lg:p-10">
-          {activeTab === "overview" && <OverviewTab />}
-          {activeTab === "homepage" && <HomepageTab />}
-          {activeTab === "about" && <AboutTab />}
-          {activeTab === "trustees" && <TrusteesTab />}
-          {activeTab === "academics" && <AcademicsTab />}
-          {activeTab === "students" && <StudentsTab />}
-          {activeTab === "branches" && <BranchesTab />}
-          {activeTab === "faculty" && <FacultyTab />}
-          {activeTab === "life-at-mg" && <LifeAtMGTab />}
-          {activeTab === "gallery" && <GalleryTab />}
-          {activeTab === "events" && <EventsTab />}
-          {activeTab === "messages" && <MessagesTab />}
-          {activeTab === "enrollment" && <EnrollmentTab />}
-          {activeTab === "announcement" && <AnnouncementTab />}
-          {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
+        <div className="p-6 lg:p-10 flex-1 flex flex-col">
+          <div className="max-w-[1600px] mx-auto w-full flex-1">
+            {activeTab === "overview" && <OverviewTab />}
+            {activeTab === "homepage" && <HomepageTab />}
+            {activeTab === "about" && <AboutTab />}
+            {activeTab === "trustees" && <TrusteesTab />}
+            {activeTab === "academics" && <AcademicsTab />}
+            {activeTab === "students" && <StudentsTab />}
+            {activeTab === "branches" && <BranchesTab />}
+            {activeTab === "faculty" && <FacultyTab />}
+            {activeTab === "life-at-mg" && <LifeAtMGTab />}
+            {activeTab === "gallery" && <GalleryTab />}
+            {activeTab === "events" && <EventsTab />}
+            {activeTab === "messages" && <MessagesTab />}
+            {activeTab === "enrollment" && <EnrollmentTab />}
+            {activeTab === "announcement" && <AnnouncementTab />}
+            {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
+          </div>
         </div>
       </main>
     </div>
@@ -403,7 +405,7 @@ function HomepageTab() {
 
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-6xl mx-auto w-full">
       {/* DB Connection Warning */}
       {!dbConnected && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl px-6 py-4 text-sm font-medium text-amber-700">
@@ -943,7 +945,7 @@ function AboutTab() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-6xl mx-auto w-full">
       {/* Section Tabs */}
       <div className="flex flex-wrap gap-3">
         {sections.map((s) => {
@@ -2866,15 +2868,15 @@ function EventsTab() {
 
       <div className="grid grid-cols-1 gap-6">
         {events.map((event, idx) => (
-          <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-8 hover:shadow-md transition-all">
-            <div className="md:col-span-1">
+          <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-8 hover:shadow-md transition-all overflow-hidden">
+            <div className="lg:col-span-1 min-w-0">
               <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
                 const updated = [...events];
                 updated[idx].image = v;
                 setEvents(updated);
               }} />
             </div>
-            <div className="md:col-span-2 space-y-4">
+            <div className="lg:col-span-2 min-w-0 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField label="Title" value={event.title} onChange={(v) => {
                   const updated = [...events];
@@ -3413,40 +3415,83 @@ function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { pri
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <h4 className="text-lg font-playfair font-black text-primary mb-6 border-b border-gray-50 pb-4">Principal's Details</h4>
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="w-full md:w-1/3">
-            <ImageUpload 
-              label="Principal Photo" 
-              value={local.image} 
-              onChange={(v: string) => update("image", v)} 
-              contain={true}
-              compact={true}
-            />
-          </div>
-          <div className="flex-1 space-y-4">
-            <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField label="Principal Name" value={local.name} onChange={(v: string) => update("name", v)} />
-              <InputField label="Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
-              <div className="md:col-span-2">
-                <InputField label="Designation / School" value={local.designation} onChange={(v: string) => update("designation", v)} />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto w-full">
+      <div className="bg-white rounded-[2.5rem] p-8 lg:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden relative">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+        
+        <div className="relative">
+          <h4 className="text-2xl lg:text-3xl font-playfair font-black text-primary mb-10 border-b border-gray-50 pb-6 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+              <MessageSquare size={24} />
+            </div>
+            Principal's Message Content
+          </h4>
+          
+          <div className="flex flex-col lg:flex-row gap-12 items-start">
+            {/* Photo Section */}
+            <div className="w-full lg:w-80 shrink-0 min-w-0">
+              <ImageUpload 
+                label="Official Portrait" 
+                value={local.image} 
+                onChange={(v: string) => update("image", v)} 
+                contain={true}
+                compact={true}
+              />
+              <div className="mt-6 p-5 bg-primary/5 rounded-2xl border border-primary/10">
+                <h5 className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Image Requirements</h5>
+                <p className="text-[10px] text-gray-500 font-medium leading-relaxed">
+                  • Use a professional portrait<br/>
+                  • Neutral or school background preferred<br/>
+                  • Clear resolution (Max 2MB)
+                </p>
+              </div>
+            </div>
+
+            {/* bio Section */}
+            <div className="flex-1 w-full min-w-0 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                <div className="md:col-span-2">
+                  <InputField label="Section Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
+                </div>
+                <InputField label="Full Name" value={local.name} onChange={(v: string) => update("name", v)} />
+                <InputField label="Academic Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
+                <div className="md:col-span-2">
+                  <InputField label="Official Designation / Roles" value={local.designation} onChange={(v: string) => update("designation", v)} />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <TextareaField 
+                  label="The Principal's Message" 
+                  value={local.message} 
+                  onChange={(v: string) => update("message", v)} 
+                />
+                <div className="mt-4 flex items-center gap-3 px-4 py-2 bg-amber-50 rounded-xl border border-amber-100">
+                  <Star size={14} className="text-amber-500" />
+                  <p className="text-[10px] text-amber-700 font-bold italic uppercase tracking-wider">
+                    Format Tip: Press 'Enter' twice to create a clean paragraph break.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="mt-6">
-          <TextareaField label="Message Content (Use double enter for paragraphs)" value={local.message} onChange={(v: string) => update("message", v)} />
-        </div>
-      </div>
 
-      <div className="pt-6">
-        <button onClick={() => onSave(local)} disabled={saving}
-          className="flex items-center gap-2 px-12 py-4 rounded-2xl bg-primary text-white font-black text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-xl">
-          <Save size={18} /> {saving ? "Saving..." : "Save Principal Message"}
-        </button>
+          <div className="mt-12 pt-10 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full font-black text-[10px] uppercase tracking-widest">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              Changes will be reflected instantly
+            </div>
+            <button 
+              onClick={() => onSave(local)} 
+              disabled={saving}
+              className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 rounded-[1.25rem] bg-primary text-white font-black text-sm hover:bg-secondary hover:text-primary transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-2xl shadow-primary/20 hover:shadow-secondary/20 group"
+            >
+              <Save size={20} className="group-hover:scale-110 transition-transform" /> 
+              {saving ? "Publishing..." : "Update Principal Message"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -3542,15 +3587,15 @@ function TrusteesTab() {
         
         <div className="space-y-6">
           {content.trustees.map((t: any, idx: number) => (
-            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group">
+            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group overflow-hidden">
               <button onClick={() => removeTrustee(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-colors cursor-pointer opacity-0 group-hover:opacity-100">
                 <Trash2 size={16} />
               </button>
-              <div className="flex flex-col md:flex-row gap-8">
-                <div className="w-full md:w-1/4">
+              <div className="flex flex-col lg:flex-row gap-8">
+                <div className="w-full lg:w-1/4 min-w-0">
                   <ImageUpload label="Photo" value={t.image} onChange={(v) => updateTrustee(idx, "image", v)} contain={true} compact={true} />
                 </div>
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 min-w-0 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InputField label="Name" value={t.name} onChange={(v) => updateTrustee(idx, "name", v)} />
                     <InputField label="Designation" value={t.designation} onChange={(v) => updateTrustee(idx, "designation", v)} />
