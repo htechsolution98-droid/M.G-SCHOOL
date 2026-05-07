@@ -2344,17 +2344,11 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   const [localMembers, setLocalMembers] = useState(members);
 
   const updateMember = (idx: number, field: string, value: any) => {
-<<<<<<< HEAD
-    const updated = [...localMembers];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalMembers(updated);
-=======
     setLocalMembers((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addMember = () => {
@@ -2617,26 +2611,16 @@ function LifeAtMGTab() {
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Hero Section</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-<<<<<<< HEAD
-              <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
-              <div className="md:col-span-2">
-                <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
-=======
               <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, heading: v } }))} />
               <div className="md:col-span-2">
                 <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, image: v } }))} />
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Description (Small Text)</label>
                 <textarea
                   className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-xs font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all h-32"
                   value={content.hero.description}
-<<<<<<< HEAD
-                  onChange={(e) => setContent({ ...content, hero: { ...content.hero, description: e.target.value } })}
-=======
                   onChange={(e) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, description: e.target.value } }))}
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                 />
               </div>
             </div>
@@ -2657,11 +2641,7 @@ function LifeAtMGTab() {
                 <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                   <img src={img} className="w-full h-full object-cover" />
                   <button
-<<<<<<< HEAD
-                    onClick={() => setContent({ ...content, slider: content.slider.filter((_: any, i: number) => i !== idx) })}
-=======
                     onClick={() => setContent((prev: any) => ({ ...prev, slider: prev.slider.filter((_: any, i: number) => i !== idx) }))}
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                     className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 size={14} />
@@ -2669,11 +2649,7 @@ function LifeAtMGTab() {
                 </div>
               ))}
             </div>
-<<<<<<< HEAD
-            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent({ ...content, slider: [...content.slider, v] })} />
-=======
             <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent((prev: any) => ({ ...prev, slider: [...prev.slider, v] }))} />
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
           </div>
           <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
             className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
@@ -2764,11 +2740,7 @@ function GalleryTab() {
               {content.categories.map((cat: string, idx: number) => (
                 <div key={idx} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
                   <span className="text-sm font-bold text-gray-600">{cat}</span>
-<<<<<<< HEAD
-                  <button onClick={() => setContent({ ...content, categories: content.categories.filter((_: any, i: number) => i !== idx) })} className="text-red-400 hover:text-red-600"><X size={14} /></button>
-=======
                   <button onClick={() => setContent((prev: any) => ({ ...prev, categories: prev.categories.filter((_: any, i: number) => i !== idx) }))} className="text-red-400 hover:text-red-600"><X size={14} /></button>
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                 </div>
               ))}
             </div>
@@ -2810,11 +2782,7 @@ function GalleryTab() {
             {content.images.map((img: any, idx: number) => (
               <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
                 <button
-<<<<<<< HEAD
-                  onClick={() => setContent({ ...content, images: content.images.filter((_: any, i: number) => i !== idx) })}
-=======
                   onClick={() => setContent((prev: any) => ({ ...prev, images: prev.images.filter((_: any, i: number) => i !== idx) }))}
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                   className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <Trash2 size={16} />
