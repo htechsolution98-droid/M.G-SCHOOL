@@ -17,7 +17,7 @@ import "swiper/css/effect-fade";
 
 const defaultSlides = [
   {
-    image: "/images/kids-school (1).jpg",
+    image: "",
     images: [],
     tagline: "Premier Education",
     title: "Where Dreams Take Flight",
@@ -26,7 +26,7 @@ const defaultSlides = [
     link: "/about"
   },
   {
-    image: "/images/proud-teacher-with-her-elementary-students (1).jpg",
+    image: "",
     images: [],
     tagline: "Academic Rigor",
     title: "A Tradition of Excellence",
@@ -35,7 +35,7 @@ const defaultSlides = [
     link: "/academics"
   },
   {
-    image: "/images/school3 (1).jpg",
+    image: "",
     images: [],
     tagline: "Holistic Growth",
     title: "Nurturing Every Talent",
@@ -82,7 +82,7 @@ function SlideBackground({ slide }: { slide: any }) {
             src={src}
             alt={slide.title}
             fill
-            className="object-cover brightness-[0.4]"
+            className="object-cover"
             priority={i === 0}
             sizes="100vw"
           />

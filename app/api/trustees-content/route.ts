@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import TrusteeContent from "@/models/TrusteeContent";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
@@ -15,7 +17,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
@@ -24,13 +26,16 @@ export async function PUT(req: Request) {
     if (!doc) {
       doc = await TrusteeContent.create(body);
     } else {
-      Object.assign(doc, body);
+      // Remove _id and __v if they exist to avoid immutable field errors
+      const { _id, __v, ...updateData } = body;
+      Object.assign(doc, updateData);
       doc.updatedAt = new Date();
       await doc.save();
     }
 
     return NextResponse.json({ success: true, content: doc });
   } catch (error: any) {
+    console.error("Trustees PUT Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
