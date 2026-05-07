@@ -299,7 +299,6 @@ export default function Home() {
                   ))}
                 </ul>
               </div>
-
               {/* English Medium Card */}
               <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />

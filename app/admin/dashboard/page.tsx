@@ -581,7 +581,6 @@ function HomeBackgroundEditor({ background, onSave, saving }: { background: any;
           ))}
         </div>
       </div>
-
       {/* English Medium Schools */}
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between mb-6">
@@ -802,9 +801,17 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
   const [localHubs, setLocalHubs] = useState(hubs);
 
   const updateHub = (idx: number, field: string, value: string | string[]) => {
+<<<<<<< HEAD
     const updated = [...localHubs];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalHubs(updated);
+=======
+    setLocalHubs((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -825,7 +832,11 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
                   values={hub.images && hub.images.length > 0 ? hub.images : (hub.img ? [hub.img] : [])}
                   onChange={(urls: string[]) => {
                     updateHub(idx, "images", urls);
+<<<<<<< HEAD
                     if (urls.length > 0) updateHub(idx, "img", urls[0]);
+=======
+                    updateHub(idx, "img", urls[0] || "");
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                   }}
                   maxImages={6}
                 />
@@ -1175,9 +1186,17 @@ function AboutExcellenceEditor({ excellence, onSave, saving }: { excellence: any
   const addItem = () => setLocal([...local, { title: "", description: "", image: "" }]);
   const removeItem = (idx: number) => setLocal(local.filter((_, i) => i !== idx));
   const updateItem = (idx: number, field: string, value: string) => {
+<<<<<<< HEAD
     const updated = [...local];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocal(updated);
+=======
+    setLocal((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1223,9 +1242,17 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
   };
 
   const updateFeature = (idx: number, field: string, value: string | string[]) => {
+<<<<<<< HEAD
     const newFeatures = [...(local.features || [])];
     newFeatures[idx] = { ...newFeatures[idx], [field]: value };
     setLocal({ ...local, features: newFeatures });
+=======
+    setLocal((prev) => {
+      const newFeatures = [...(prev.features || [])];
+      newFeatures[idx] = { ...newFeatures[idx], [field]: value };
+      return { ...prev, features: newFeatures };
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1487,9 +1514,17 @@ function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]
   const [localPrograms, setLocalPrograms] = useState(programs);
 
   const updateProgram = (idx: number, field: string, value: any) => {
+<<<<<<< HEAD
     const updated = [...localPrograms];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalPrograms(updated);
+=======
+    setLocalPrograms((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1532,6 +1567,7 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
   const [localActivities, setLocalActivities] = useState(activities);
 
   const updateActivity = (idx: number, field: string, value: any) => {
+<<<<<<< HEAD
     const updated = [...localActivities];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalActivities(updated);
@@ -1547,6 +1583,26 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
     newImages[imageIdx] = value;
     updated[activityIdx] = { ...updated[activityIdx], images: newImages };
     setLocalActivities(updated);
+=======
+    setLocalActivities((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+  };
+
+  const updateActivityImage = (activityIdx: number, imageIdx: number, value: string) => {
+    setLocalActivities((prev) => {
+      const updated = [...prev];
+      const newImages = [...(updated[activityIdx].images || [])];
+      while (newImages.length <= imageIdx) {
+        newImages.push("");
+      }
+      newImages[imageIdx] = value;
+      updated[activityIdx] = { ...updated[activityIdx], images: newImages };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addActivity = () => {
@@ -2015,9 +2071,17 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
   const [localBranches, setLocalBranches] = useState(branches);
 
   const updateBranch = (idx: number, field: string, value: any) => {
+<<<<<<< HEAD
     const updated = [...localBranches];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalBranches(updated);
+=======
+    setLocalBranches((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addBranch = () => {
@@ -2065,7 +2129,11 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
 function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockName: string; blockData: any; onSave: (b: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(blockData);
 
+<<<<<<< HEAD
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+=======
+  const update = (field: string, value: any) => setLocal((prev: any) => ({ ...prev, [field]: value }));
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
 
   const addImage = (url: string) => {
     update("images", [...(local.images || []), url]);
@@ -2332,9 +2400,17 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   const [localMembers, setLocalMembers] = useState(members);
 
   const updateMember = (idx: number, field: string, value: any) => {
+<<<<<<< HEAD
     const updated = [...localMembers];
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalMembers(updated);
+=======
+    setLocalMembers((prev) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addMember = () => {
@@ -2597,16 +2673,26 @@ function LifeAtMGTab() {
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Hero Section</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<<<<<<< HEAD
               <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
               <div className="md:col-span-2">
                 <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
+=======
+              <InputField label="Heading" value={content.hero.heading} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, heading: v } }))} />
+              <div className="md:col-span-2">
+                <ImageUpload label="Hero Image" value={content.hero.image} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, image: v } }))} />
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">Description (Small Text)</label>
                 <textarea
                   className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-xs font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all h-32"
                   value={content.hero.description}
+<<<<<<< HEAD
                   onChange={(e) => setContent({ ...content, hero: { ...content.hero, description: e.target.value } })}
+=======
+                  onChange={(e) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, description: e.target.value } }))}
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                 />
               </div>
             </div>
@@ -2627,7 +2713,11 @@ function LifeAtMGTab() {
                 <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                   <img src={img} className="w-full h-full object-cover" />
                   <button
+<<<<<<< HEAD
                     onClick={() => setContent({ ...content, slider: content.slider.filter((_: any, i: number) => i !== idx) })}
+=======
+                    onClick={() => setContent((prev: any) => ({ ...prev, slider: prev.slider.filter((_: any, i: number) => i !== idx) }))}
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                     className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 size={14} />
@@ -2635,7 +2725,11 @@ function LifeAtMGTab() {
                 </div>
               ))}
             </div>
+<<<<<<< HEAD
             <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent({ ...content, slider: [...content.slider, v] })} />
+=======
+            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent((prev: any) => ({ ...prev, slider: [...prev.slider, v] }))} />
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
           </div>
           <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
             className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
@@ -2726,7 +2820,11 @@ function GalleryTab() {
               {content.categories.map((cat: string, idx: number) => (
                 <div key={idx} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
                   <span className="text-sm font-bold text-gray-600">{cat}</span>
+<<<<<<< HEAD
                   <button onClick={() => setContent({ ...content, categories: content.categories.filter((_: any, i: number) => i !== idx) })} className="text-red-400 hover:text-red-600"><X size={14} /></button>
+=======
+                  <button onClick={() => setContent((prev: any) => ({ ...prev, categories: prev.categories.filter((_: any, i: number) => i !== idx) }))} className="text-red-400 hover:text-red-600"><X size={14} /></button>
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                 </div>
               ))}
             </div>
@@ -2768,7 +2866,11 @@ function GalleryTab() {
             {content.images.map((img: any, idx: number) => (
               <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
                 <button
+<<<<<<< HEAD
                   onClick={() => setContent({ ...content, images: content.images.filter((_: any, i: number) => i !== idx) })}
+=======
+                  onClick={() => setContent((prev: any) => ({ ...prev, images: prev.images.filter((_: any, i: number) => i !== idx) }))}
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                   className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <Trash2 size={16} />
@@ -3531,6 +3633,7 @@ function TrusteesTab() {
   };
 
   const addTrustee = () => {
+<<<<<<< HEAD
     setContent({
       ...content,
       trustees: [...content.trustees, { name: "New Trustee", designation: "", description: "", image: "" }]
@@ -3541,12 +3644,33 @@ function TrusteesTab() {
     const updated = [...content.trustees];
     updated[idx][field] = val;
     setContent({ ...content, trustees: updated });
+=======
+    setContent((prev: any) => ({
+      ...prev,
+      trustees: [...(prev.trustees || []), { name: "New Trustee", designation: "", description: "", image: "" }]
+    }));
+  };
+
+  const updateTrustee = (idx: number, field: string, val: string) => {
+    setContent((prev: any) => {
+      const updated = [...(prev.trustees || [])];
+      updated[idx] = { ...updated[idx], [field]: val };
+      return { ...prev, trustees: updated };
+    });
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const removeTrustee = (idx: number) => {
     if (confirm("Remove this trustee?")) {
+<<<<<<< HEAD
       const updated = content.trustees.filter((_: any, i: number) => i !== idx);
       setContent({ ...content, trustees: updated });
+=======
+      setContent((prev: any) => ({
+        ...prev,
+        trustees: prev.trustees.filter((_: any, i: number) => i !== idx)
+      }));
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
     }
   };
 
@@ -3569,10 +3693,17 @@ function TrusteesTab() {
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
         <h4 className="text-lg font-playfair font-black text-primary border-b border-gray-50 pb-4">Hero Section</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<<<<<<< HEAD
           <InputField label="Heading" value={content.hero?.heading || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
           <InputField label="Description" value={content.hero?.description || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, description: v } })} />
           <div className="md:col-span-2">
             <ImageUpload label="Hero Background Image" value={content.hero?.image || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
+=======
+          <InputField label="Heading" value={content.hero?.heading || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, heading: v } }))} />
+          <InputField label="Description" value={content.hero?.description || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, description: v } }))} />
+          <div className="md:col-span-2">
+            <ImageUpload label="Hero Background Image" value={content.hero?.image || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, image: v } }))} />
+>>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
           </div>
         </div>
       </div>
