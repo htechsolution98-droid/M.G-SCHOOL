@@ -16,19 +16,37 @@ import ReadMore from "@/components/ReadMore";
 
 export default function BlockPageLayout({ blockKey, children }: { blockKey: "blockA" | "blockB" | "blockC", children?: React.ReactNode }) {
   const [block, setBlock] = useState<any>(null);
+  const [globalFaculty, setGlobalFaculty] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = React.useCallback(() => {
-    axiosInstance.get("/api/branches-content")
-      .then((res) => {
-        if (res.data.success && res.data.content && res.data.content[blockKey]) {
-          setBlock(res.data.content[blockKey]);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+  const blockMap: Record<string, string> = {
+    blockA: "Block A",
+    blockB: "Block B",
+    blockC: "Block C",
+  };
+
+  const fetchData = React.useCallback(async () => {
+    try {
+      const [branchesRes, facultyRes] = await Promise.all([
+        axiosInstance.get("/api/branches-content"),
+        axiosInstance.get("/api/faculty-content")
+      ]);
+
+      if (branchesRes.data.success && branchesRes.data.content && branchesRes.data.content[blockKey]) {
+        setBlock(branchesRes.data.content[blockKey]);
+      }
+
+      if (facultyRes.data.success && facultyRes.data.content && facultyRes.data.content.facultyMembers) {
+        const filtered = facultyRes.data.content.facultyMembers.filter(
+          (m: any) => m.block === blockMap[blockKey]
+        );
+        setGlobalFaculty(filtered);
+      }
+    } catch (error) {
+      console.error("Error fetching block content:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [blockKey]);
 
   useEffect(() => {
@@ -192,14 +210,14 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
         </div>
 
         {/* Faculty Section */}
-        {block.faculty && block.faculty.length > 0 && (
+        {((block.faculty || []).length > 0 || globalFaculty.length > 0) && (
           <div className="mt-32">
             <div className="text-center mb-16">
               <div className="text-secondary text-sm font-black uppercase tracking-[0.3em] mb-4">Dedicated Educators</div>
               <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary">Our Faculty</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {block.faculty.map((member: any, idx: number) => (
+              {[...(block.faculty || []), ...globalFaculty].map((member: any, idx: number) => (
                 <div key={idx} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center group">
                   <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-50 group-hover:border-secondary/20 transition-colors">
                     {member.image ? (
@@ -209,13 +227,13 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
                     )}
                   </div>
                   <h5 className="text-xl font-bold text-primary mb-2">{member.name}</h5>
-                  <p className="text-secondary text-sm font-black uppercase tracking-widest mb-4">{member.role}</p>
+                  <p className="text-secondary text-sm font-black uppercase tracking-widest mb-4">{member.designation || member.role}</p>
                   <div className="w-full pt-4 border-t border-gray-100 space-y-2">
                     {member.education && (
                       <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Education</span> <span className="font-medium text-gray-700 truncate ml-2">{member.education}</span></p>
                     )}
-                    {member.subject && (
-                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Subject</span> <span className="font-medium text-gray-700 truncate ml-2">{member.subject}</span></p>
+                    {(member.expertise || member.subject) && (
+                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Expertise</span> <span className="font-medium text-gray-700 truncate ml-2">{member.expertise || member.subject}</span></p>
                     )}
                   </div>
                 </div>

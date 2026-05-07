@@ -8,6 +8,7 @@ export interface IHeroSlide {
   link: string;
   image: string;
   images: string[]; // multiple background images for this slide
+  video?: string;
 }
 
 export interface IStat {
@@ -75,6 +76,7 @@ const HomeContentSchema = new Schema<IHomeContent>({
       link: { type: String, default: "/" },
       image: { type: String, default: "" },
       images: [{ type: String }],
+      video: { type: String, default: "" },
     },
   ],
   stats: [

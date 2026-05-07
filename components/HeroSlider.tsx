@@ -51,6 +51,21 @@ interface HeroSliderProps {
 
 /** Inner component that cycles through multiple background images for a single slide */
 function SlideBackground({ slide }: { slide: any }) {
+  if (slide.video) {
+    return (
+      <div className="absolute inset-0">
+        <video
+          src={slide.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   const allImages: string[] = (slide.images && slide.images.length > 0)
     ? slide.images
     : (slide.image ? [slide.image] : []);

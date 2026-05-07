@@ -15,7 +15,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = React.useCallback(() => {
-    axiosInstance.get("/api/events")
+    axiosInstance.get(`/api/events?t=${Date.now()}`)
       .then((res) => {
         if (res.data.success) {
           setEvents(res.data.events);
