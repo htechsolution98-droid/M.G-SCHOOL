@@ -17,31 +17,13 @@ import "swiper/css/effect-fade";
 
 const defaultSlides = [
   {
-    image: "/images/kids-school (1).jpg",
+    image: "",
     images: [],
-    tagline: "Premier Education",
-    title: "Where Dreams Take Flight",
-    description: "Developing global leaders through a perfect blend of tradition and innovation since 1995.",
-    cta: "Discover Our Vision",
-    link: "/about"
-  },
-  {
-    image: "/images/proud-teacher-with-her-elementary-students (1).jpg",
-    images: [],
-    tagline: "Academic Rigor",
-    title: "A Tradition of Excellence",
-    description: "Empowering every student with the tools to excel in an ever-evolving world.",
-    cta: "Explore Academics",
-    link: "/academics"
-  },
-  {
-    image: "/images/school3 (1).jpg",
-    images: [],
-    tagline: "Holistic Growth",
-    title: "Nurturing Every Talent",
-    description: "Beyond textbooks: cultivating creativity, sportsmanship, and moral integrity.",
-    cta: "Life @ M.G. School",
-    link: "/events"
+    tagline: "",
+    title: "",
+    description: "",
+    cta: "",
+    link: ""
   }
 ];
 

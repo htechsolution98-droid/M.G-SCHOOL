@@ -18,8 +18,8 @@ const outfit = Outfit({
 import SmoothScroller from "@/components/SmoothScroller";
 
 export const metadata: Metadata = {
-  title: "M.G. School | Where Dreams Take Flight",
-  description: "M.G. School is a premier educational institution dedicated to excellence in academics and holistic development of students.",
+  title: "NAV BHARAT VIDHYA MANDAL | Where Dreams Take Flight",
+  description: "NAV BHARAT VIDHYA MANDAL is a premier educational institution dedicated to excellence in academics and holistic development of students.",
 };
 
 export default function RootLayout({
