@@ -801,7 +801,7 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
   const [localHubs, setLocalHubs] = useState(hubs);
 
   const updateHub = (idx: number, field: string, value: string | string[]) => {
-    setLocalHubs((prev) => {
+    setLocalHubs((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -1176,7 +1176,7 @@ function AboutExcellenceEditor({ excellence, onSave, saving }: { excellence: any
   const addItem = () => setLocal([...local, { title: "", description: "", image: "" }]);
   const removeItem = (idx: number) => setLocal(local.filter((_, i) => i !== idx));
   const updateItem = (idx: number, field: string, value: string) => {
-    setLocal((prev) => {
+    setLocal((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -1226,7 +1226,7 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
   };
 
   const updateFeature = (idx: number, field: string, value: string | string[]) => {
-    setLocal((prev) => {
+    setLocal((prev: any) => {
       const newFeatures = [...(prev.features || [])];
       newFeatures[idx] = { ...newFeatures[idx], [field]: value };
       return { ...prev, features: newFeatures };
@@ -1492,7 +1492,7 @@ function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]
   const [localPrograms, setLocalPrograms] = useState(programs);
 
   const updateProgram = (idx: number, field: string, value: any) => {
-    setLocalPrograms((prev) => {
+    setLocalPrograms((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -1539,7 +1539,7 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
   const [localActivities, setLocalActivities] = useState(activities);
 
   const updateActivity = (idx: number, field: string, value: any) => {
-    setLocalActivities((prev) => {
+    setLocalActivities((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -1547,7 +1547,7 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
   };
 
   const updateActivityImage = (activityIdx: number, imageIdx: number, value: string) => {
-    setLocalActivities((prev) => {
+    setLocalActivities((prev: any) => {
       const updated = [...prev];
       const newImages = [...(updated[activityIdx].images || [])];
       while (newImages.length <= imageIdx) {
@@ -1684,9 +1684,11 @@ function AcademicsTeacherDutiesEditor({ teacherDuties, onSave, saving }: { teach
   const [localDuties, setLocalDuties] = useState(teacherDuties);
 
   const updateDuty = (idx: number, field: string, value: any) => {
-    const updated = [...localDuties];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalDuties(updated);
+    setLocalDuties((prev: any) => {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], [field]: value };
+      return updated;
+    });
   };
 
   const addDuty = () => {
@@ -2025,7 +2027,7 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
   const [localBranches, setLocalBranches] = useState(branches);
 
   const updateBranch = (idx: number, field: string, value: any) => {
-    setLocalBranches((prev) => {
+    setLocalBranches((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -2344,7 +2346,7 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   const [localMembers, setLocalMembers] = useState(members);
 
   const updateMember = (idx: number, field: string, value: any) => {
-    setLocalMembers((prev) => {
+    setLocalMembers((prev: any) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
@@ -2792,18 +2794,23 @@ function GalleryTab() {
                 </div>
                 <div className="space-y-3">
                   <InputField label="Title" value={img.title} onChange={(v) => {
-                    const updated = [...content.images];
-                    updated[idx].title = v;
-                    setContent({ ...content, images: updated });
+                    setContent((prev: any) => {
+                      const updated = [...prev.images];
+                      updated[idx] = { ...updated[idx], title: v };
+                      return { ...prev, images: updated };
+                    });
                   }} />
                   <div>
                     <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 ml-1">Category</label>
                     <select
                       value={img.category}
                       onChange={(e) => {
-                        const updated = [...content.images];
-                        updated[idx].category = e.target.value;
-                        setContent({ ...content, images: updated });
+                        const val = e.target.value;
+                        setContent((prev: any) => {
+                          const updated = [...prev.images];
+                          updated[idx] = { ...updated[idx], category: val };
+                          return { ...prev, images: updated };
+                        });
                       }}
                       className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30"
                     >
@@ -2885,38 +2892,50 @@ function EventsTab() {
           <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-8 hover:shadow-md transition-all overflow-hidden">
             <div className="lg:col-span-1 min-w-0">
               <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
-                const updated = [...events];
-                updated[idx].image = v;
-                setEvents(updated);
+                setEvents((prev: any) => {
+                  const updated = [...prev];
+                  updated[idx] = { ...updated[idx], image: v };
+                  return updated;
+                });
               }} />
             </div>
             <div className="lg:col-span-2 min-w-0 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField label="Title" value={event.title} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].title = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], title: v };
+                    return updated;
+                  });
                 }} />
                 <InputField label="Date" value={event.date?.split('T')[0]} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].date = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], date: v };
+                    return updated;
+                  });
                 }} />
                 <InputField label="Location" value={event.location} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].location = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], location: v };
+                    return updated;
+                  });
                 }} />
                 <InputField label="Category" value={event.category} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].category = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], category: v };
+                    return updated;
+                  });
                 }} />
               </div>
               <TextareaField label="Description" value={event.description} onChange={(v) => {
-                const updated = [...events];
-                updated[idx].description = v;
-                setEvents(updated);
+                setEvents((prev: any) => {
+                  const updated = [...prev];
+                  updated[idx] = { ...updated[idx], description: v };
+                  return updated;
+                });
               }} />
               <div className="flex gap-4 pt-4">
                 <button onClick={() => saveEvent(event)} disabled={saving === (event._id || "new")}
@@ -2990,9 +3009,11 @@ function StudentsTab() {
                 label="Photo" 
                 value={std.image} 
                 onChange={(v) => {
-                  const updated = [...students];
-                  updated[idx].image = v;
-                  setStudents(updated);
+                  setStudents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], image: v };
+                    return updated;
+                  });
                 }} 
                 contain={true}
                 compact={true}
@@ -3008,20 +3029,26 @@ function StudentsTab() {
                 </button>
               </div>
               <InputField label="Full Name" value={std.name} onChange={(v) => {
-                const updated = [...students];
-                updated[idx].name = v;
-                setStudents(updated);
+                setStudents((prev: any) => {
+                  const updated = [...prev];
+                  updated[idx] = { ...updated[idx], name: v };
+                  return updated;
+                });
               }} />
               <div className="grid grid-cols-2 gap-3">
                 <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
-                  const updated = [...students];
-                  updated[idx].rollNo = v;
-                  setStudents(updated);
+                  setStudents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], rollNo: v };
+                    return updated;
+                  });
                 }} />
                 <InputField label="Admission" value={std.admissionNo} onChange={(v) => {
-                  const updated = [...students];
-                  updated[idx].admissionNo = v;
-                  setStudents(updated);
+                  setStudents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], admissionNo: v };
+                    return updated;
+                  });
                 }} />
               </div>
               <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
