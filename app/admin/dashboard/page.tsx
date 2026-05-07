@@ -801,17 +801,11 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
   const [localHubs, setLocalHubs] = useState(hubs);
 
   const updateHub = (idx: number, field: string, value: string | string[]) => {
-<<<<<<< HEAD
-    const updated = [...localHubs];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalHubs(updated);
-=======
     setLocalHubs((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -832,11 +826,7 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
                   values={hub.images && hub.images.length > 0 ? hub.images : (hub.img ? [hub.img] : [])}
                   onChange={(urls: string[]) => {
                     updateHub(idx, "images", urls);
-<<<<<<< HEAD
-                    if (urls.length > 0) updateHub(idx, "img", urls[0]);
-=======
                     updateHub(idx, "img", urls[0] || "");
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
                   }}
                   maxImages={6}
                 />
@@ -1186,17 +1176,11 @@ function AboutExcellenceEditor({ excellence, onSave, saving }: { excellence: any
   const addItem = () => setLocal([...local, { title: "", description: "", image: "" }]);
   const removeItem = (idx: number) => setLocal(local.filter((_, i) => i !== idx));
   const updateItem = (idx: number, field: string, value: string) => {
-<<<<<<< HEAD
-    const updated = [...local];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocal(updated);
-=======
     setLocal((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1242,17 +1226,11 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
   };
 
   const updateFeature = (idx: number, field: string, value: string | string[]) => {
-<<<<<<< HEAD
-    const newFeatures = [...(local.features || [])];
-    newFeatures[idx] = { ...newFeatures[idx], [field]: value };
-    setLocal({ ...local, features: newFeatures });
-=======
     setLocal((prev) => {
       const newFeatures = [...(prev.features || [])];
       newFeatures[idx] = { ...newFeatures[idx], [field]: value };
       return { ...prev, features: newFeatures };
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1514,17 +1492,11 @@ function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]
   const [localPrograms, setLocalPrograms] = useState(programs);
 
   const updateProgram = (idx: number, field: string, value: any) => {
-<<<<<<< HEAD
-    const updated = [...localPrograms];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalPrograms(updated);
-=======
     setLocalPrograms((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   return (
@@ -1567,23 +1539,6 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
   const [localActivities, setLocalActivities] = useState(activities);
 
   const updateActivity = (idx: number, field: string, value: any) => {
-<<<<<<< HEAD
-    const updated = [...localActivities];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalActivities(updated);
-  };
-
-  const updateActivityImage = (activityIdx: number, imageIdx: number, value: string) => {
-    const updated = [...localActivities];
-    const newImages = [...(updated[activityIdx].images || [])];
-    // Ensure array has at least enough elements to place the image at index
-    while (newImages.length <= imageIdx) {
-      newImages.push("");
-    }
-    newImages[imageIdx] = value;
-    updated[activityIdx] = { ...updated[activityIdx], images: newImages };
-    setLocalActivities(updated);
-=======
     setLocalActivities((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
@@ -1602,7 +1557,6 @@ function AcademicsActivitiesEditor({ activities, onSave, saving }: { activities:
       updated[activityIdx] = { ...updated[activityIdx], images: newImages };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addActivity = () => {
@@ -2071,17 +2025,11 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
   const [localBranches, setLocalBranches] = useState(branches);
 
   const updateBranch = (idx: number, field: string, value: any) => {
-<<<<<<< HEAD
-    const updated = [...localBranches];
-    updated[idx] = { ...updated[idx], [field]: value };
-    setLocalBranches(updated);
-=======
     setLocalBranches((prev) => {
       const updated = [...prev];
       updated[idx] = { ...updated[idx], [field]: value };
       return updated;
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const addBranch = () => {
@@ -2129,11 +2077,7 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
 function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockName: string; blockData: any; onSave: (b: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(blockData);
 
-<<<<<<< HEAD
-  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
-=======
   const update = (field: string, value: any) => setLocal((prev: any) => ({ ...prev, [field]: value }));
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
 
   const addImage = (url: string) => {
     update("images", [...(local.images || []), url]);
@@ -3633,18 +3577,6 @@ function TrusteesTab() {
   };
 
   const addTrustee = () => {
-<<<<<<< HEAD
-    setContent({
-      ...content,
-      trustees: [...content.trustees, { name: "New Trustee", designation: "", description: "", image: "" }]
-    });
-  };
-
-  const updateTrustee = (idx: number, field: string, val: string) => {
-    const updated = [...content.trustees];
-    updated[idx][field] = val;
-    setContent({ ...content, trustees: updated });
-=======
     setContent((prev: any) => ({
       ...prev,
       trustees: [...(prev.trustees || []), { name: "New Trustee", designation: "", description: "", image: "" }]
@@ -3657,20 +3589,14 @@ function TrusteesTab() {
       updated[idx] = { ...updated[idx], [field]: val };
       return { ...prev, trustees: updated };
     });
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
   };
 
   const removeTrustee = (idx: number) => {
     if (confirm("Remove this trustee?")) {
-<<<<<<< HEAD
-      const updated = content.trustees.filter((_: any, i: number) => i !== idx);
-      setContent({ ...content, trustees: updated });
-=======
       setContent((prev: any) => ({
         ...prev,
         trustees: prev.trustees.filter((_: any, i: number) => i !== idx)
       }));
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
     }
   };
 
@@ -3693,17 +3619,10 @@ function TrusteesTab() {
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
         <h4 className="text-lg font-playfair font-black text-primary border-b border-gray-50 pb-4">Hero Section</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-<<<<<<< HEAD
-          <InputField label="Heading" value={content.hero?.heading || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, heading: v } })} />
-          <InputField label="Description" value={content.hero?.description || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, description: v } })} />
-          <div className="md:col-span-2">
-            <ImageUpload label="Hero Background Image" value={content.hero?.image || ""} onChange={(v) => setContent({ ...content, hero: { ...content.hero, image: v } })} />
-=======
           <InputField label="Heading" value={content.hero?.heading || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, heading: v } }))} />
           <InputField label="Description" value={content.hero?.description || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, description: v } }))} />
           <div className="md:col-span-2">
             <ImageUpload label="Hero Background Image" value={content.hero?.image || ""} onChange={(v) => setContent((prev: any) => ({ ...prev, hero: { ...prev.hero, image: v } }))} />
->>>>>>> cefd09a40874f62805394c149ad80c4fc38e2158
           </div>
         </div>
       </div>
