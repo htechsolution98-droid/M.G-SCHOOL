@@ -235,30 +235,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="lg:w-1/2 grid grid-cols-1 gap-8"
             >
-              {/* Sindhi Medium Card */}
-              <div className="bg-primary rounded-[3rem] p-10 text-white shadow-3xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-primary">
-                    <BookOpen size={24} />
-                  </div>
-                  <h3 className="text-2xl font-playfair font-black">
-                    {background.sindhiMediumTitle}
-                  </h3>
-                </div>
-                <ul className="space-y-6">
-                  {(background.sindhiSchools || []).map((school: any, i: number) => (
-                    <li key={i} className="flex gap-4">
-                      <span className="text-secondary font-black">{i + 1}.</span>
-                      <div>
-                        <p className="font-bold text-lg">{school.name}</p>
-                        <p className="text-white/60 text-sm">{school.details}</p>
-                        <p className="text-white/40 text-xs mt-1">{school.subDetails}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
               {/* English Medium Card */}
               <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
