@@ -52,7 +52,7 @@ const Footer = () => {
                   { name: "About Us", href: "/about" },
                   { name: "Academics", href: "/academics" },
                   { name: "Faculty Portfolio", href: "/faculty" },
-                  { name: "Campus Branches", href: "/branches" },
+                  { name: "Campus Buildings", href: "/branches" },
                   { name: "Admissions", href: "/enroll" }
                 ].map((link, i) => (
                   <li key={i}>

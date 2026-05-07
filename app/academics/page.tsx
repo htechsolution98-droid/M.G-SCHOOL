@@ -325,25 +325,7 @@ const Academics = () => {
         </section>
       )}
 
-      {/* Advanced Call to Action */}
-      <section className="section-padding overflow-hidden">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-primary p-20 md:p-32 rounded-[6rem] text-center text-white relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-12 relative z-10">Unlocking <span className="text-secondary italic">Potential.</span></h2>
-            <p className="text-2xl text-white/50 mb-16 max-w-2xl mx-auto font-light relative z-10">Admissions for the upcoming session are strictly by evaluation. Reserve your slot now.</p>
-            <div className="flex flex-wrap justify-center gap-8 relative z-10">
-              <button className="bg-white text-primary px-16 py-6 rounded-[2.5rem] font-black hover:bg-secondary transition-all shadow-2xl active:scale-95">Download Prospectus</button>
-              <button className="border border-white/20 text-white px-16 py-6 rounded-[2.5rem] font-black hover:bg-white hover:text-primary transition-all active:scale-95">Admission Portal</button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+
     </div>
   );
 };

@@ -62,6 +62,67 @@ const LifeAtMGPage = () => {
         </div>
 
       </section>
+      
+      {/* Watch Out Highlights Section */}
+      {content?.highlights && content.highlights.length > 0 && (
+        <section className="section-padding bg-slate-50 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1/4 h-1/4 bg-primary/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+          <div className="container-custom relative z-10">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/5 text-primary border border-primary/10 mb-6">
+                <Sparkles size={16} className="text-secondary" />
+                <span className="text-xs font-black uppercase tracking-widest">Must Watch Highlights</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-playfair font-black text-primary mb-6">Experience the <span className="text-secondary italic">MG Magic.</span></h2>
+              <p className="text-xl text-gray-500 font-light leading-relaxed">Catch the latest updates, event highlights, and glimpses of excellence across our buildings.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {content.highlights.map((h: any, idx: number) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  className="group bg-white rounded-[4rem] overflow-hidden border border-gray-100 shadow-2xl hover:shadow-primary/10 transition-all duration-500 flex flex-col"
+                >
+                  <div className="relative h-80 overflow-hidden bg-slate-900">
+                    {h.video ? (
+                      <video 
+                        src={h.video} 
+                        className="w-full h-full object-cover" 
+                        controls 
+                        playsInline
+                      />
+                    ) : (
+                      h.image && <Image src={h.image} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" alt={h.title} />
+                    )}
+                    
+                    {!h.video && h.image && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60" />
+                    )}
+                    
+                    <div className="absolute bottom-8 left-8">
+                       <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest border border-white/20">
+                         {h.video ? "Video Highlight" : "Event Glimpse"}
+                       </span>
+                    </div>
+                  </div>
+                  <div className="p-10 md:p-12">
+                    <h3 className="text-2xl md:text-3xl font-playfair font-black text-primary mb-6 leading-tight group-hover:text-secondary transition-colors">
+                      {h.title}
+                    </h3>
+                    <p className="text-lg text-gray-500 font-light leading-relaxed mb-8">
+                       <ReadMore text={h.description} limit={150} />
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Modern Slider Showcase */}
       <section className="section-padding bg-white relative overflow-hidden">

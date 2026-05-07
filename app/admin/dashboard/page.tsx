@@ -7,6 +7,7 @@ import VideoUpload from "@/components/admin/VideoUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
+import { Sparkles } from "lucide-react";
 import {
   GraduationCap,
   LayoutDashboard,
@@ -43,7 +44,7 @@ const sidebarItems = [
   { id: "about", name: "About Us", icon: BookOpen },
   { id: "trustees", name: "Trustees", icon: Users },
   { id: "academics", name: "Academics", icon: GraduationCap },
-  { id: "branches", name: "Branches", icon: Building2 },
+  { id: "branches", name: "Buildings", icon: Building2 },
   { id: "faculty", name: "Faculty", icon: BookOpen },
   { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
   { id: "gallery", name: "Gallery", icon: ImageIcon },
@@ -58,7 +59,7 @@ const sidebarItems = [
 const statsCards = [
   { label: "Total Students", value: "2,450", change: "+12%", icon: Users, color: "bg-blue-500" },
   { label: "Faculty Members", value: "128", change: "+3%", icon: BookOpen, color: "bg-emerald-500" },
-  { label: "Active Branches", value: "3", change: "Stable", icon: School, color: "bg-secondary" },
+  { label: "Active Buildings", value: "3", change: "Stable", icon: School, color: "bg-secondary" },
   { label: "Applications", value: "340", change: "+28%", icon: TrendingUp, color: "bg-purple-500" },
 ];
 
@@ -189,6 +190,14 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "gallery", "events", "announcement"].includes(activeTab) && (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
+                  className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
+                >
+                  <Save size={18} /> <span className="hidden sm:inline">Save Changes</span>
+                </button>
+              )}
               <button className="relative p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer">
                 <Bell size={20} className="text-gray-500" />
                 <div className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
@@ -205,7 +214,7 @@ export default function AdminDashboard() {
             {activeTab === "about" && <AboutTab />}
             {activeTab === "trustees" && <TrusteesTab />}
             {activeTab === "academics" && <AcademicsTab />}
-            {activeTab === "branches" && <BranchesTab />}
+            {activeTab === "branches" && <BuildingsTab />}
             {activeTab === "faculty" && <FacultyTab />}
             {activeTab === "life-at-mg" && <LifeAtMGTab />}
             {activeTab === "gallery" && <GalleryTab />}
@@ -468,14 +477,20 @@ function HomeBackgroundEditor({ background, onSave, saving }: { background: any;
   const addHistory = () => update("history", [...(local.history || []), ""]);
   const removeHistory = (idx: number) => update("history", (local.history || []).filter((_: any, i: number) => i !== idx));
 
-  const updateSchool = (type: "sindhiSchools" | "englishSchools", idx: number, field: string, value: string) => {
+  const updateSchool = (type: "englishSchools", idx: number, field: string, value: string) => {
     const schools = [...(local[type] || [])];
     schools[idx] = { ...schools[idx], [field]: value };
     update(type, schools);
   };
 
-  const addSchool = (type: "sindhiSchools" | "englishSchools") => update(type, [...(local[type] || []), { name: "", details: "", subDetails: "" }]);
-  const removeSchool = (type: "sindhiSchools" | "englishSchools", idx: number) => update(type, (local[type] || []).filter((_: any, i: number) => i !== idx));
+  const addSchool = (type: "englishSchools") => update(type, [...(local[type] || []), { name: "", details: "", subDetails: "" }]);
+  const removeSchool = (type: "englishSchools", idx: number) => update(type, (local[type] || []).filter((_: any, i: number) => i !== idx));
+
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(local);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [local, onSave]);
 
   return (
     <div className="space-y-8">
@@ -523,30 +538,7 @@ function HomeBackgroundEditor({ background, onSave, saving }: { background: any;
         </div>
       </div>
 
-      {/* Sindhi Medium Schools */}
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-lg font-playfair font-black text-primary">Sindhi Medium: School List</h4>
-          <button onClick={() => addSchool("sindhiSchools")} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
-            <Plus size={14} /> Add School
-          </button>
-        </div>
-        <div className="mb-6">
-          <InputField label="Sindhi Medium Title" value={local.sindhiMediumTitle} onChange={(v) => update("sindhiMediumTitle", v)} />
-        </div>
-        <div className="space-y-6">
-          {(local.sindhiSchools || []).map((s: any, idx: number) => (
-            <div key={idx} className="p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
-              <button onClick={() => removeSchool("sindhiSchools", idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer"><Trash2 size={16} /></button>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <InputField label="School Name" value={s.name} onChange={(v) => updateSchool("sindhiSchools", idx, "name", v)} />
-                <InputField label="Details" value={s.details} onChange={(v) => updateSchool("sindhiSchools", idx, "details", v)} />
-                <InputField label="Additional Details" value={s.subDetails} onChange={(v) => updateSchool("sindhiSchools", idx, "subDetails", v)} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+
       {/* English Medium Schools */}
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between mb-6">
@@ -601,6 +593,12 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
     setLocalSlides(localSlides.filter((_: any, i: number) => i !== idx));
   };
 
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(localSlides);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [localSlides, onSave]);
+
   return (
     <div className="space-y-6">
       {localSlides.map((slide: any, idx: number) => (
@@ -624,7 +622,7 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
                 }}
                 maxImages={8}
               />
-              <VideoUpload 
+              <VideoUpload
                 label="Slide Video (if provided, this will play instead of images)"
                 value={slide.video || ""}
                 onChange={(v) => updateSlide(idx, "video", v)}
@@ -658,6 +656,12 @@ function StatsEditor({ stats, onSave, saving }: { stats: any[]; onSave: (s: any[
     updated[idx] = { ...updated[idx], [field]: value };
     setLocalStats(updated);
   };
+
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(localStats);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [localStats, onSave]);
 
   return (
     <div className="space-y-6">
@@ -778,6 +782,12 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
       return updated;
     });
   };
+
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(localHubs);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [localHubs, onSave]);
 
   return (
     <div className="space-y-6">
@@ -1134,7 +1144,7 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
             </div>
           ))}
           {local.reasons?.length === 0 && (
-             <div className="text-center py-10 text-gray-400 font-medium italic">No reasons added yet.</div>
+            <div className="text-center py-10 text-gray-400 font-medium italic">No reasons added yet.</div>
           )}
         </div>
       </div>
@@ -1784,7 +1794,7 @@ const defaultBranchesContent = {
   }
 };
 
-function BranchesTab() {
+function BuildingsTab() {
   const [content, setContent] = useState<any>(defaultBranchesContent);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState("");
@@ -1833,7 +1843,7 @@ function BranchesTab() {
   const sections = [
     { id: "status", name: "Current Status", icon: LayoutDashboard },
     { id: "hero", name: "Hero Section", icon: ImageIcon },
-    { id: "branches", name: "Branches List", icon: Building2 },
+    { id: "branches", name: "Buildings List", icon: Building2 },
     { id: "blockA", name: "Block A Content", icon: Building2 },
     { id: "blockB", name: "Block B Content", icon: Building2 },
     { id: "blockC", name: "Block C Content", icon: Building2 },
@@ -1863,7 +1873,7 @@ function BranchesTab() {
         })}
         <button
           onClick={async () => {
-            if (confirm("Are you sure you want to reset all Branch content to defaults? This cannot be undone.")) {
+            if (confirm("Are you sure you want to reset all Building content to defaults? This cannot be undone.")) {
               await axiosInstance.delete("/api/branches-content");
               window.location.reload();
             }
@@ -1931,7 +1941,7 @@ function BranchesTab() {
 
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm col-span-full">
             <div className="flex items-center justify-between mb-6">
-              <h4 className="text-sm font-black text-secondary uppercase tracking-widest">Branches Overview List ({currentBranches.length})</h4>
+              <h4 className="text-sm font-black text-secondary uppercase tracking-widest">Buildings Overview List ({currentBranches.length})</h4>
               <button onClick={() => setActiveSection("branches")} className="text-xs font-bold text-primary hover:underline">Edit List</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1952,7 +1962,7 @@ function BranchesTab() {
       )}
 
       {activeSection === "hero" && content && (
-        <BranchesHeroEditor
+        <BuildingsHeroEditor
           hero={content.hero || defaultBranchesContent.hero}
           onSave={(hero: any) => saveSection("hero", { hero })}
           saving={saving === "hero"}
@@ -1960,7 +1970,7 @@ function BranchesTab() {
       )}
 
       {activeSection === "branches" && content && (
-        <BranchesListEditor
+        <BuildingsListEditor
           branches={content.branchesList || []}
           onSave={(branchesList: any[]) => saveSection("branches", { branchesList })}
           saving={saving === "branches"}
@@ -1980,14 +1990,20 @@ function BranchesTab() {
   );
 }
 
-function BranchesHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
+function BuildingsHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
   const [local, setLocal] = useState(hero);
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(local);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [local, onSave]);
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <h4 className="text-lg font-playfair font-black text-primary mb-6">Branches: Hero Section</h4>
+        <h4 className="text-lg font-playfair font-black text-primary mb-6">Buildings: Hero Section</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField label="Heading Prefix" value={local.heading} onChange={(v) => update("heading", v)} />
           <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
@@ -2004,7 +2020,7 @@ function BranchesHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: a
   );
 }
 
-function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onSave: (b: any[]) => void; saving: boolean }) {
+function BuildingsListEditor({ branches, onSave, saving }: { branches: any[]; onSave: (b: any[]) => void; saving: boolean }) {
   const [localBranches, setLocalBranches] = useState(branches);
 
   const updateBranch = (idx: number, field: string, value: any) => {
@@ -2023,12 +2039,18 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
     setLocalBranches(localBranches.filter((_: any, i: number) => i !== idx));
   };
 
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(localBranches);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [localBranches, onSave]);
+
   return (
     <div className="space-y-6">
       {localBranches.map((branch, idx) => (
         <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
           <div className="flex items-center justify-between mb-6">
-            <h4 className="text-lg font-playfair font-black text-primary">Branch {idx + 1}: {branch.name || "New Branch"}</h4>
+            <h4 className="text-lg font-playfair font-black text-primary">Building {idx + 1}: {branch.name || "New Building"}</h4>
             <button onClick={() => removeBranch(idx)} className="p-2 rounded-xl text-red-400 hover:bg-red-50 transition-all cursor-pointer"><Trash2 size={18} /></button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2046,11 +2068,11 @@ function BranchesListEditor({ branches, onSave, saving }: { branches: any[]; onS
       ))}
       <div className="flex gap-4">
         <button onClick={addBranch} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
-          <Plus size={18} /> Add Branch
+          <Plus size={18} /> Add Building
         </button>
         <button onClick={() => onSave(localBranches)} disabled={saving}
           className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer shadow-lg">
-          <Save size={18} /> {saving ? "Saving..." : "Save Branches"}
+          <Save size={18} /> {saving ? "Saving..." : "Save Buildings"}
         </button>
       </div>
     </div>
@@ -2083,6 +2105,12 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
   const removeFaculty = (idx: number) => {
     update("faculty", (local.faculty || []).filter((_: any, i: number) => i !== idx));
   };
+
+  useEffect(() => {
+    const handleGlobalSave = () => onSave(local);
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [local, onSave]);
 
   return (
     <div className="space-y-6">
@@ -2130,13 +2158,13 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
           {(local.faculty || []).map((member: any, idx: number) => (
             <div key={idx} className="p-5 border border-gray-100 rounded-3xl bg-gray-50 relative flex flex-col sm:flex-row gap-5">
               <button onClick={() => removeFaculty(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-100 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
-              
+
               {/* Image Column */}
               <div className="w-full sm:w-28 shrink-0">
-                <ImageUpload 
-                  label="Photo" 
-                  value={member.image} 
-                  onChange={(v) => updateFaculty(idx, "image", v)} 
+                <ImageUpload
+                  label="Photo"
+                  value={member.image}
+                  onChange={(v) => updateFaculty(idx, "image", v)}
                   contain={true}
                   compact={true}
                 />
@@ -2336,14 +2364,14 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   };
 
   const addMember = () => {
-    setLocalMembers([...localMembers, { 
-      name: "", 
-      designation: "", 
-      expertise: "", 
-      image: "", 
-      block: filter === "All" ? "Block A" : filter, 
-      experience: "", 
-      education: "" 
+    setLocalMembers([...localMembers, {
+      name: "",
+      designation: "",
+      expertise: "",
+      image: "",
+      block: filter === "All" ? "Block A" : filter,
+      experience: "",
+      education: ""
     }]);
   };
 
@@ -2360,9 +2388,8 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
           <button
             key={b}
             onClick={() => setFilter(b)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              filter === b ? "bg-secondary text-primary shadow-md" : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-            }`}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${filter === b ? "bg-secondary text-primary shadow-md" : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+              }`}
           >
             {b}
           </button>
@@ -2375,13 +2402,13 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
           return (
             <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative flex flex-col sm:flex-row gap-5 animate-in fade-in zoom-in-95 duration-300">
               <button onClick={() => removeMember(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
-              
+
               {/* Image Column */}
               <div className="w-full sm:w-28 shrink-0">
-                <ImageUpload 
-                  label="Photo" 
-                  value={member.image} 
-                  onChange={(v) => updateMember(idx, "image", v)} 
+                <ImageUpload
+                  label="Photo"
+                  value={member.image}
+                  onChange={(v) => updateMember(idx, "image", v)}
                   contain={true}
                   compact={true}
                 />
@@ -2578,6 +2605,7 @@ function LifeAtMGTab() {
 
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
+    { id: "highlights", name: "Watch Out Highlights", icon: Sparkles },
     { id: "slider", name: "Image Slider", icon: ImageIcon },
   ];
 
@@ -2648,7 +2676,7 @@ function LifeAtMGTab() {
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Image Slider</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {content.slider.map((img: string, idx: number) => (
+              {(content.slider || []).map((img: string, idx: number) => (
                 <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                   <img src={img} className="w-full h-full object-cover" />
                   <button
@@ -2660,11 +2688,90 @@ function LifeAtMGTab() {
                 </div>
               ))}
             </div>
-            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent((prev: any) => ({ ...prev, slider: [...prev.slider, v] }))} />
+            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent((prev: any) => ({ ...prev, slider: [...(content.slider || []), v] }))} />
           </div>
           <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
             className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
             <Save size={18} /> {saving === "slider" ? "Saving..." : "Save Slider"}
+          </button>
+        </div>
+      )}
+
+      {activeSection === "highlights" && content && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+            <div className="flex items-center justify-between mb-8 border-b border-gray-50 pb-4">
+              <div>
+                <h4 className="text-lg font-playfair font-black text-primary">Watch Out Highlights</h4>
+                <p className="text-xs text-gray-400 mt-1">Manage the highlighted events and activities.</p>
+              </div>
+              <button
+                onClick={() => setContent((prev: any) => ({ ...prev, highlights: [...(prev.highlights || []), { title: "", description: "", image: "", videoLink: "" }] }))}
+                className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary hover:text-white transition-all cursor-pointer"
+              >
+                <Plus size={14} /> Add Highlight
+              </button>
+            </div>
+
+            <div className="space-y-8">
+              {(content.highlights || []).map((h: any, idx: number) => (
+                <div key={idx} className="p-6 border border-gray-100 rounded-3xl bg-gray-50 relative group">
+                  <button
+                    onClick={() => setContent((prev: any) => ({ ...prev, highlights: prev.highlights.filter((_: any, i: number) => i !== idx) }))}
+                    className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <InputField label="Highlight Title" value={h.title} onChange={(v) => {
+                        const updated = [...content.highlights];
+                        updated[idx] = { ...updated[idx], title: v };
+                        setContent((prev: any) => ({ ...prev, highlights: updated }));
+                      }} />
+                      <TextareaField label="Description" value={h.description} onChange={(v) => {
+                        const updated = [...content.highlights];
+                        updated[idx] = { ...updated[idx], description: v };
+                        setContent((prev: any) => ({ ...prev, highlights: updated }));
+                      }} />
+                    </div>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 gap-6">
+                        <ImageUpload 
+                          label={h.video ? "Image (Disabled - Video Uploaded)" : "Highlight Image"} 
+                          value={h.image} 
+                          onChange={(v) => {
+                            const updated = [...content.highlights];
+                            updated[idx] = { ...updated[idx], image: v, video: "" };
+                            setContent((prev: any) => ({ ...prev, highlights: updated }));
+                          }} 
+                        />
+                        <div className="relative">
+                          <div className="absolute inset-x-0 top-1/2 h-px bg-gray-100 -z-10" />
+                          <span className="bg-gray-50 px-3 text-[10px] font-black text-gray-300 uppercase tracking-widest mx-auto block w-max">OR</span>
+                        </div>
+                        <VideoUpload 
+                          label={h.image ? "Video (Disabled - Image Uploaded)" : "Highlight Video"} 
+                          value={h.video} 
+                          onChange={(v) => {
+                            const updated = [...content.highlights];
+                            updated[idx] = { ...updated[idx], video: v, image: "" };
+                            setContent((prev: any) => ({ ...prev, highlights: updated }));
+                          }} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(!content.highlights || content.highlights.length === 0) && (
+                <div className="text-center py-10 text-gray-400 italic">No highlights added yet. Click "Add Highlight" to begin.</div>
+              )}
+            </div>
+          </div>
+          <button onClick={() => saveSection("highlights", { highlights: content.highlights })} disabled={saving === "highlights"}
+            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            <Save size={18} /> {saving === "highlights" ? "Saving..." : "Save Highlights"}
           </button>
         </div>
       )}
@@ -2862,7 +2969,7 @@ function EventsTab() {
   const saveEvent = async (event: any) => {
     setSaving(event._id || "new");
     try {
-      const res = event._id 
+      const res = event._id
         ? await axiosInstance.put("/api/events", event)
         : await axiosInstance.post("/api/events", event);
       if (res.data.success) {
@@ -3390,7 +3497,7 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto w-full">
       <div className="flex items-center justify-between">
         <h4 className="text-2xl font-playfair font-black text-primary">Principal Messages</h4>
-        <button 
+        <button
           onClick={addMessage}
           className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-colors cursor-pointer"
         >
@@ -3402,7 +3509,7 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
         {local.map((msg, idx) => (
           <div key={idx} className="bg-white rounded-[2.5rem] p-8 lg:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden relative group">
             {/* Remove button */}
-            <button 
+            <button
               onClick={() => removeMessage(idx)}
               className="absolute top-6 right-6 p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
             >
@@ -3416,13 +3523,13 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
                 </div>
                 Message #{idx + 1}
               </h5>
-              
+
               <div className="flex flex-col lg:flex-row gap-12 items-start">
                 <div className="w-full lg:w-80 shrink-0 min-w-0">
-                  <ImageUpload 
-                    label="Official Portrait" 
-                    value={msg.image} 
-                    onChange={(v: string) => updateMessage(idx, "image", v)} 
+                  <ImageUpload
+                    label="Official Portrait"
+                    value={msg.image}
+                    onChange={(v: string) => updateMessage(idx, "image", v)}
                     contain={true}
                     compact={true}
                   />
@@ -3441,10 +3548,10 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
                   </div>
 
                   <div className="pt-2">
-                    <TextareaField 
-                      label="The Message Content" 
-                      value={msg.message} 
-                      onChange={(v: string) => updateMessage(idx, "message", v)} 
+                    <TextareaField
+                      label="The Message Content"
+                      value={msg.message}
+                      onChange={(v: string) => updateMessage(idx, "message", v)}
                     />
                   </div>
                 </div>
@@ -3466,12 +3573,12 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           All messages will be displayed on the page
         </div>
-        <button 
-          onClick={() => onSave(local)} 
+        <button
+          onClick={() => onSave(local)}
           disabled={saving}
           className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 rounded-[1.25rem] bg-primary text-white font-black text-sm hover:bg-secondary hover:text-primary transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-2xl shadow-primary/20 hover:shadow-secondary/20 group"
         >
-          <Save size={20} className="group-hover:scale-110 transition-transform" /> 
+          <Save size={20} className="group-hover:scale-110 transition-transform" />
           {saving ? "Publishing..." : "Update Principal Messages"}
         </button>
       </div>
@@ -3570,7 +3677,7 @@ function TrusteesTab() {
             <Plus size={14} /> Add Trustee
           </button>
         </div>
-        
+
         <div className="space-y-6">
           {content.trustees.map((t: any, idx: number) => (
             <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group overflow-hidden">

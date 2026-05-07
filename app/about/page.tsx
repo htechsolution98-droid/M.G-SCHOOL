@@ -143,7 +143,7 @@ export default function About() {
         <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-black/50 to-transparent z-10" />
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.3 }}
+          animate={{ scale: 1, opacity: 0.7 }}
           transition={{ duration: 10, ease: "linear" }}
           className="absolute inset-0"
         >
@@ -329,7 +329,7 @@ function LegacyImageSlider({ legacy }: { legacy: any }) {
             <Image src={src} alt={`Legacy image ${i + 1}`} fill className="object-cover" />
           </motion.div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent opacity-60 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-40 z-10" />
         <div className="absolute bottom-12 left-12 z-20">
           <span className="text-secondary text-xs font-black uppercase tracking-[0.4em] mb-4 block">
             {legacy.archiveYear}

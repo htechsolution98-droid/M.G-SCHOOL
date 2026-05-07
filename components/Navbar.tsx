@@ -10,9 +10,9 @@ import { motion, AnimatePresence } from "framer-motion";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [branchesOpen, setBranchesOpen] = useState(false);
+  const [buildingsOpen, setBuildingsOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [mobileBranchesOpen, setMobileBranchesOpen] = useState(false);
+  const [mobileBuildingsOpen, setMobileBuildingsOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setBranchesOpen(false);
+        setBuildingsOpen(false);
       }
       if (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target as Node)) {
         setAboutOpen(false);
@@ -42,7 +42,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "About", href: "/about", hasDropdown: true },
     { name: "Academics", href: "/academics" },
-    { name: "Branches", href: "/branches", hasDropdown: true },
+    { name: "Buildings", href: "/branches", hasDropdown: true },
     { name: "Faculty", href: "/faculty" },
     { name: "Life @ MG", href: "/events" },
     { name: "Contact", href: "/contact" },
@@ -89,15 +89,15 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => (
               link.hasDropdown ? (
-                <div key={link.href} className="relative" ref={link.name === "Branches" ? dropdownRef : aboutDropdownRef}>
+                <div key={link.href} className="relative" ref={link.name === "Buildings" ? dropdownRef : aboutDropdownRef}>
                   <button
                     onClick={() => {
-                      if (link.name === "Branches") {
-                        setBranchesOpen(!branchesOpen);
+                      if (link.name === "Buildings") {
+                        setBuildingsOpen(!buildingsOpen);
                         setAboutOpen(false);
                       } else {
                         setAboutOpen(!aboutOpen);
-                        setBranchesOpen(false);
+                        setBuildingsOpen(false);
                       }
                     }}
                     className={cn(
@@ -106,11 +106,11 @@ const Navbar = () => {
                     )}
                   >
                     {link.name}
-                    <ChevronDown size={14} className={cn("transition-transform duration-300", (link.name === "Branches" ? branchesOpen : aboutOpen) && "rotate-180")} />
+                    <ChevronDown size={14} className={cn("transition-transform duration-300", (link.name === "Buildings" ? buildingsOpen : aboutOpen) && "rotate-180")} />
                   </button>
 
                   <AnimatePresence>
-                    {((link.name === "Branches" && branchesOpen) || (link.name === "About" && aboutOpen)) && (
+                    {((link.name === "Buildings" && buildingsOpen) || (link.name === "About" && aboutOpen)) && (
                       <motion.div
                         initial={{ opacity: 0, y: 8, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -122,10 +122,10 @@ const Navbar = () => {
                         <Link
                           href={link.href}
                           prefetch={true}
-                          onClick={() => { setBranchesOpen(false); setAboutOpen(false); }}
+                          onClick={() => { setBuildingsOpen(false); setAboutOpen(false); }}
                           className="block px-6 py-4 text-sm font-black text-primary hover:bg-primary/5 transition-all border-b border-gray-100"
                         >
-                          {link.name === "About" ? "Overview" : "All Branches"}
+                          {link.name === "About" ? "Overview" : "All Buildings"}
                         </Link>
 
                         {/* Sub-links */}
@@ -134,7 +134,7 @@ const Navbar = () => {
                             key={sub.href}
                             href={sub.href}
                             prefetch={true}
-                            onClick={() => { setBranchesOpen(false); setAboutOpen(false); }}
+                            onClick={() => { setBuildingsOpen(false); setAboutOpen(false); }}
                             className="flex items-center gap-4 px-6 py-4 hover:bg-primary/5 transition-all group/item"
                           >
                             <div className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0 group-hover/item:scale-125 transition-transform" />
@@ -206,12 +206,12 @@ const Navbar = () => {
                     <>
                       <button
                         onClick={() => {
-                          if (link.name === "Branches") {
-                            setMobileBranchesOpen(!mobileBranchesOpen);
+                          if (link.name === "Buildings") {
+                            setMobileBuildingsOpen(!mobileBuildingsOpen);
                             setMobileAboutOpen(false);
                           } else {
                             setMobileAboutOpen(!mobileAboutOpen);
-                            setMobileBranchesOpen(false);
+                            setMobileBuildingsOpen(false);
                           }
                         }}
                         className={cn(
@@ -220,10 +220,10 @@ const Navbar = () => {
                         )}
                       >
                         {link.name}
-                        <ChevronDown size={24} className={cn("transition-transform duration-300", (link.name === "Branches" ? mobileBranchesOpen : mobileAboutOpen) && "rotate-180")} />
+                        <ChevronDown size={24} className={cn("transition-transform duration-300", (link.name === "Buildings" ? mobileBuildingsOpen : mobileAboutOpen) && "rotate-180")} />
                       </button>
                       <AnimatePresence>
-                        {((link.name === "Branches" && mobileBranchesOpen) || (link.name === "About" && mobileAboutOpen)) && (
+                        {((link.name === "Buildings" && mobileBuildingsOpen) || (link.name === "About" && mobileAboutOpen)) && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
@@ -235,7 +235,7 @@ const Navbar = () => {
                                 key={sub.href}
                                 href={sub.href}
                                 prefetch={true}
-                                onClick={() => { setIsOpen(false); setMobileBranchesOpen(false); setMobileAboutOpen(false); }}
+                                onClick={() => { setIsOpen(false); setMobileBuildingsOpen(false); setMobileAboutOpen(false); }}
                                 className="flex items-center gap-3 py-2"
                               >
                                 <div className="w-2 h-2 rounded-full bg-secondary" />
