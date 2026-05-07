@@ -67,7 +67,7 @@ export interface IAboutContent extends Document {
   hero: IAboutHero;
   legacy: ILegacySection;
   whyChooseUs: IWhyChooseUs;
-  principalMessage: IPrincipalMessage;
+  principalMessages: IPrincipalMessage[];
   excellence: IExcellenceItem[];
   valuesScroll: IAboutValuesScroll;
   updatedAt: Date;
@@ -125,14 +125,16 @@ const AboutContentSchema: Schema = new Schema({
       }
     ],
   },
-  principalMessage: {
-    heading: { type: String, default: "Principal Message" },
-    message: { type: String, default: "" },
-    name: { type: String, default: "" },
-    qualifications: { type: String, default: "" },
-    designation: { type: String, default: "" },
-    image: { type: String, default: "" },
-  },
+  principalMessages: [
+    {
+      heading: { type: String, default: "Principal Message" },
+      message: { type: String, default: "" },
+      name: { type: String, default: "" },
+      qualifications: { type: String, default: "" },
+      designation: { type: String, default: "" },
+      image: { type: String, default: "" },
+    }
+  ],
   updatedAt: { type: Date, default: Date.now },
 });
 

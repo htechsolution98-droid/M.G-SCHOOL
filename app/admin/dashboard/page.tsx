@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiImageUpload from "@/components/admin/MultiImageUpload";
+import VideoUpload from "@/components/admin/VideoUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
@@ -42,7 +43,6 @@ const sidebarItems = [
   { id: "about", name: "About Us", icon: BookOpen },
   { id: "trustees", name: "Trustees", icon: Users },
   { id: "academics", name: "Academics", icon: GraduationCap },
-  { id: "students", name: "Students", icon: Users },
   { id: "branches", name: "Branches", icon: Building2 },
   { id: "faculty", name: "Faculty", icon: BookOpen },
   { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
@@ -205,7 +205,6 @@ export default function AdminDashboard() {
             {activeTab === "about" && <AboutTab />}
             {activeTab === "trustees" && <TrusteesTab />}
             {activeTab === "academics" && <AcademicsTab />}
-            {activeTab === "students" && <StudentsTab />}
             {activeTab === "branches" && <BranchesTab />}
             {activeTab === "faculty" && <FacultyTab />}
             {activeTab === "life-at-mg" && <LifeAtMGTab />}
@@ -628,7 +627,7 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
   };
 
   const addSlide = () => {
-    setLocalSlides([...localSlides, { tagline: "", title: "", description: "", cta: "Learn More", link: "/", image: "" }]);
+    setLocalSlides([...localSlides, { tagline: "", title: "", description: "", cta: "Learn More", link: "/", image: "", images: [], video: "" }]);
   };
 
   const removeSlide = (idx: number) => {
@@ -648,7 +647,7 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
             <InputField label="Title" value={slide.title} onChange={(v: string) => updateSlide(idx, "title", v)} />
             <InputField label="CTA Button Text" value={slide.cta} onChange={(v: string) => updateSlide(idx, "cta", v)} />
             <InputField label="CTA Link" value={slide.link} onChange={(v: string) => updateSlide(idx, "link", v)} />
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
               <MultiImageUpload
                 label="Slide Images (multiple images will auto-cycle as background)"
                 values={slide.images && slide.images.length > 0 ? slide.images : (slide.image ? [slide.image] : [])}
@@ -657,6 +656,11 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
                   if (urls.length > 0) updateSlide(idx, "image", urls[0]);
                 }}
                 maxImages={8}
+              />
+              <VideoUpload 
+                label="Slide Video (if provided, this will play instead of images)"
+                value={slide.video || ""}
+                onChange={(v) => updateSlide(idx, "video", v)}
               />
             </div>
             <div className="md:col-span-2">
@@ -888,7 +892,17 @@ const defaultAboutContent = {
       { title: "Peer-to-Peer Mentorship", image: "" },
       { title: "International Exchange", image: "" }
     ]
-  }
+  },
+  principalMessages: [
+    {
+      heading: "Principal Message",
+      message: "",
+      name: "",
+      qualifications: "",
+      designation: "",
+      image: ""
+    }
+  ]
 };
 
 function AboutTab() {
@@ -1012,9 +1026,9 @@ function AboutTab() {
       )}
 
       {activeSection === "principalMessage" && content && (
-        <AboutPrincipalMessageEditor
-          principalMessage={content.principalMessage || (defaultAboutContent as any).principalMessage}
-          onSave={(data: any) => saveSection("principalMessage", { principalMessage: data })}
+        <AboutPrincipalMessagesEditor
+          principalMessages={content.principalMessages || (defaultAboutContent as any).principalMessages}
+          onSave={(data: any) => saveSection("principalMessage", { principalMessages: data })}
           saving={saving === "principalMessage"}
         />
       )}
@@ -2344,6 +2358,7 @@ function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: an
 
 function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onSave: (m: any[]) => void; saving: boolean }) {
   const [localMembers, setLocalMembers] = useState(members);
+  const [filter, setFilter] = useState("All");
 
   const updateMember = (idx: number, field: string, value: any) => {
     setLocalMembers((prev: any) => {
@@ -2354,7 +2369,15 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   };
 
   const addMember = () => {
-    setLocalMembers([...localMembers, { name: "", designation: "", expertise: "", image: "", block: "Block A", experience: "", education: "" }]);
+    setLocalMembers([...localMembers, { 
+      name: "", 
+      designation: "", 
+      expertise: "", 
+      image: "", 
+      block: filter === "All" ? "Block A" : filter, 
+      experience: "", 
+      education: "" 
+    }]);
   };
 
   const removeMember = (idx: number) => {
@@ -2363,48 +2386,67 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {localMembers.map((member, idx) => (
-          <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative flex flex-col sm:flex-row gap-5">
-            <button onClick={() => removeMember(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
-            
-            {/* Image Column */}
-            <div className="w-full sm:w-28 shrink-0">
-              <ImageUpload 
-                label="Photo" 
-                value={member.image} 
-                onChange={(v) => updateMember(idx, "image", v)} 
-                contain={true}
-                compact={true}
-              />
-            </div>
+      {/* Filter Bar */}
+      <div className="flex items-center gap-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+        <span className="text-xs font-black text-gray-400 uppercase tracking-widest ml-2">Filter by Block:</span>
+        {["All", "Block A", "Block B", "Block C"].map((b) => (
+          <button
+            key={b}
+            onClick={() => setFilter(b)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              filter === b ? "bg-secondary text-primary shadow-md" : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+            }`}
+          >
+            {b}
+          </button>
+        ))}
+      </div>
 
-            {/* Info Column */}
-            <div className="flex-1 space-y-3">
-              <InputField label="Full Name" value={member.name} onChange={(v) => updateMember(idx, "name", v)} />
-              <InputField label="Designation" value={member.designation} onChange={(v) => updateMember(idx, "designation", v)} />
-              <div className="grid grid-cols-2 gap-3">
-                <InputField label="Expertise" value={member.expertise} onChange={(v) => updateMember(idx, "expertise", v)} />
-                <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {localMembers.map((member, idx) => {
+          if (filter !== "All" && member.block !== filter) return null;
+          return (
+            <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative flex flex-col sm:flex-row gap-5 animate-in fade-in zoom-in-95 duration-300">
+              <button onClick={() => removeMember(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
+              
+              {/* Image Column */}
+              <div className="w-full sm:w-28 shrink-0">
+                <ImageUpload 
+                  label="Photo" 
+                  value={member.image} 
+                  onChange={(v) => updateMember(idx, "image", v)} 
+                  contain={true}
+                  compact={true}
+                />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Block</label>
-                  <select
-                    value={member.block}
-                    onChange={(e) => updateMember(idx, "block", e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
-                  >
-                    <option value="Block A">Block A</option>
-                    <option value="Block B">Block B</option>
-                    <option value="Block C">Block C</option>
-                  </select>
+
+              {/* Info Column */}
+              <div className="flex-1 space-y-3">
+                <InputField label="Full Name" value={member.name} onChange={(v) => updateMember(idx, "name", v)} />
+                <InputField label="Designation" value={member.designation} onChange={(v) => updateMember(idx, "designation", v)} />
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Expertise" value={member.expertise} onChange={(v) => updateMember(idx, "expertise", v)} />
+                  <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Block</label>
+                    <select
+                      value={member.block}
+                      onChange={(e) => updateMember(idx, "block", e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+                    >
+                      <option value="Block A">Block A</option>
+                      <option value="Block B">Block B</option>
+                      <option value="Block C">Block C</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="flex gap-4">
         <button onClick={addMember} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer">
@@ -2853,10 +2895,14 @@ function EventsTab() {
   const saveEvent = async (event: any) => {
     setSaving(event._id || "new");
     try {
-      const res = await axiosInstance.post("/api/events", event);
+      const res = event._id 
+        ? await axiosInstance.put("/api/events", event)
+        : await axiosInstance.post("/api/events", event);
       if (res.data.success) {
         setMessage("Event saved!");
         fetchEvents();
+      } else {
+        setMessage("Error: " + res.data.error);
       }
     } catch { setMessage("Error saving event"); }
     setSaving("");
@@ -2880,7 +2926,7 @@ function EventsTab() {
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-playfair font-black text-primary">School Events</h3>
         <button
-          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", description: "", image: "", category: "Upcoming" }, ...events])}
+          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", time: "", branch: "All", description: "", image: "", category: "Upcoming" }, ...events])}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
         >
           <Plus size={18} /> Create Event
@@ -2922,12 +2968,22 @@ function EventsTab() {
                     return updated;
                   });
                 }} />
+                <InputField label="Time (e.g. 10:00 AM)" value={event.time} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].time = v;
+                  setEvents(updated);
+                }} />
                 <InputField label="Category" value={event.category} onChange={(v) => {
                   setEvents((prev: any) => {
                     const updated = [...prev];
                     updated[idx] = { ...updated[idx], category: v };
                     return updated;
                   });
+                }} />
+                <InputField label="Branch/Block" value={event.branch} onChange={(v) => {
+                  const updated = [...events];
+                  updated[idx].branch = v;
+                  setEvents(updated);
                 }} />
               </div>
               <TextareaField label="Description" value={event.description} onChange={(v) => {
@@ -2954,114 +3010,7 @@ function EventsTab() {
   );
 }
 
-function StudentsTab() {
-  const [students, setStudents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState("");
 
-  const fetchStudents = async () => {
-    const res = await axiosInstance.get("/api/students");
-    if (res.data.success) setStudents(res.data.students);
-    setLoading(false);
-  };
-
-  useEffect(() => { fetchStudents(); }, []);
-
-  const saveStudent = async (student: any) => {
-    setSaving(student._id || "new");
-    try {
-      const res = student._id
-        ? await axiosInstance.put("/api/students", student)
-        : await axiosInstance.post("/api/students", student);
-      if (res.data.success) fetchStudents();
-    } catch { alert("Error saving student"); }
-    setSaving("");
-  };
-
-  const deleteStudent = async (id: string) => {
-    if (!confirm("Delete student record?")) return;
-    try {
-      await axiosInstance.delete(`/api/students?id=${id}`);
-      fetchStudents();
-    } catch { alert("Error deleting student"); }
-  };
-
-  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
-
-  return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h3 className="text-2xl font-playfair font-black text-primary">Student Management</h3>
-        <button
-          onClick={() => setStudents([{ name: "New Student", grade: "Std 1", rollNo: "", section: "A", admissionNo: "", image: "" }, ...students])}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
-        >
-          <Plus size={18} /> Register Student
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-        {students.map((std, idx) => (
-          <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg flex flex-col sm:flex-row gap-5">
-            {/* Image Column */}
-            <div className="w-full sm:w-28 shrink-0">
-              <ImageUpload 
-                label="Photo" 
-                value={std.image} 
-                onChange={(v) => {
-                  setStudents((prev: any) => {
-                    const updated = [...prev];
-                    updated[idx] = { ...updated[idx], image: v };
-                    return updated;
-                  });
-                }} 
-                contain={true}
-                compact={true}
-              />
-            </div>
-
-            {/* Info Column */}
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-[10px] font-black text-secondary uppercase tracking-widest">{std.grade} - {std.section}</p>
-                <button onClick={() => deleteStudent(std._id)} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100">
-                  <Trash2 size={14} />
-                </button>
-              </div>
-              <InputField label="Full Name" value={std.name} onChange={(v) => {
-                setStudents((prev: any) => {
-                  const updated = [...prev];
-                  updated[idx] = { ...updated[idx], name: v };
-                  return updated;
-                });
-              }} />
-              <div className="grid grid-cols-2 gap-3">
-                <InputField label="Roll No" value={std.rollNo} onChange={(v) => {
-                  setStudents((prev: any) => {
-                    const updated = [...prev];
-                    updated[idx] = { ...updated[idx], rollNo: v };
-                    return updated;
-                  });
-                }} />
-                <InputField label="Admission" value={std.admissionNo} onChange={(v) => {
-                  setStudents((prev: any) => {
-                    const updated = [...prev];
-                    updated[idx] = { ...updated[idx], admissionNo: v };
-                    return updated;
-                  });
-                }} />
-              </div>
-              <button onClick={() => saveStudent(std)} disabled={saving === (std._id || "new")}
-                className="w-full bg-primary text-white py-2 rounded-xl text-[10px] font-bold hover:opacity-90 shadow-sm transition-all mt-2">
-                {saving === (std._id || "new") ? "..." : "Save Record"}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 // ════════════════════════════════════════
 // ENROLLMENT TAB
 // ════════════════════════════════════════
@@ -3442,97 +3391,122 @@ function AnnouncementTab() {
   );
 }
 
-// ─── About Principal Message Editor ───
-function AboutPrincipalMessageEditor({ principalMessage, onSave, saving }: { principalMessage: any; onSave: (p: any) => void; saving: boolean }) {
-  const [local, setLocal] = useState(principalMessage || {
-    heading: "Principal Message",
-    message: "",
-    name: "",
-    qualifications: "",
-    designation: "",
-    image: ""
-  });
+// ─── About Principal Messages Editor ───
+function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { principalMessages: any[]; onSave: (p: any[]) => void; saving: boolean }) {
+  const [local, setLocal] = useState<any[]>(principalMessages || []);
 
-  const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+  const addMessage = () => {
+    setLocal([...local, {
+      heading: "New Message",
+      message: "",
+      name: "",
+      qualifications: "",
+      designation: "",
+      image: ""
+    }]);
+  };
+
+  const removeMessage = (idx: number) => {
+    if (confirm("Remove this message?")) {
+      const updated = local.filter((_, i) => i !== idx);
+      setLocal(updated);
+    }
+  };
+
+  const updateMessage = (idx: number, field: string, value: any) => {
+    const updated = [...local];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setLocal(updated);
+  };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto w-full">
-      <div className="bg-white rounded-[2.5rem] p-8 lg:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden relative">
-        {/* Decorative background element */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
-        
-        <div className="relative">
-          <h4 className="text-2xl lg:text-3xl font-playfair font-black text-primary mb-10 border-b border-gray-50 pb-6 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
-              <MessageSquare size={24} />
-            </div>
-            Principal's Message Content
-          </h4>
-          
-          <div className="flex flex-col lg:flex-row gap-12 items-start">
-            {/* Photo Section */}
-            <div className="w-full lg:w-80 shrink-0 min-w-0">
-              <ImageUpload 
-                label="Official Portrait" 
-                value={local.image} 
-                onChange={(v: string) => update("image", v)} 
-                contain={true}
-                compact={true}
-              />
-              <div className="mt-6 p-5 bg-primary/5 rounded-2xl border border-primary/10">
-                <h5 className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Image Requirements</h5>
-                <p className="text-[10px] text-gray-500 font-medium leading-relaxed">
-                  • Use a professional portrait<br/>
-                  • Neutral or school background preferred<br/>
-                  • Clear resolution (Max 2MB)
-                </p>
-              </div>
-            </div>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto w-full">
+      <div className="flex items-center justify-between">
+        <h4 className="text-2xl font-playfair font-black text-primary">Principal Messages</h4>
+        <button 
+          onClick={addMessage}
+          className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-colors cursor-pointer"
+        >
+          <Plus size={14} /> Add Another Message
+        </button>
+      </div>
 
-            {/* bio Section */}
-            <div className="flex-1 w-full min-w-0 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                <div className="md:col-span-2">
-                  <InputField label="Section Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
-                </div>
-                <InputField label="Full Name" value={local.name} onChange={(v: string) => update("name", v)} />
-                <InputField label="Academic Qualifications" value={local.qualifications} onChange={(v: string) => update("qualifications", v)} />
-                <div className="md:col-span-2">
-                  <InputField label="Official Designation / Roles" value={local.designation} onChange={(v: string) => update("designation", v)} />
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <TextareaField 
-                  label="The Principal's Message" 
-                  value={local.message} 
-                  onChange={(v: string) => update("message", v)} 
-                />
-                <div className="mt-4 flex items-center gap-3 px-4 py-2 bg-amber-50 rounded-xl border border-amber-100">
-                  <Star size={14} className="text-amber-500" />
-                  <p className="text-[10px] text-amber-700 font-bold italic uppercase tracking-wider">
-                    Format Tip: Press 'Enter' twice to create a clean paragraph break.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-10 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full font-black text-[10px] uppercase tracking-widest">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              Changes will be reflected instantly
-            </div>
+      <div className="space-y-12">
+        {local.map((msg, idx) => (
+          <div key={idx} className="bg-white rounded-[2.5rem] p-8 lg:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden relative group">
+            {/* Remove button */}
             <button 
-              onClick={() => onSave(local)} 
-              disabled={saving}
-              className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 rounded-[1.25rem] bg-primary text-white font-black text-sm hover:bg-secondary hover:text-primary transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-2xl shadow-primary/20 hover:shadow-secondary/20 group"
+              onClick={() => removeMessage(idx)}
+              className="absolute top-6 right-6 p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
             >
-              <Save size={20} className="group-hover:scale-110 transition-transform" /> 
-              {saving ? "Publishing..." : "Update Principal Message"}
+              <Trash2 size={20} />
             </button>
+
+            <div className="relative">
+              <h5 className="text-xl font-playfair font-black text-primary mb-10 border-b border-gray-50 pb-6 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+                  <MessageSquare size={20} />
+                </div>
+                Message #{idx + 1}
+              </h5>
+              
+              <div className="flex flex-col lg:flex-row gap-12 items-start">
+                <div className="w-full lg:w-80 shrink-0 min-w-0">
+                  <ImageUpload 
+                    label="Official Portrait" 
+                    value={msg.image} 
+                    onChange={(v: string) => updateMessage(idx, "image", v)} 
+                    contain={true}
+                    compact={true}
+                  />
+                </div>
+
+                <div className="flex-1 w-full min-w-0 space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="md:col-span-2">
+                      <InputField label="Section Heading" value={msg.heading} onChange={(v: string) => updateMessage(idx, "heading", v)} />
+                    </div>
+                    <InputField label="Full Name" value={msg.name} onChange={(v: string) => updateMessage(idx, "name", v)} />
+                    <InputField label="Academic Qualifications" value={msg.qualifications} onChange={(v: string) => updateMessage(idx, "qualifications", v)} />
+                    <div className="md:col-span-2">
+                      <InputField label="Official Designation / Roles" value={msg.designation} onChange={(v: string) => updateMessage(idx, "designation", v)} />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <TextareaField 
+                      label="The Message Content" 
+                      value={msg.message} 
+                      onChange={(v: string) => updateMessage(idx, "message", v)} 
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+        ))}
+      </div>
+
+      {local.length === 0 && (
+        <div className="text-center py-20 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
+          <p className="text-gray-400">No principal messages added yet.</p>
+          <button onClick={addMessage} className="mt-4 text-primary font-bold hover:underline">Add the first message</button>
         </div>
+      )}
+
+      <div className="pt-10 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-3 px-5 py-2.5 bg-emerald-50 text-emerald-600 rounded-full font-black text-[10px] uppercase tracking-widest">
+          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+          All messages will be displayed on the page
+        </div>
+        <button 
+          onClick={() => onSave(local)} 
+          disabled={saving}
+          className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 rounded-[1.25rem] bg-primary text-white font-black text-sm hover:bg-secondary hover:text-primary transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-2xl shadow-primary/20 hover:shadow-secondary/20 group"
+        >
+          <Save size={20} className="group-hover:scale-110 transition-transform" /> 
+          {saving ? "Publishing..." : "Update Principal Messages"}
+        </button>
       </div>
     </div>
   );

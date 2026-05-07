@@ -40,7 +40,7 @@ export async function handleUpdateAboutContent(req: NextRequest) {
         content = await updateAboutValuesScroll(sectionData.valuesScroll);
         break;
       case "principalMessage":
-        content = await updatePrincipalMessage(sectionData.principalMessage);
+        content = await updatePrincipalMessage(sectionData.principalMessages);
         break;
       case "whyChooseUs":
         content = await updateAboutWhyChooseUs(sectionData.whyChooseUs);
