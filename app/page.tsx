@@ -45,72 +45,32 @@ export default function Home() {
   useSocketSync(fetchData);
 
   // Fallback data while loading
-  const stats = content?.stats || [
-    { label: "Students", value: "2,500+", icon: "Users" },
-    { label: "Faculty", value: "150+", icon: "ShieldCheck" },
-    { label: "Exp", value: "28 Yrs", icon: "Award" },
-  ];
+  const stats = content?.stats || [];
 
   const philosophy = content?.philosophy || {
-    badge: "Established 1995",
-    heading: "Cultivating",
-    headingHighlight: "Wisdom",
-    description: "Our curriculum is designed to ignite curiosity. We don't just teach subjects; we inspire a lifelong passion for discovery in an environment that honors both tradition and technological progress.",
-    image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2071",
-    floatingText: "Child-Centric Learning Approach",
-    features: ["Intellectual Rigor", "Ethical Leadership", "Physical Wellness", "Creative Expression"],
-    ctaText: "Explore Our Legacy",
-    ctaLink: "/about",
+    badge: "",
+    heading: "",
+    headingHighlight: "",
+    description: "",
+    image: "",
+    floatingText: "",
+    features: [],
+    ctaText: "",
+    ctaLink: "",
   };
 
-  const campusHubs = content?.campusHubs || [
-    {
-      id: "block-a",
-      name: "Block A",
-      hub: "Foundation Hub",
-      title: "Primary Foundation",
-      desc: "Activity-based learning for Std 1–8 in our vibrant Gujarati Medium campus.",
-      img: "/images/kids-school (1).jpg"
-    },
-    {
-      id: "block-b",
-      name: "Block B",
-      hub: "Excellence Hub",
-      title: "Secondary Mastery",
-      desc: "Rigorous preparation for Std 9–12 Board Exams with expert academic guidance.",
-      img: "/images/proud-teacher-with-her-elementary-students (1).jpg"
-    },
-    {
-      id: "block-c",
-      name: "Block C",
-      hub: "International Hub",
-      title: "Bilingual Academy",
-      desc: "Our premium dual-medium campus with global technology & sports infrastructure.",
-      img: "/images/school3 (1).jpg"
-    }
-  ];
+  const campusHubs = content?.campusHubs || [];
 
   const background = content?.background || {
-    badge: "Established 1948",
-    title: "Background of",
-    titleHighlight: "The School.",
+    badge: "",
+    title: "",
+    titleHighlight: "",
     description: "",
-    history: [
-      "After Independence Sindhis migrated from Sindh, strived for their basic facilities & needs. In these difficult times great personalities like Dr. Choithram Gidwani, Shri Jairamdas Doulatram, Shri Jivanlal Jairamdas, Prof. Ghanshyam Shivdasani, Prof. Gurbaxani, Shri Mansingh Chuharmal, Shri Gianchand Jodhani & others came forward and worked hard and successfully established the first Sindhi School named Mahatma Gandhi High School at Kubernagar on 5th August, 1948.",
-      "Though Devlali (Nasik) was selected initially, it was shifted to Ahmedabad as Sindhi population was thick here. At Sardarnagar became a separate entity under same management in 1959 known as Dr. Choithram Gidwani High School. Presently we are having four schools in Kuber Nagar (Two in Sindhi Medium & Two in English Medium)."
-    ],
-    approvedCentreTitle: "Approved Centre",
-    approvedCentreDesc: "Official centre for SCOPE and GKS courses.",
-    sindhiMediumTitle: "A. Sindhi Medium",
-    sindhiSchools: [
-      { name: "M.G. Secondary & Higher Secondary School", details: "(Grant in aid)", subDetails: "[Std. VIII to XII (General and Science Stream)] [With XI Science English Medium from June'10]" },
-      { name: "M.G. Primary School", details: "(Non-Granted)", subDetails: "(Std. IV to VII)" }
-    ],
-    englishMediumTitle: "B. English Medium",
-    englishSchools: [
-      { name: "Saint Mira English School", details: "(Non-Granted)", subDetails: "(Nursery to Std. VII)" },
-      { name: "M.G. Secondary School", details: "(Non-Granted)", subDetails: "Std. VIII to Std. X" }
-    ]
+    history: [],
+    approvedCentreTitle: "",
+    approvedCentreDesc: "",
+    englishMediumTitle: "",
+    englishSchools: []
   };
 
   const heroSlides = content?.heroSlides || null;
@@ -179,7 +139,7 @@ export default function Home() {
             >
               <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">{philosophy.badge}</div>
               <h2 className="text-3xl md:text-5xl font-playfair font-black leading-[1.1] mb-10 text-primary">
-                {philosophy.heading} <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">{philosophy.headingHighlight}</span> &amp; Character.
+                {philosophy.heading} <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">{philosophy.headingHighlight}</span>
               </h2>
               <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
                 {philosophy.description}
@@ -212,8 +172,8 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
           <header className="max-w-3xl mb-24">
-            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-8 leading-tight">Expertly Designed <br /><span className="italic text-secondary">Campus Hubs.</span></h2>
-            <p className="text-xl text-gray-400 font-medium">Three specialized campuses tailored for different stages of development.</p>
+            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-8 leading-tight">{content?.campusHubsHeading || ""}</h2>
+            <p className="text-xl text-gray-400 font-medium">{content?.campusHubsSubheading || ""}</p>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">

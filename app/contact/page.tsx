@@ -10,20 +10,8 @@ import { useRef, useState } from "react";
 export default function Contact() {
   const branches = [
     {
-      name: "Primary Branch (Block A)",
-      address: "MG Road, East Campus, Sector 4",
-      phone: "+91 98765 43211",
-      email: "primary@mgschool.edu.in",
-    },
-    {
-      name: "Secondary Branch (Block B)",
-      address: "Scholars Lane, West Campus, Sector 9",
-      phone: "+91 98765 43212",
-      email: "secondary@mgschool.edu.in",
-    },
-    {
       name: "Main Campus (Block C)",
-      address: "Education Square, Central Hub, Sector 15",
+      address: "Mahatma Gandhi Highschool Old, 3JHV+65R, G-Ward, Kuber Nagar, Ahmedabad, Gujarat 382340",
       phone: "+91 98765 43210",
       email: "main.campus@mgschool.edu.in",
     }
@@ -255,7 +243,7 @@ export default function Contact() {
           className="rounded-[6rem] overflow-hidden shadow-3xl border-[20px] border-white h-[600px] relative"
         >
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117506.3913045617!2d72.43962804533038!3d23.020158226993134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fccd1170affdf2!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1713264000000!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.5186184846934!2d72.64287929999999!3d23.078103499999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8136e92fa8a9%3A0x9c2652eb533922fb!2sMahatma%20Gandhi%20Highschool!5e0!3m2!1sen!2sin!4v1778168895289!5m2!1sen!2sin"
             width="100%"
             height="100%"
             style={{ border: 0, filter: 'grayscale(0.5) contrast(1.1) brightness(0.9)' }}

@@ -77,7 +77,7 @@ const Navbar = () => {
             <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
               <div className="flex flex-col">
                 <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
-                  M.G. SCHOOL
+                  NAV BHARAT VIDHYA MANDAL
                 </span>
                 <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
                   Legacy of Excellence
