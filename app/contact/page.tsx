@@ -210,25 +210,6 @@ export default function Contact() {
                   </div>
                 </motion.div>
               </div>
-
-              {/* Virtual Help Banner */}
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="bg-gradient-to-r from-secondary to-orange-500 p-8 rounded-3xl shadow-lg text-white flex items-center justify-between group cursor-pointer"
-              >
-                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <MessageCircle size={28} />
-                  </div>
-                  <div>
-                    <h4 className="text-2xl font-playfair font-black mb-1">Live Concierge</h4>
-                    <p className="text-white/80 font-medium text-sm">Get instant academic support online</p>
-                  </div>
-                </div>
-                <div className="hidden md:flex items-center gap-2 font-bold bg-white text-secondary px-6 py-3 rounded-xl shadow-sm">
-                  Start Chat <ArrowRight size={16} />
-                </div>
-              </motion.div>
             </div>
           </div>
         </div>
