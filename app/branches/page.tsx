@@ -108,6 +108,14 @@ const BranchesPage = () => {
                       fill 
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
+                    {/* Logo Overlay */}
+                    <div className="absolute top-4 left-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-xl shadow-lg transition-transform duration-500 group-hover:scale-110">
+                      <img 
+                        src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
+                        alt="M.G. School Logo" 
+                        className="h-10 w-auto object-contain"
+                      />
+                    </div>
                   </div>
                 )}
                 

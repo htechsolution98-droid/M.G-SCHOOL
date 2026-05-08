@@ -67,22 +67,22 @@ const Navbar = () => {
         animate={{ y: 0 }}
         className={cn(
           "max-w-7xl mx-auto rounded-[2rem] transition-all duration-500 pointer-events-auto",
-          scrolled 
-            ? "glass shadow-2xl py-3 px-6" 
+          scrolled
+            ? "glass shadow-2xl py-3 px-6"
             : "bg-white/50 backdrop-blur-sm py-5 px-8"
         )}
       >
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 group">
-            <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
-              <div className="flex flex-col">
-                <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
-                  NAV BHARAT VIDHYA MANDAL
-                </span>
-                <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
-                  Legacy of Excellence
-                </span>
-              </div>
+            <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
+            <div className="flex flex-col">
+              <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
+                NAVBHARAT VIDHYA MANDAL
+              </span>
+              <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
+                Legacy of Excellence
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
@@ -163,8 +163,8 @@ const Navbar = () => {
               )
             ))}
             <div className="w-px h-6 bg-gray-200 mx-4" />
-            <Link 
-              href="/enroll" 
+            <Link
+              href="/enroll"
               className="bg-primary text-white pl-6 pr-4 py-3 rounded-2xl font-bold text-sm hover:bg-secondary hover:text-primary transition-all flex items-center gap-2 group shadow-xl"
             >
               Enroll Now
@@ -265,8 +265,8 @@ const Navbar = () => {
                 </motion.div>
               ))}
             </div>
-            
-            <Link 
+
+            <Link
               href="/enroll"
               onClick={() => setIsOpen(false)}
               className="bg-secondary text-primary w-full py-6 rounded-[2rem] font-black text-xl text-center shadow-2xl active:scale-95 transition-transform"

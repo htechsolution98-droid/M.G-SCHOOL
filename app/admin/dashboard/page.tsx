@@ -34,7 +34,9 @@ import {
   Star,
   Megaphone,
   History,
-  HelpCircle
+  HelpCircle,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 // ─── Sidebar Items ───
@@ -3518,6 +3520,20 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
     setLocal(updated);
   };
 
+  const moveUp = (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...local];
+    [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+    setLocal(updated);
+  };
+
+  const moveDown = (idx: number) => {
+    if (idx === local.length - 1) return;
+    const updated = [...local];
+    [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+    setLocal(updated);
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto w-full">
       <div className="flex items-center justify-between">
@@ -3533,13 +3549,33 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
       <div className="space-y-12">
         {local.map((msg, idx) => (
           <div key={idx} className="bg-white rounded-[2.5rem] p-8 lg:p-12 border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden relative group">
-            {/* Remove button */}
-            <button
-              onClick={() => removeMessage(idx)}
-              className="absolute top-6 right-6 p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
-            >
-              <Trash2 size={20} />
-            </button>
+            {/* Reorder & Remove buttons */}
+            <div className="absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+              <button
+                onClick={() => moveUp(idx)}
+                disabled={idx === 0}
+                className="p-2 text-gray-400 hover:bg-gray-50 rounded-xl transition-all cursor-pointer disabled:opacity-20"
+                title="Move Up"
+              >
+                <ChevronUp size={20} />
+              </button>
+              <button
+                onClick={() => moveDown(idx)}
+                disabled={idx === local.length - 1}
+                className="p-2 text-gray-400 hover:bg-gray-50 rounded-xl transition-all cursor-pointer disabled:opacity-20"
+                title="Move Down"
+              >
+                <ChevronDown size={20} />
+              </button>
+              <div className="w-px h-4 bg-gray-100 mx-1" />
+              <button
+                onClick={() => removeMessage(idx)}
+                className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                title="Remove Message"
+              >
+                <Trash2 size={20} />
+              </button>
+            </div>
 
             <div className="relative">
               <h5 className="text-xl font-playfair font-black text-primary mb-10 border-b border-gray-50 pb-6 flex items-center gap-4">
