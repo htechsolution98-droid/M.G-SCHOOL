@@ -108,34 +108,22 @@ const BranchesPage = () => {
                       fill 
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    {/* Logo Overlay */}
-                    <div className="absolute top-4 left-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-xl shadow-lg transition-transform duration-500 group-hover:scale-110">
-                      <img 
-                        src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
-                        alt="M.G. School Logo" 
-                        className="h-10 w-auto object-contain"
-                      />
-                    </div>
                   </div>
                 )}
                 
-                <div className="flex items-center justify-between mb-8">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary shadow-lg group-hover:bg-secondary transition-all shrink-0">
-                    <Building2 size={32} />
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs uppercase tracking-widest font-black text-primary/40 group-hover:text-white/40">
-                      Status
-                    </div>
-                    <div className="text-secondary font-bold group-hover:text-white">
-                      Active
-                    </div>
+                <div className="flex items-center gap-4 mb-2">
+                  <h3 className="text-3xl font-playfair font-black text-primary group-hover:text-white">
+                    {branch.name}
+                  </h3>
+                  <div className="bg-white p-1.5 rounded-lg shadow-sm border border-gray-100 shrink-0">
+                    <img 
+                      src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
+                      alt="M.G. School Logo" 
+                      className="h-8 w-auto object-contain"
+                    />
                   </div>
                 </div>
                 
-                <h3 className="text-3xl font-playfair font-black text-primary group-hover:text-white mb-2">
-                  {branch.name}
-                </h3>
                 <p className="text-secondary font-bold text-sm italic mb-1 group-hover:text-secondary/80">
                   {branch.subtitle}
                 </p>

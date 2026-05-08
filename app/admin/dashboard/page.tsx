@@ -1293,10 +1293,10 @@ function AboutValuesScrollEditor({ valuesScroll, onSave, saving }: { valuesScrol
 // ════════════════════════════════════════
 const defaultAcademicsContent = {
   hero: {
-    heading: "Elite",
-    headingHighlight: "Curriculum.",
-    description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
-    image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+    heading: "",
+    headingHighlight: "",
+    description: "",
+    image: "",
   },
   programs: [
     {
@@ -1305,7 +1305,7 @@ const defaultAcademicsContent = {
       tagline: "Building Bright Beginnings",
       description: "Our primary program focuses on sensory and play-based learning, ensuring every child develops a love for discovery while mastering core literacy and numeracy.",
       features: ["Experimental Science", "Vedic Mathematics", "Creative Storytelling", "Environmental Awareness"],
-      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
+      image: "",
       color: "from-blue-500/10 to-transparent"
     },
     {
@@ -1314,7 +1314,7 @@ const defaultAcademicsContent = {
       tagline: "Critical Thinking & Character",
       description: "Students transition into abstract reasoning and critical analysis. We combine rigorous board curriculum with real-world application to prepare them for global stages.",
       features: ["Robotics & Coding", "Advanced Social Sciences", "Foreign Language Lab", "Competitive Sports"],
-      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+      image: "",
       color: "from-amber-500/10 to-transparent"
     },
     {
@@ -1323,7 +1323,7 @@ const defaultAcademicsContent = {
       tagline: "Career & Leadership Portals",
       description: "Dedicated streams for Science, Commerce, and Arts with personalized mentoring. We focus on entrance exam mastery and professional portfolio development.",
       features: ["University Guidance", "Research Workshops", "Enterprise Training", "Creative Portfolio"],
-      image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+      image: "",
       color: "from-primary/10 to-transparent"
     }
   ],
@@ -1718,6 +1718,7 @@ function AcademicsTeacherDutiesEditor({ teacherDuties, onSave, saving }: { teach
             <InputField label="Category" value={duty.category} onChange={(v) => updateDuty(idx, "category", v)} />
             <InputField label="Duty" value={duty.duty} onChange={(v) => updateDuty(idx, "duty", v)} />
             <InputField label="Teachers" value={duty.teachers} onChange={(v) => updateDuty(idx, "teachers", v)} />
+            <ImageUpload label="Teacher Photo" value={duty.image} onChange={(v) => updateDuty(idx, "image", v)} compact={true} contain={true} />
             <div className="md:col-span-2">
               <TextareaField label="Description" value={duty.description} onChange={(v) => updateDuty(idx, "description", v)} />
             </div>
@@ -2219,7 +2220,7 @@ const defaultFacultyContent = {
     heading: "Inspiring ",
     headingHighlight: "Mentors.",
     description: "Meet the dedicated educators who are shaping the future of our students with passion and expertise.",
-    image: "https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070",
+    slides: [],
   },
   facultyMembers: [
     {
@@ -2341,33 +2342,74 @@ function FacultyTab() {
 }
 
 function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: any) => void; saving: boolean }) {
-  const [local, setLocal] = useState(hero);
+  const [local, setLocal] = useState({
+    ...hero,
+    slides: hero.slides || []
+  });
+  
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
+  const addSlide = () => {
+    const updatedSlides = [...(local.slides || []), { image: "", name: "", role: "", description: "" }];
+    update("slides", updatedSlides);
+  };
+
+  const removeSlide = (idx: number) => {
+    const updatedSlides = (local.slides || []).filter((_: any, i: number) => i !== idx);
+    update("slides", updatedSlides);
+  };
+
+  const updateSlide = (idx: number, field: string, value: string) => {
+    const updatedSlides = [...(local.slides || [])];
+    updatedSlides[idx] = { ...updatedSlides[idx], [field]: value };
+    update("slides", updatedSlides);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
         <h4 className="text-lg font-playfair font-black text-primary mb-6">Faculty: Hero Section</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField label="Heading" value={local.heading} onChange={(v) => update("heading", v)} />
           <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v) => update("headingHighlight", v)} />
           <div className="md:col-span-2">
-            <MultiImageUpload
-              label="Hero Images (multiple images will auto-cycle)"
-              values={local.images && local.images.length > 0 ? local.images : (local.image ? [local.image] : [])}
-              onChange={(urls: string[]) => {
-                setLocal((prev: any) => ({
-                  ...prev,
-                  images: urls,
-                  image: urls.length > 0 ? urls[0] : ""
-                }));
-              }}
-              maxImages={8}
-            />
+            <TextareaField label="Global Description" value={local.description} onChange={(v) => update("description", v)} />
           </div>
-          <div className="md:col-span-2">
-            <TextareaField label="Description" value={local.description} onChange={(v) => update("description", v)} />
-          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-8 border-b border-gray-50 pb-4">
+          <h4 className="text-lg font-playfair font-black text-primary">Hero Slider Slides</h4>
+          <button onClick={addSlide} className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-all cursor-pointer">
+            <Plus size={14} /> Add Slide
+          </button>
+        </div>
+
+        <div className="space-y-10">
+          {(local.slides || []).map((slide: any, idx: number) => (
+            <div key={idx} className="p-6 border border-gray-100 rounded-3xl bg-slate-50 relative group">
+              <button onClick={() => removeSlide(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer opacity-0 group-hover:opacity-100">
+                <Trash2 size={18} />
+              </button>
+              <h5 className="font-bold text-gray-400 mb-6 uppercase text-[10px] tracking-widest">Slide {idx + 1}</h5>
+              <div className="flex flex-col lg:flex-row gap-8">
+                <div className="w-full lg:w-1/4">
+                  <ImageUpload label="Mentor Photo" value={slide.image} onChange={(v) => updateSlide(idx, "image", v)} compact={true} contain={true} />
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InputField label="Name" value={slide.name} onChange={(v) => updateSlide(idx, "name", v)} />
+                    <InputField label="Role / Subject" value={slide.role} onChange={(v) => updateSlide(idx, "role", v)} />
+                  </div>
+                  <TextareaField label="Slide Description / Quote" value={slide.description} onChange={(v) => updateSlide(idx, "description", v)} />
+                </div>
+              </div>
+            </div>
+          ))}
+          {(!local.slides || local.slides.length === 0) && (
+            <div className="text-center py-10 text-gray-400 italic">No slides added. Add a slide to start building the hero slider.</div>
+          )}
         </div>
       </div>
       <button onClick={() => onSave(local)} disabled={saving}
@@ -3649,7 +3691,10 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
 
 // ─── Trustees Tab ───
 function TrusteesTab() {
-  const [content, setContent] = useState<any>({ hero: { heading: "Our Trustees", description: "", image: "" }, trustees: [] });
+  const [content, setContent] = useState<any>({ 
+    hero: { heading: "Inspiring Mentors", description: "", image: "", slides: [] }, 
+    trustees: [] 
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");

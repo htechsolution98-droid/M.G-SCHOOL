@@ -7,11 +7,19 @@ export interface ITrustee {
   image: string;
 }
 
+export interface IHeroSlide {
+  name: string;
+  designation: string;
+  description: string;
+  image: string;
+}
+
 export interface ITrusteeContent extends Document {
   hero: {
     heading: string;
     description: string;
     image: string;
+    slides: IHeroSlide[];
   };
   trustees: ITrustee[];
   updatedAt: Date;
@@ -19,9 +27,17 @@ export interface ITrusteeContent extends Document {
 
 const TrusteeContentSchema: Schema = new Schema({
   hero: {
-    heading: { type: String, default: "Our Trustees" },
+    heading: { type: String, default: "Inspiring Mentors" },
     description: { type: String, default: "Meet the visionary leaders behind our institution." },
     image: { type: String, default: "" },
+    slides: [
+      {
+        name: { type: String, default: "" },
+        designation: { type: String, default: "" },
+        description: { type: String, default: "" },
+        image: { type: String, default: "" },
+      }
+    ]
   },
   trustees: [
     {

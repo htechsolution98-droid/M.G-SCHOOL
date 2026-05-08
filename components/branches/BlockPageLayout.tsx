@@ -100,13 +100,6 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
                   loop={true}
                   className="w-full h-full block-slider"
                 >
-                  <div className="absolute top-8 left-8 z-30 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-2xl border border-white/50">
-                    <img 
-                      src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
-                      alt="M.G. School Logo" 
-                      className="h-14 md:h-20 w-auto object-contain"
-                    />
-                  </div>
                   {block.images.map((img: string, idx: number) => (
                     <SwiperSlide key={idx}>
                       <Image

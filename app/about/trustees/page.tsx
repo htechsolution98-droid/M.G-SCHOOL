@@ -7,6 +7,13 @@ import axiosInstance from "@/lib/axios";
 import SectionTitle from "@/components/SectionTitle";
 import { useSocketSync } from "@/hooks/useSocketSync";
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 export default function TrusteesPage() {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -37,9 +44,9 @@ export default function TrusteesPage() {
   }
 
   const hero = content?.hero || {
-    heading: "Our Trustees",
+    heading: "Inspiring Mentors",
     description: "Meet the visionary leaders behind our institution.",
-    image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80",
+    slides: []
   };
 
   const trustees = content?.trustees || [];
@@ -47,9 +54,9 @@ export default function TrusteesPage() {
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-primary">
-        <div className="absolute inset-0 bg-black/40 z-10" />
-        {hero.image && (
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden mt-[-6rem]">
+        <div className="absolute inset-0 bg-black/60 z-10" />
+        {hero.image ? (
           <Image
             src={hero.image}
             alt="Trustees Hero"
@@ -57,20 +64,31 @@ export default function TrusteesPage() {
             className="object-cover"
             priority
           />
+        ) : (
+          <div className="w-full h-full absolute inset-0 bg-primary" />
         )}
-        <div className="relative z-20 text-center px-4 max-w-3xl mx-auto mt-10">
+        <div className="relative z-20 text-center px-4 max-w-4xl mx-auto mt-20">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="p-3 bg-secondary/80 backdrop-blur-sm text-primary rounded-2xl mb-6 inline-block"
+          >
+            <span className="font-black text-xs uppercase tracking-[0.3em]">Institutional Pillars</span>
+          </motion.div>
+          
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-playfair font-black text-white mb-6 drop-shadow-xl"
+            className="text-4xl md:text-6xl lg:text-7xl font-playfair font-black text-white mb-6 drop-shadow-xl tracking-tighter"
           >
             {hero.heading}
           </motion.h1>
+          
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-200 font-medium"
+            className="text-lg md:text-2xl text-gray-200 font-light italic"
           >
             {hero.description}
           </motion.p>

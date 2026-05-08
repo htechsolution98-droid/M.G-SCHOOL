@@ -47,7 +47,10 @@ export default function AnnouncementBanner() {
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="fixed bottom-6 right-6 z-[9999] w-[340px] max-w-[calc(100vw-2rem)] shadow-2xl rounded-3xl overflow-hidden"
-          style={{ backgroundColor: announcement.bgColor || "#0EA5E9" }}
+          style={{ 
+            backgroundColor: announcement.bgColor || "#0EA5E9",
+            fontFamily: "'Google Sans', sans-serif" 
+          }}
         >
           {/* Glow effect */}
           <div

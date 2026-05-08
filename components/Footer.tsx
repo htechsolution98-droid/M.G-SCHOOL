@@ -14,14 +14,13 @@ const Footer = () => {
 
       <div className="container-custom relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-
           {/* Brand & Vision */}
           <div className="lg:col-span-4 space-y-10">
             <Link href="/" className="flex items-center gap-4 group">
-              <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-16 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
+              <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
               <div className="flex flex-col">
-                <span className="text-3xl font-playfair font-black tracking-tighter">NAV BHARAT VIDHYA MANDAL</span>
-                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-secondary">Est. 1995</span>
+                <span className="text-2xl font-playfair font-black tracking-tighter">NAV BHARAT</span>
+                <span className="text-xl font-playfair font-black tracking-tighter text-white/80 -mt-1">VIDHYA MANDAL</span>
               </div>
             </Link>
             <p className="text-white/50 text-xl font-light leading-relaxed italic">

@@ -35,7 +35,10 @@ export default function HeroAnnouncement() {
     <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl">
       <div
         className="relative flex items-center gap-4 px-5 py-3.5 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-md overflow-hidden"
-        style={{ backgroundColor: announcement.bgColor || "#0EA5E9" }}
+        style={{ 
+          backgroundColor: announcement.bgColor || "#0EA5E9",
+          fontFamily: "'Google Sans', sans-serif"
+        }}
       >
         {/* Animated glow behind */}
         <div

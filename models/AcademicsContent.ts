@@ -28,6 +28,7 @@ export interface ITeacherDuty {
   category: string;
   duty: string;
   teachers: string;
+  image: string;
   description: string;
 }
 
@@ -81,6 +82,7 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
       category: { type: String, default: "" },
       duty: { type: String, default: "" },
       teachers: { type: String, default: "" },
+      image: { type: String, default: "" },
       description: { type: String, default: "" },
     }
   ],

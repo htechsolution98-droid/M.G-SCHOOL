@@ -10,12 +10,19 @@ export interface IFacultyMember {
   education?: string;
 }
 
+export interface IFacultyHeroSlide {
+  image: string;
+  name: string;
+  role: string;
+  description: string;
+}
+
 export interface IFacultyContent extends Document {
   hero: {
     heading: string;
     headingHighlight: string;
     description: string;
-    images: string[];
+    slides: IFacultyHeroSlide[];
   };
   facultyMembers: IFacultyMember[];
   updatedAt: Date;
@@ -26,7 +33,14 @@ const FacultyContentSchema: Schema = new Schema({
     heading: { type: String, required: true },
     headingHighlight: { type: String, required: true },
     description: { type: String, required: true },
-    images: [{ type: String }],
+    slides: [
+      {
+        image: { type: String, default: "" },
+        name: { type: String, default: "" },
+        role: { type: String, default: "" },
+        description: { type: String, default: "" },
+      }
+    ],
   },
   facultyMembers: [
     {
@@ -42,5 +56,7 @@ const FacultyContentSchema: Schema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.FacultyContent ||
-  mongoose.model<IFacultyContent>("FacultyContent", FacultyContentSchema);
+if (mongoose.models.FacultyContent) {
+  delete mongoose.models.FacultyContent;
+}
+export default mongoose.model<IFacultyContent>("FacultyContent", FacultyContentSchema);

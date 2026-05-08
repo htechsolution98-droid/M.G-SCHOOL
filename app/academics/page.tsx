@@ -35,41 +35,13 @@ const Academics = () => {
   useSocketSync(fetchData);
 
   const hero = content?.hero || {
-    heading: "Elite",
-    headingHighlight: "Curriculum.",
-    description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
-    image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+    heading: "",
+    headingHighlight: "",
+    description: "",
+    image: "",
   };
 
-  const sections = content?.programs || [
-    {
-      title: "Primary Foundation",
-      level: "Std 1 to 5",
-      tagline: "Building Bright Beginnings",
-      description: "Our primary program focuses on sensory and play-based learning, ensuring every child develops a love for discovery while mastering core literacy and numeracy.",
-      features: ["Experimental Science", "Vedic Mathematics", "Creative Storytelling", "Environmental Awareness"],
-      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
-      color: "from-blue-500/10 to-transparent"
-    },
-    {
-      title: "Secondary Excellence",
-      level: "Std 6 to 10",
-      tagline: "Critical Thinking & Character",
-      description: "Students transition into abstract reasoning and critical analysis. We combine rigorous board curriculum with real-world application to prepare them for global stages.",
-      features: ["Robotics & Coding", "Advanced Social Sciences", "Foreign Language Lab", "Competitive Sports"],
-      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
-      color: "from-amber-500/10 to-transparent"
-    },
-    {
-      title: "Higher Secondary",
-      level: "Std 11 & 12",
-      tagline: "Career & Leadership Portals",
-      description: "Dedicated streams for Science, Commerce, and Arts with personalized mentoring. We focus on entrance exam mastery and professional portfolio development.",
-      features: ["University Guidance", "Research Workshops", "Enterprise Training", "Creative Portfolio"],
-      image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
-      color: "from-primary/10 to-transparent"
-    }
-  ];
+  const sections = content?.programs || [];
 
   const facilities = [
     { icon: <Microscope className="w-10 h-10" />, name: "Advanced Science Labs" },
@@ -211,16 +183,18 @@ const Academics = () => {
                 className="lg:w-1/2 relative group"
               >
                 <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color || "from-primary/10 to-transparent")} />
-                <div className="relative overflow-hidden rounded-[5rem] shadow-3xl">
-                  <Image
-                    src={section.image}
-                    alt={section.title}
-                    width={800}
-                    height={1000}
-                    className="object-cover h-[700px] w-full group-hover:scale-110 transition-transform duration-1000"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
-                </div>
+                {section.image && (
+                  <div className="relative overflow-hidden rounded-[5rem] shadow-3xl">
+                    <Image
+                      src={section.image}
+                      alt={section.title}
+                      width={800}
+                      height={1000}
+                      className="object-cover h-[700px] w-full group-hover:scale-110 transition-transform duration-1000"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
+                  </div>
+                )}
               </motion.div>
             </div>
           ))}
@@ -312,7 +286,16 @@ const Academics = () => {
                         <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors">
                           <td className="py-6 px-4 text-center font-bold text-gray-400">{idx + 1}</td>
                           <td className="py-6 px-4 font-bold text-primary whitespace-nowrap">{duty.duty}</td>
-                          <td className="py-6 px-4 text-gray-600 font-medium whitespace-nowrap">{duty.teachers}</td>
+                          <td className="py-6 px-4 text-gray-600 font-medium whitespace-nowrap">
+                            <div className="flex flex-col items-center gap-2">
+                              {duty.image && (
+                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/10 shadow-sm mb-1 bg-gray-50">
+                                  <Image src={duty.image} alt={duty.teachers} width={48} height={48} className="w-full h-full object-cover" />
+                                </div>
+                              )}
+                              <span>{duty.teachers}</span>
+                            </div>
+                          </td>
                           <td className="py-6 px-4 text-gray-500 italic">{duty.description}</td>
                         </tr>
                       ))}

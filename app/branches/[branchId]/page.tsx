@@ -110,9 +110,19 @@ export default function BranchDetailPage({ params }: { params: { branchId: strin
               <span className="h-px w-10 bg-secondary" />
               {branch.subtitle}
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
-              {branch.name}
-            </h2>
+            
+            <div className="flex items-center gap-6 mb-8">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-none uppercase tracking-tighter break-words">
+                {branch.name}
+              </h2>
+              <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 shrink-0 hidden md:block">
+                <img 
+                  src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
+                  alt="M.G. School Logo" 
+                  className="h-12 w-auto object-contain"
+                />
+              </div>
+            </div>
             <div className="flex flex-wrap gap-4 mb-10">
               {branch.grades && (
                 <span className="bg-primary/5 text-primary text-xs font-black px-6 py-2.5 rounded-full border border-primary/10 tracking-widest uppercase">

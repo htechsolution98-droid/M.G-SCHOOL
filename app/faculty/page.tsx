@@ -44,64 +44,91 @@ const FacultyPage = () => {
     );
   }
 
-  const hero = content?.hero || {
-    heading: "Inspiring ",
-    headingHighlight: "Mentors.",
-    description: "Meet the dedicated educators who are shaping the future of our students with passion and expertise.",
-    images: ["https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070"],
+  const hero = {
+    heading: content?.hero?.heading || "Inspiring ",
+    headingHighlight: content?.hero?.headingHighlight || "Mentors.",
+    description: content?.hero?.description || "Meet the dedicated educators who are shaping the future of our students with passion and expertise.",
+    slides: content?.hero?.slides || [],
   };
-
-  const heroImages = (hero.images && hero.images.length > 0)
-    ? hero.images
-    : (hero.image ? [hero.image] : ["https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070"]);
 
   const facultyMembers = content?.facultyMembers || [];
 
   return (
     <div className="pt-24 min-h-screen">
-      {/* Sophisticated Faculty Banner */}
-      <section className="section-padding overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 -skew-x-12 translate-x-1/4" />
-        <div className="container-custom relative z-10 flex flex-col md:flex-row items-center gap-20">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="md:w-1/2"
-          >
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black text-primary leading-tight mb-10 tracking-tighter">
-              {hero.heading} <br />
-              <span className="text-secondary italic">{hero.headingHighlight}</span>
-            </h1>
-            <p className="text-2xl text-gray-400 font-light leading-relaxed max-w-xl">
-              "{hero.description}"
-            </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="md:w-1/2 relative"
-          >
-            <div className="organic-radius bg-secondary w-full aspect-square absolute top-4 left-4 -z-10 opacity-30 animate-pulse" />
-            <div className="organic-radius border-8 border-white shadow-3xl overflow-hidden aspect-square relative">
-              <Swiper
-                modules={[Autoplay, EffectFade, Navigation, Pagination]}
-                effect="fade"
-                navigation
-                pagination={{ clickable: true }}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                loop={true}
-                className="w-full h-full"
-              >
-                {heroImages.map((img: string, idx: number) => (
-                  <SwiperSlide key={idx}>
-                    <Image src={img} alt={`Mentors ${idx + 1}`} fill className="object-cover" />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          </motion.div>
-        </div>
+      {/* Sophisticated Faculty Banner - Dynamic Slider */}
+      <section className="relative overflow-hidden bg-white">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/4 z-0" />
+        
+        <Swiper
+          modules={[Autoplay, EffectFade, Navigation, Pagination]}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          navigation
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          loop={true}
+          className="w-full"
+        >
+          {(hero.slides && hero.slides.length > 0 ? hero.slides : [{ 
+            image: "https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070",
+            name: "Our Faculty",
+            role: "Dedicated Educators",
+            description: hero.description
+          }]).map((slide: any, idx: number) => (
+            <SwiperSlide key={idx}>
+              <div className="container-custom py-20 relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24 min-h-[600px]">
+                {/* Text Content */}
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="md:w-1/2 space-y-8"
+                >
+                  <div className="space-y-4">
+                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-playfair font-black text-primary leading-tight tracking-tighter">
+                      {hero.heading} <br />
+                      <span className="text-secondary italic">{hero.headingHighlight}</span>
+                    </h1>
+                    <div className="w-24 h-1.5 bg-secondary rounded-full" />
+                  </div>
 
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <h2 className="text-3xl md:text-4xl font-playfair font-black text-primary">
+                        {slide.name}
+                      </h2>
+                      <p className="text-sm font-black text-secondary uppercase tracking-[0.3em]">
+                        {slide.role}
+                      </p>
+                    </div>
+                    
+                    <p className="text-xl md:text-2xl text-gray-400 font-light leading-relaxed italic border-l-4 border-gray-100 pl-6">
+                      "<ReadMore text={slide.description || ""} limit={120} />"
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Image Section */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8 }}
+                  className="md:w-1/2 relative"
+                >
+                  <div className="organic-radius bg-secondary w-full aspect-square absolute top-4 left-4 -z-10 opacity-20 animate-pulse" />
+                  <div className="organic-radius border-8 border-white shadow-3xl overflow-hidden aspect-square relative z-10">
+                    <Image 
+                      src={slide.image} 
+                      alt={slide.name} 
+                      fill 
+                      className="object-cover hover:scale-105 transition-transform duration-1000" 
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </section>
 
       {/* Faculty Profiles - Portfolio Layout */}

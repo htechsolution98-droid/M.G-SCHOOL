@@ -76,8 +76,8 @@ const Navbar = () => {
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
             <div className="flex flex-col">
-              <span className="text-2xl font-playfair font-black tracking-tighter text-primary">
-                NAVBHARAT VIDHYA MANDAL
+              <span className="text-2xl font-black text-primary leading-none" style={{ fontFamily: "var(--font-inter)", letterSpacing: "0.05em" }}>
+                NAV BHARAT VIDHYA MANDAL
               </span>
               <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
                 Legacy of Excellence

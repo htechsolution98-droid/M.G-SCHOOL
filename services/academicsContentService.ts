@@ -3,15 +3,11 @@ import AcademicsContent, { IAcademicsContent } from "@/models/AcademicsContent";
 
 const defaultAcademicsContent = {
   hero: {
-    heading: "Elite",
-    headingHighlight: "Curriculum.",
-    description: '"Academic rigour meets creative freedom. We cultivate minds that think differently and lead effectively."',
-    image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
-    images: [
-      "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
-      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070"
-    ],
+    heading: "",
+    headingHighlight: "",
+    description: "",
+    image: "",
+    images: [],
   },
   programs: [
     {
@@ -20,7 +16,7 @@ const defaultAcademicsContent = {
       tagline: "Building Bright Beginnings",
       description: "Our primary program focuses on sensory and play-based learning, ensuring every child develops a love for discovery while mastering core literacy and numeracy.",
       features: ["Experimental Science", "Vedic Mathematics", "Creative Storytelling", "Environmental Awareness"],
-      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
+      image: "",
       color: "from-blue-500/10 to-transparent"
     },
     {
@@ -29,7 +25,7 @@ const defaultAcademicsContent = {
       tagline: "Critical Thinking & Character",
       description: "Students transition into abstract reasoning and critical analysis. We combine rigorous board curriculum with real-world application to prepare them for global stages.",
       features: ["Robotics & Coding", "Advanced Social Sciences", "Foreign Language Lab", "Competitive Sports"],
-      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
+      image: "",
       color: "from-amber-500/10 to-transparent"
     },
     {
@@ -38,7 +34,7 @@ const defaultAcademicsContent = {
       tagline: "Career & Leadership Portals",
       description: "Dedicated streams for Science, Commerce, and Arts with personalized mentoring. We focus on entrance exam mastery and professional portfolio development.",
       features: ["University Guidance", "Research Workshops", "Enterprise Training", "Creative Portfolio"],
-      image: "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070",
+      image: "",
       color: "from-primary/10 to-transparent"
     }
   ],
@@ -46,11 +42,7 @@ const defaultAcademicsContent = {
     {
       title: "Extracurricular Programs",
       description: "Our comprehensive extracurricular programs run throughout the academic year, fostering teamwork, leadership, and physical excellence across multiple disciplines.",
-      images: [
-        "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2070",
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2023",
-        "https://images.unsplash.com/photo-1523050853063-bd40d04b68ce?q=80&w=2070"
-      ]
+      images: []
     }
   ],
   teacherDuties: [

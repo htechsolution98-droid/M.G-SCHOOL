@@ -6,7 +6,7 @@ const defaultFacultyContent = {
     heading: "Inspiring ",
     headingHighlight: "Mentors.",
     description: "Meet the dedicated educators who are shaping the future of our students with passion and expertise.",
-    images: ["https://images.unsplash.com/photo-1524178232363-1fb280d91f3d?q=80&w=2070"],
+    slides: [],
   },
   facultyMembers: [
     {
