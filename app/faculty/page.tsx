@@ -180,25 +180,6 @@ const FacultyPage = () => {
         </div>
       </section>
 
-      {/* Featured Philosophy Section */}
-      <section className="section-padding overflow-hidden">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="bg-primary p-20 md:p-32 rounded-[6rem] text-center text-white relative overflow-hidden shadow-3xl"
-          >
-            <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-pattern" />
-            <Quote className="text-secondary w-20 h-20 mx-auto mb-12 opacity-50" />
-            <h2 className="text-4xl md:text-5xl font-playfair font-bold mb-12 leading-tight max-w-4xl mx-auto italic underline decoration-secondary/30 underline-offset-[16px]">
-              "Education is not the learning of facts, but the training of the mind to think."
-            </h2>
-            <div className="w-32 h-1 bg-secondary mx-auto mb-10 rounded-full" />
-            <div className="text-secondary font-black tracking-[0.4em] uppercase text-sm">Einstein on Education</div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 };

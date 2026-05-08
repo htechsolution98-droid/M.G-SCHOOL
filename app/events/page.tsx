@@ -10,16 +10,26 @@ import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
 
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
+  const [lifeAtMg, setLifeAtMg] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = React.useCallback(() => {
-    axiosInstance.get(`/api/events?t=${Date.now()}`)
-      .then((res) => {
-        if (res.data.success) {
-          setEvents(res.data.events);
-        }
+    Promise.all([
+      axiosInstance.get(`/api/events?t=${Date.now()}`),
+      axiosInstance.get(`/api/life-at-mg?t=${Date.now()}`)
+    ])
+      .then(([eventsRes, lifeRes]) => {
+        if (eventsRes.data.success) setEvents(eventsRes.data.events);
+        if (lifeRes.data.success) setLifeAtMg(lifeRes.data.content);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -61,14 +71,47 @@ const EventsPage = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="lg:w-1/3 relative"
+              className="lg:w-1/2 relative h-[500px]"
             >
-               <div className="p-12 bg-white/50 backdrop-blur-xl border border-white rounded-[4rem] shadow-3xl text-center relative z-10">
-                  <div className="text-4xl font-playfair font-black text-primary mb-2">12+</div>
-                  <div className="text-xs uppercase tracking-widest font-black text-secondary mb-8">Annual Events</div>
-                  <button className="bg-primary text-white w-full py-5 rounded-2xl font-bold hover:bg-secondary hover:text-primary transition-all shadow-xl active:scale-95">Download Calendar</button>
-               </div>
-               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -z-10" />
+              {lifeAtMg?.slider && lifeAtMg.slider.length > 0 ? (
+                <div className="w-full h-full rounded-[4rem] overflow-hidden shadow-3xl border-8 border-white bg-slate-100">
+                  <Swiper
+                    modules={[Autoplay, EffectFade, Pagination]}
+                    effect="fade"
+                    pagination={{ clickable: true }}
+                    autoplay={{ delay: 4000, disableOnInteraction: false }}
+                    loop={true}
+                    className="w-full h-full"
+                  >
+                    {lifeAtMg.slider.map((slide: any, idx: number) => (
+                      <SwiperSlide key={idx} className="relative w-full h-full">
+                        {slide.type === "video" ? (
+                          <video
+                            src={slide.url}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <Image
+                            src={slide.url}
+                            fill
+                            className="object-cover"
+                            alt={slide.title || `Slide ${idx + 1}`}
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60 z-10" />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              ) : (
+                <div className="w-full h-full rounded-[4rem] bg-slate-100 border-8 border-white shadow-3xl flex items-center justify-center">
+                  <span className="text-gray-400 font-bold tracking-widest uppercase text-sm">Add slider from admin</span>
+                </div>
+              )}
             </motion.div>
           </div>
 
@@ -140,23 +183,7 @@ const EventsPage = () => {
         </div>
       </section>
 
-      {/* Modern Newsletter/Interaction Section */}
-      <section className="section-padding overflow-hidden">
-         <div className="container-custom">
-            <motion.div 
-               initial={{ opacity: 0, scale: 0.95 }}
-               whileInView={{ opacity: 1, scale: 1 }}
-               viewport={{ once: true }}
-               className="bg-primary p-20 md:p-32 rounded-[6rem] text-center text-white relative overflow-hidden shadow-3xl"
-            >
-               <div className="absolute top-0 right-0 w-1/2 h-full bg-secondary/5 -translate-y-1/2 translate-x-1/2 rounded-full blur-3xl pointer-events-none" />
-               <Sparkles size={60} className="text-secondary opacity-30 mx-auto mb-10" />
-               <h2 className="text-4xl md:text-6xl font-playfair font-black mb-12 leading-none uppercase tracking-tighter shadow-2xl">Watch the <br/><span className="italic text-secondary underline decoration-secondary decoration-4 underline-offset-8">highlights.</span></h2>
-               <p className="text-2xl text-white/50 mb-16 max-w-2xl mx-auto font-light leading-relaxed italic">"Relive every grand moment from our past events through our curated video archive."</p>
-               <button className="bg-secondary text-primary px-16 py-6 rounded-[2.5rem] font-black text-xl hover:bg-white transition-all shadow-2xl active:scale-95">Open Video Portal</button>
-            </motion.div>
-         </div>
-      </section>
+
     </div>
   );
 };

@@ -101,10 +101,6 @@ export default function Home() {
                 </div>
               </motion.div>
             ))}
-            <div className="h-10 w-px bg-gray-100 hidden lg:block" />
-            <Link href="/contact" className="bg-primary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-secondary hover:text-primary transition-all shadow-xl">
-              Take Virtual Tour <Zap size={18} className="fill-current" />
-            </Link>
           </div>
         </div>
       </section>
@@ -155,13 +151,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
-              <Link href={philosophy.ctaLink} className="group text-primary font-black text-xl flex items-center gap-4">
-                {philosophy.ctaText}
-                <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
             </motion.div>
           </div>
         </div>

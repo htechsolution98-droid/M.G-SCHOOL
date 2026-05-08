@@ -51,9 +51,7 @@ const sidebarItems = [
   { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
   { id: "gallery", name: "Gallery", icon: ImageIcon },
   { id: "events", name: "Events", icon: Calendar },
-  { id: "messages", name: "Messages", icon: MessageSquare },
   { id: "enrollment", name: "Enrollment", icon: BookOpen },
-  { id: "settings", name: "Settings", icon: Settings },
 ];
 
 // ─── Stats cards ───
@@ -220,9 +218,7 @@ export default function AdminDashboard() {
             {activeTab === "life-at-mg" && <LifeAtMGTab />}
             {activeTab === "gallery" && <GalleryTab />}
             {activeTab === "events" && <EventsTab />}
-            {activeTab === "messages" && <MessagesTab />}
             {activeTab === "enrollment" && <EnrollmentTab />}
-            {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
           </div>
         </div>
       </main>
@@ -763,20 +759,6 @@ function TextareaField({ label, value, onChange }: { label: string; value: strin
   );
 }
 
-// ─── Placeholder Tab ───
-function PlaceholderTab({ title, description }: { title: string; description: string }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-3xl p-16 border border-gray-100 shadow-sm text-center">
-      <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mx-auto mb-8">
-        <Settings className="text-primary" size={36} />
-      </div>
-      <h3 className="text-2xl font-playfair font-black text-primary mb-4">{title}</h3>
-      <p className="text-gray-400 font-medium max-w-md mx-auto mb-8">{description}</p>
-      <p className="text-xs text-gray-300 uppercase tracking-widest font-bold">This section will be available soon</p>
-    </motion.div>
-  );
-}
 
 // ─── Campus Hubs Editor ───
 function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: any[]) => void; saving: boolean }) {
@@ -2584,111 +2566,6 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   );
 }
 
-function MessagesTab() {
-  const [messages, setMessages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchMessages = async () => {
-    try {
-      const res = await axiosInstance.get("/api/messages");
-      if (res.data.success) {
-        setMessages(res.data.messages);
-      }
-    } catch (err) {
-      setError("Failed to load messages");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
-  const deleteMsg = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this message?")) return;
-    try {
-      const res = await axiosInstance.delete(`/api/messages?id=${id}`);
-      if (res.data.success) {
-        setMessages(messages.filter((m) => m._id !== id));
-      }
-    } catch (err) {
-      alert("Failed to delete message");
-    }
-  };
-
-  const toggleRead = async (id: string, currentRead: boolean) => {
-    try {
-      const res = await axiosInstance.put("/api/messages", { id, isRead: !currentRead });
-      if (res.data.success) {
-        setMessages(messages.map((m) => m._id === id ? { ...m, isRead: !currentRead } : m));
-      }
-    } catch (err) {
-      alert("Failed to update message status");
-    }
-  };
-
-  if (loading) return (
-    <div className="flex items-center justify-center py-32">
-      <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-    </div>
-  );
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-2xl font-playfair font-black text-primary">Inquiries & Messages</h3>
-          <p className="text-sm text-gray-400 font-medium">Manage student and parent inquiries</p>
-        </div>
-        <span className="text-sm font-bold text-gray-400 bg-gray-100 px-4 py-2 rounded-xl">{messages.length} Total</span>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4">
-        {messages.length === 0 ? (
-          <div className="bg-white rounded-3xl p-16 text-center border border-gray-100 shadow-sm">
-            <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
-              <MessageSquare size={36} className="text-gray-200" />
-            </div>
-            <h3 className="text-xl font-playfair font-black text-primary mb-2">No messages yet</h3>
-            <p className="text-gray-400 font-medium max-w-xs mx-auto">When parents or students contact you via the website, their messages will appear here.</p>
-          </div>
-        ) : (
-          messages.map((msg) => (
-            <div key={msg._id} className={`bg-white rounded-3xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md ${!msg.isRead ? "border-l-4 border-l-secondary" : ""}`}>
-              <div className="flex flex-col lg:flex-row justify-between gap-6">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg font-bold text-primary">{msg.name}</span>
-                    {!msg.isRead && <span className="text-[10px] bg-secondary text-primary px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">New Inquiry</span>}
-                  </div>
-                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 mb-4 font-bold uppercase tracking-widest">
-                    <span className="flex items-center gap-2"><Users size={14} className="text-secondary" /> {msg.email}</span>
-                    <span className="flex items-center gap-2"><GraduationCap size={14} className="text-secondary" /> {msg.phone}</span>
-                    <span className="flex items-center gap-2"><Calendar size={14} className="text-secondary" /> {new Date(msg.createdAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                  </div>
-                  <p className="text-sm font-black text-gray-700 mb-3 underline decoration-secondary/30 underline-offset-4">{msg.subject}</p>
-                  <p className="text-sm text-gray-500 leading-relaxed bg-gray-50 p-5 rounded-2xl border border-gray-100 italic">"{msg.message}"</p>
-                </div>
-                <div className="flex lg:flex-col gap-2 shrink-0">
-                  <button onClick={() => toggleRead(msg._id, msg.isRead)}
-                    className={`flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-xs cursor-pointer ${msg.isRead ? "bg-gray-50 text-gray-400 hover:bg-gray-100" : "bg-secondary text-primary hover:bg-secondary/90 shadow-sm"}`}>
-                    {msg.isRead ? "Unread" : "Mark Read"}
-                  </button>
-                  <button onClick={() => deleteMsg(msg._id)}
-                    className="p-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer border border-red-100 flex items-center justify-center">
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
 
 function LifeAtMGTab() {
   const [content, setContent] = useState<any>(null);

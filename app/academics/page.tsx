@@ -108,16 +108,7 @@ const Academics = () => {
           </Swiper>
         </div>
 
-        {/* Foreground Content */}
         <div className="container-custom relative z-10 text-center text-white">
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="p-4 bg-primary/80 backdrop-blur-sm text-secondary rounded-2xl mb-8 inline-block shadow-2xl"
-          >
-            <Sparkles size={40} />
-          </motion.div>
 
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
