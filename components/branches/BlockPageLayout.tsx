@@ -133,9 +133,16 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
 
           {/* Content Side */}
           <div className="lg:w-1/2 w-full">
-            <div className="text-secondary font-black text-xl italic font-playfair mb-4 flex items-center gap-4">
+            <div className="text-secondary font-black text-xl italic font-playfair mb-6 flex items-center gap-4">
               <span className="h-px w-10 bg-secondary" />
               {block.subtitle}
+            </div>
+            <div className="mb-6 bg-white w-max p-2 rounded-2xl shadow-sm border border-gray-100 hidden md:block">
+              <img 
+                src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
+                alt="M.G. School Logo" 
+                className="h-16 w-auto object-contain"
+              />
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-black mb-8 text-primary leading-none uppercase tracking-tighter break-words">
               {block.name}
