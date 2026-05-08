@@ -57,6 +57,7 @@ export interface IWhyChooseUsFeature {
 export interface IWhyChooseUs {
   heading: string;
   headingHighlight: string;
+  heroSlider?: { url: string; type: "image" | "video"; title?: string }[];
   reasonsTitle?: string;
   reasons: IWhyChooseReason[];
   vision?: {
@@ -112,6 +113,13 @@ const AboutContentSchema: Schema = new Schema({
   whyChooseUs: {
     heading: { type: String, default: "Why to study in M. G. School?" },
     headingHighlight: { type: String, default: "Why we are best?" },
+    heroSlider: [
+      {
+        url: { type: String, required: true },
+        type: { type: String, enum: ["image", "video"], default: "image" },
+        title: { type: String },
+      }
+    ],
     reasonsTitle: { type: String, default: "" },
     vision: {
       heading: { type: String, default: "" },
