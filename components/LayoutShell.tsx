@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import AnnouncementBanner from "@/components/AnnouncementBanner";
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,7 +16,6 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
 
   return (
     <>
-      <AnnouncementBanner />
       <Navbar />
       <main>{children}</main>
       <Footer />

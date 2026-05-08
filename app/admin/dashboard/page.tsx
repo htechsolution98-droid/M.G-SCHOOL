@@ -53,7 +53,6 @@ const sidebarItems = [
   { id: "events", name: "Events", icon: Calendar },
   { id: "messages", name: "Messages", icon: MessageSquare },
   { id: "enrollment", name: "Enrollment", icon: BookOpen },
-  { id: "announcement", name: "Announcement", icon: Megaphone },
   { id: "settings", name: "Settings", icon: Settings },
 ];
 
@@ -192,7 +191,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "gallery", "events", "announcement"].includes(activeTab) && (
+              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "gallery", "events"].includes(activeTab) && (
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
                   className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
@@ -223,7 +222,6 @@ export default function AdminDashboard() {
             {activeTab === "events" && <EventsTab />}
             {activeTab === "messages" && <MessagesTab />}
             {activeTab === "enrollment" && <EnrollmentTab />}
-            {activeTab === "announcement" && <AnnouncementTab />}
             {activeTab === "settings" && <PlaceholderTab title="Settings" description="Configure admin panel and website settings." />}
           </div>
         </div>
@@ -3359,225 +3357,7 @@ function EnrollmentSubmissionsList({ submissions }: { submissions: any[] }) {
   );
 }
 
-// ─── Announcement Tab ───
-function AnnouncementTab() {
-  const defaultData = {
-    text: "",
-    heading: "",
-    description: "",
-    image: "",
-    isActive: false,
-    bgColor: "#F59E0B",
-    textColor: "#1E3A8A",
-    link: "",
-    linkLabel: "Learn More",
-  };
-  const [data, setData] = useState<any>(defaultData);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-  const [previewExpanded, setPreviewExpanded] = useState(false);
 
-  useEffect(() => {
-    axiosInstance.get("/api/announcement")
-      .then((res) => { if (res.data.success) setData(res.data.announcement); })
-      .catch(() => { });
-  }, []);
-
-  const save = async () => {
-    setSaving(true);
-    setMessage("");
-    try {
-      const res = await axiosInstance.put("/api/announcement", data);
-      if (res.data.success) setMessage("Saved successfully!");
-      else setMessage("Error saving.");
-    } catch { setMessage("Failed to save."); }
-    setSaving(false);
-    setTimeout(() => setMessage(""), 3000);
-  };
-
-  return (
-    <div className="space-y-8">
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
-        <div>
-          <h4 className="text-lg font-playfair font-black text-primary">Global Announcement Popup</h4>
-          <p className="text-sm text-gray-400 mt-1">This popup appears on every page. Enable it to show your announcement to all visitors in real time. Users can close it with the × button.</p>
-        </div>
-
-        {/* Active toggle */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setData({ ...data, isActive: !data.isActive })}
-            className={`relative w-14 h-7 rounded-full transition-colors cursor-pointer ${data.isActive ? "bg-primary" : "bg-gray-200"}`}
-          >
-            <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${data.isActive ? "translate-x-7" : "translate-x-0.5"}`} />
-          </button>
-          <span className={`font-black text-sm uppercase tracking-widest ${data.isActive ? "text-primary" : "text-gray-400"}`}>
-            {data.isActive ? "Popup Active" : "Popup Inactive"}
-          </span>
-        </div>
-
-        {/* Heading */}
-        <div>
-          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Heading</label>
-          <input
-            type="text"
-            value={data.heading}
-            onChange={(e) => setData({ ...data, heading: e.target.value })}
-            placeholder="e.g. Admissions Open 2026-27!"
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Description (Use enter for paragraphs / points)</label>
-          <textarea
-            value={data.description}
-            onChange={(e) => setData({ ...data, description: e.target.value })}
-            rows={3}
-            placeholder="e.g. Enroll your child in a world-class institution. Limited seats available."
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
-          />
-        </div>
-
-        {/* Announcement text (marquee) */}
-        <div>
-          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Scrolling Text</label>
-          <textarea
-            value={data.text}
-            onChange={(e) => setData({ ...data, text: e.target.value })}
-            rows={2}
-            placeholder="e.g. 🎉 Admissions open for 2026-27! Limited seats available — Apply now."
-            className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
-          />
-        </div>
-
-        {/* Image Upload (Optional) */}
-        <div>
-          <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">
-            Image <span className="text-gray-400 font-medium normal-case tracking-normal">(optional)</span>
-          </label>
-          <ImageUpload label="" value={data.image} onChange={(v: string) => setData({ ...data, image: v })} />
-          {data.image && (
-            <button
-              onClick={() => setData({ ...data, image: "" })}
-              className="mt-2 text-xs text-red-400 font-bold hover:text-red-600 transition-colors cursor-pointer"
-            >
-              Remove image
-            </button>
-          )}
-        </div>
-
-        {/* Colors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Background Color</label>
-            <div className="flex items-center gap-3">
-              <input type="color" value={data.bgColor} onChange={(e) => setData({ ...data, bgColor: e.target.value })} className="w-12 h-10 rounded-xl border border-gray-200 cursor-pointer" />
-              <span className="text-sm font-mono text-gray-500">{data.bgColor}</span>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Text Color</label>
-            <div className="flex items-center gap-3">
-              <input type="color" value={data.textColor} onChange={(e) => setData({ ...data, textColor: e.target.value })} className="w-12 h-10 rounded-xl border border-gray-200 cursor-pointer" />
-              <span className="text-sm font-mono text-gray-500">{data.textColor}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Optional link */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Link URL (optional)</label>
-            <input type="text" value={data.link} onChange={(e) => setData({ ...data, link: e.target.value })} placeholder="e.g. /enroll" className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-2">Link Label</label>
-            <input type="text" value={data.linkLabel} onChange={(e) => setData({ ...data, linkLabel: e.target.value })} placeholder="e.g. Apply Now" className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-primary focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
-          </div>
-        </div>
-
-        {/* Popup Preview */}
-        {(data.heading || data.text || data.description) && (
-          <div>
-            <label className="block text-xs font-black text-primary uppercase tracking-widest mb-3">Popup Preview</label>
-            <div
-              className="rounded-3xl overflow-hidden shadow-lg w-72"
-              style={{ backgroundColor: data.bgColor }}
-            >
-              {data.image && (
-                <div className="relative w-full h-28 overflow-hidden">
-                  <img src={data.image} alt="Preview" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${data.bgColor} 100%)` }} />
-                </div>
-              )}
-              <div className="p-4 space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
-                      <Megaphone size={12} style={{ color: data.textColor }} />
-                    </div>
-                    {data.heading && (
-                      <span className="text-xs font-black" style={{ color: data.textColor }}>{data.heading}</span>
-                    )}
-                  </div>
-                  <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
-                    <X size={10} style={{ color: data.textColor }} />
-                  </div>
-                </div>
-                {data.description && (
-                  <div className="mb-2">
-                    <div className="text-[11px] opacity-80 leading-relaxed space-y-1" style={{ color: data.textColor }}>
-                      {(previewExpanded || data.description.length <= 150
-                        ? data.description
-                        : data.description.substring(0, 150) + "..."
-                      ).split('\n').map((line: string, i: number) => (
-                        <div key={i} className={line.trim() === '' ? 'h-1.5' : ''}>{line}</div>
-                      ))}
-                    </div>
-                    {data.description.length > 150 && (
-                      <button
-                        onClick={() => setPreviewExpanded(!previewExpanded)}
-                        className="text-[10px] font-black mt-1 opacity-90 hover:opacity-100 cursor-pointer"
-                        style={{ color: data.textColor }}
-                      >
-                        {previewExpanded ? "Read less" : "Read more"}
-                      </button>
-                    )}
-                  </div>
-                )}
-                {data.text && (
-                  <div className="overflow-hidden">
-                    <p className="text-[11px] font-bold truncate" style={{ color: data.textColor }}>{data.text}</p>
-                  </div>
-                )}
-                {data.link && (
-                  <span className="text-[11px] font-black underline underline-offset-1" style={{ color: data.textColor }}>{data.linkLabel} →</span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Save message */}
-        {message && (
-          <p className={`text-sm font-bold ${message.startsWith("Error") || message.startsWith("Failed") ? "text-red-500" : "text-emerald-600"}`}>
-            {message}
-          </p>
-        )}
-
-        <button
-          onClick={save}
-          disabled={saving}
-          className="flex items-center gap-3 bg-primary text-white px-8 py-3 rounded-2xl font-bold hover:bg-secondary hover:text-primary transition-all cursor-pointer disabled:opacity-60"
-        >
-          <Save size={18} /> {saving ? "Saving…" : "Save Announcement"}
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ─── About Principal Messages Editor ───
 function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { principalMessages: any[]; onSave: (p: any[]) => void; saving: boolean }) {
