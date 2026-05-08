@@ -1114,7 +1114,6 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
   const [local, setLocal] = useState(whyChooseUs || {
     heading: "Why Choose Our School",
     headingHighlight: "A Destination for Bright Futures",
-    heroSlider: [],
     vision: { heading: "", description: "" },
     features: [],
     reasons: []
@@ -1150,87 +1149,6 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
           <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v: string) => update("headingHighlight", v)} />
           <InputField label="Reasons Section Title" value={local.reasonsTitle || ""} onChange={(v: string) => update("reasonsTitle", v)} />
           <InputField label="Features Section Title" value={local.featuresTitle || ""} onChange={(v: string) => update("featuresTitle", v)} />
-        </div>
-      </div>
-
-      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-8 border-b border-gray-50 pb-4">
-          <div>
-            <h4 className="text-lg font-playfair font-black text-primary">Hero Slider</h4>
-            <p className="text-xs text-gray-400 mt-1">Add images or videos to the main hero slider.</p>
-          </div>
-          <button
-            onClick={() => update("heroSlider", [...(local.heroSlider || []), { url: "", type: "image", title: "" }])}
-            className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            <Plus size={14} /> Add Slide
-          </button>
-        </div>
-
-        <div className="space-y-8">
-          {(local.heroSlider || []).map((slide: any, idx: number) => (
-            <div key={idx} className="p-6 border border-gray-100 rounded-3xl bg-gray-50 relative group">
-              <button
-                onClick={() => update("heroSlider", local.heroSlider.filter((_: any, i: number) => i !== idx))}
-                className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer opacity-0 group-hover:opacity-100"
-              >
-                <Trash2 size={18} />
-              </button>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <InputField label="Slide Title (Optional)" value={slide.title || ""} onChange={(v) => {
-                    const updated = [...local.heroSlider];
-                    updated[idx] = { ...updated[idx], title: v };
-                    update("heroSlider", updated);
-                  }} />
-                  <div className="space-y-2">
-                    <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 ml-1">Content Type</label>
-                    <div className="flex gap-2">
-                      {["image", "video"].map((type) => (
-                        <button
-                          key={type}
-                          onClick={() => {
-                            const updated = [...local.heroSlider];
-                            updated[idx] = { ...updated[idx], type: type as "image" | "video", url: "" };
-                            update("heroSlider", updated);
-                          }}
-                          className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${slide.type === type ? "bg-primary text-white" : "bg-white text-gray-400 border border-gray-100"}`}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {slide.type === "video" ? (
-                    <VideoUpload
-                      label="Slide Video"
-                      value={slide.url}
-                      onChange={(v) => {
-                        const updated = [...local.heroSlider];
-                        updated[idx] = { ...updated[idx], url: v };
-                        update("heroSlider", updated);
-                      }}
-                    />
-                  ) : (
-                    <ImageUpload
-                      label="Slide Image"
-                      value={slide.url}
-                      onChange={(v) => {
-                        const updated = [...local.heroSlider];
-                        updated[idx] = { ...updated[idx], url: v };
-                        update("heroSlider", updated);
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-          {(!local.heroSlider || local.heroSlider.length === 0) && (
-            <div className="text-center py-10 text-gray-400 italic">No slides added yet. Click "Add Slide" to begin.</div>
-          )}
         </div>
       </div>
 
@@ -3669,6 +3587,7 @@ function TrusteesTab() {
           <Save size={18} /> {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
+
 
       {message && <div className={`p-4 rounded-xl text-sm font-bold ${message.startsWith("Error") || message.startsWith("Failed") ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-600"}`}>{message}</div>}
 
