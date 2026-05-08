@@ -118,7 +118,7 @@ const HomeContentSchema = new Schema<IHomeContent>({
     history: [{ type: String }],
     approvedCentreTitle: { type: String, default: "Approved Centre" },
     approvedCentreDesc: { type: String, default: "Official centre for SCOPE and GKS courses." },
-    sindhiMediumTitle: { type: String, default: "A. Sindhi Medium" },
+    sindhiMediumTitle: { type: String, default: " Sindhi Medium" },
     sindhiSchools: [
       {
         name: { type: String, default: "" },
@@ -126,7 +126,7 @@ const HomeContentSchema = new Schema<IHomeContent>({
         subDetails: { type: String, default: "" },
       },
     ],
-    englishMediumTitle: { type: String, default: "B. English Medium" },
+    englishMediumTitle: { type: String, default: "English Medium" },
     englishSchools: [
       {
         name: { type: String, default: "" },

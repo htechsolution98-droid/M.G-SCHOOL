@@ -99,7 +99,7 @@ const Footer = () => {
                 </div>
                 <div className="flex gap-4">
                   <Phone className="text-secondary shrink-0" size={20} />
-                  <p className="text-sm font-black">+91 98765 43210</p>
+                  <p className="text-sm font-black">+91 90333 58749</p>
                 </div>
                 <div className="pt-4">
                   <div className="flex items-center gap-2 text-secondary text-[12px] font-black uppercase tracking-widest mb-2">

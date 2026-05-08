@@ -12,7 +12,7 @@ export default function Contact() {
     {
       name: "Main Campus (Block C)",
       address: "Mahatma Gandhi Highschool Old, 3JHV+65R, G-Ward, Kuber Nagar, Ahmedabad, Gujarat 382340",
-      phone: "+91 98765 43210",
+      phone: "+91 90333 58749",
       email: "main.campus@mgschool.edu.in",
     }
   ];
