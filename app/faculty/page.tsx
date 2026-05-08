@@ -13,6 +13,7 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import LoadingScreen from "@/components/LoadingScreen";
 
 
 const FacultyPage = () => {
@@ -36,13 +37,7 @@ const FacultyPage = () => {
 
   useSocketSync(fetchData);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   const hero = {
     heading: content?.hero?.heading || "Inspiring ",

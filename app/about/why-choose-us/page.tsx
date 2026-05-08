@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HelpCircle, CheckCircle2, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 import axiosInstance from "@/lib/axios";
+import LoadingScreen from "@/components/LoadingScreen";
 import ReadMore from "@/components/ReadMore";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,9 +34,7 @@ export default function WhyChooseUsPage() {
     fetchContent();
   }, []);
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+  if (loading) return <LoadingScreen />;
 
   const whyChooseUs = content?.whyChooseUs || {
     heading: "Why to study in M. G. School?",

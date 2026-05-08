@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Camera, Sparkles } from "lucide-react";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const GalleryPage = () => {
   const [content, setContent] = useState<any>(null);
@@ -31,11 +32,7 @@ const GalleryPage = () => {
 
   useSocketSync(fetchData);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-    </div>
-  );
+  if (loading) return <LoadingScreen />;
 
   const categories = ["All Chronicles", ...(content?.categories || [])];
   const images = content?.images || [];

@@ -118,16 +118,6 @@ const Navbar = () => {
                         transition={{ duration: 0.2 }}
                         className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
                       >
-                        {/* All link */}
-                        <Link
-                          href={link.href}
-                          prefetch={true}
-                          onClick={() => { setBuildingsOpen(false); setAboutOpen(false); }}
-                          className="block px-6 py-4 text-sm font-black text-primary hover:bg-primary/5 transition-all border-b border-gray-100"
-                        >
-                          {link.name === "About" ? "Overview" : "All Buildings"}
-                        </Link>
-
                         {/* Sub-links */}
                         {(link.name === "About" ? aboutSubLinks : branchSubLinks).map((sub) => (
                           <Link

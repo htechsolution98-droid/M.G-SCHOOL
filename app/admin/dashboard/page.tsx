@@ -7,6 +7,7 @@ import VideoUpload from "@/components/admin/VideoUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
+import LoadingScreen from "@/components/LoadingScreen";
 import {
   GraduationCap,
   Users,
@@ -29,6 +30,10 @@ import {
   Edit3,
   Star,
   Megaphone,
+  HelpCircle,
+  LayoutDashboard,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 
 // ─── Sidebar Items ───
@@ -49,8 +54,8 @@ const sidebarItems = [
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("homepage");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const auth = localStorage.getItem("mg_admin_auth");
@@ -64,6 +69,7 @@ export default function AdminDashboard() {
     } else {
       router.push("/admin");
     }
+    setLoading(false);
   }, [router]);
 
   const handleLogout = () => {
@@ -71,16 +77,28 @@ export default function AdminDashboard() {
     router.push("/admin");
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-primary flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-secondary/30 border-t-secondary rounded-full animate-spin" />
-      </div>
-    );
+  if (loading || !isAuthenticated) {
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <>
+      {/* ─── Mobile Restriction Message ─── */}
+      <div className="lg:hidden min-h-screen bg-primary flex flex-col items-center justify-center p-8 text-center">
+        <div className="bg-white p-6 rounded-[2.5rem] mb-8 shadow-2xl animate-bounce">
+          <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-20 h-20 object-contain" />
+        </div>
+        <h1 className="text-3xl font-playfair font-black text-white mb-4">Desktop Access Only</h1>
+        <p className="text-secondary/80 font-medium max-w-xs leading-relaxed mb-10">
+          The Management Console is optimized for professional desktop workflows. Please log in from a laptop or PC to manage your school's digital presence.
+        </p>
+        <button onClick={handleLogout} className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-white/10 text-white font-bold hover:bg-white/20 transition-all border border-white/10">
+          <LogOut size={20} /> Sign Out
+        </button>
+      </div>
+
+      {/* ─── Desktop Dashboard ─── */}
+      <div className="hidden lg:flex min-h-screen bg-gray-50 flex">
       {/* ─── Sidebar Desktop ─── */}
       <aside className="hidden lg:flex flex-col w-72 bg-primary h-screen fixed left-0 top-0 z-40 overflow-y-auto custom-scrollbar">
         <div className="p-8 border-b border-white/10 bg-white/10 shrink-0">
@@ -117,48 +135,14 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
-      {/* ─── Mobile Sidebar ─── */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" />
-            <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary h-screen z-50 lg:hidden flex flex-col overflow-y-auto custom-scrollbar">
-              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/10 shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="bg-white p-1 rounded-xl shadow-lg">
-                    <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-8 h-8 object-contain" />
-                  </div>
-                  <span className="text-lg font-playfair font-black text-white">M.G. SCHOOL</span>
-                </div>
-                <button onClick={() => setSidebarOpen(false)} className="text-white/50 cursor-pointer"><X size={24} /></button>
-              </div>
-              <nav className="flex-1 p-4 space-y-1 pb-2">
-                {sidebarItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <button key={item.id} onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-                      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-secondary text-primary" : "text-white/50 hover:text-white hover:bg-white/5"}`}>
-                      <Icon size={20} /> {item.name}
-                    </button>
-                  );
-                })}
-              </nav>
-              <div className="p-6 border-t border-white/10 mt-auto shrink-0">
-                <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all cursor-pointer">
-                  <LogOut size={20} /> Sign Out
-                </button>
-              </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+
 
       {/* ─── Main Content ─── */}
       <main className="flex-1 lg:ml-72 min-h-screen w-full min-w-0 overflow-x-hidden flex flex-col">
         <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 lg:px-10 py-5">
           <div className="flex items-center justify-between max-w-[1600px] mx-auto w-full">
             <div className="flex items-center gap-4">
-              <button className="lg:hidden p-2.5 rounded-xl bg-primary text-white cursor-pointer" onClick={() => setSidebarOpen(true)}><Menu size={20} /></button>
+
               <div>
                 <h2 className="text-xl font-playfair font-black text-primary capitalize">{activeTab}</h2>
                 <p className="text-xs text-gray-400 font-medium">Welcome back, Administrator</p>
@@ -197,6 +181,7 @@ export default function AdminDashboard() {
         </div>
       </main>
     </div>
+    </>
   );
 }
 

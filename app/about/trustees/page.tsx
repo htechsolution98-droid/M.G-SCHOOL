@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
 import SectionTitle from "@/components/SectionTitle";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import LoadingScreen from "@/components/LoadingScreen";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
@@ -35,13 +36,7 @@ export default function TrusteesPage() {
 
   useSocketSync(fetchData);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-12 h-12 border-4 border-secondary/30 border-t-secondary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   const hero = content?.hero || {
     heading: "Inspiring Mentors",

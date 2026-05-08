@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Building2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const defaultBranches = [
   {
@@ -35,17 +36,21 @@ const defaultBranches = [
 ];
 
 const BranchesPage = () => {
-  const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance.get("/api/branches-content")
       .then((res) => {
         if (res.data.success) {
           setContent(res.data.content);
         }
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => setLoading(false));
   }, []);
+
+  if (loading) return <LoadingScreen />;
 
   const hero = content?.hero || {
     heading: "Distributed ",

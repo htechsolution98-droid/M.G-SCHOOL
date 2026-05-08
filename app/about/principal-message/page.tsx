@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { MessageSquare, Quote } from "lucide-react";
 import axiosInstance from "@/lib/axios";
+import ReadMore from "@/components/ReadMore";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function PrincipalMessagePage() {
   const [content, setContent] = useState<any>(null);
@@ -26,9 +28,7 @@ export default function PrincipalMessagePage() {
     fetchContent();
   }, []);
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+  if (loading) return <LoadingScreen />;
 
   const principalMessages = content?.principalMessages || [];
 
@@ -92,7 +92,7 @@ export default function PrincipalMessagePage() {
                 </h2>
                 
                 <div className="text-xl text-gray-600 font-light leading-relaxed relative whitespace-pre-wrap">
-                  {msg.message}
+                  <ReadMore text={msg.message} limit={400} />
                 </div>
 
                 <motion.div 

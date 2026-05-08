@@ -11,19 +11,25 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
+import LoadingScreen from "@/components/LoadingScreen";
 
 
 export default function About() {
 
 
   const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = React.useCallback(() => {
+    setLoading(true);
     axiosInstance.get("/api/about-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
+        setLoading(false);
       })
-      .catch(() => { });
+      .catch(() => {
+        setLoading(false);
+      });
   }, []);
 
   React.useEffect(() => {
@@ -65,21 +71,21 @@ export default function About() {
     subheading: "About M.G. School",
     heading: "Our Journey of ",
     headingHighlight: "Success.",
-    description: "Three decades of academic excellence, carving a legacy that inspires generations.",
+    description: "Over seven decades of academic excellence, carving a legacy that inspires generations.",
   };
 
   const legacy = content?.legacy || {
     headingPrefix: "Founded on ",
     headingHighlight: "Vision.",
     paragraphs: [
-      "Established in 1995, M.G. School emerged from a simple yet profound dream: to provide world-class education that respects local roots while embracing global growth.",
+      "Established in 1948, M.G. School emerged from a simple yet profound dream: to provide world-class education that respects local roots while embracing global growth.",
       "What began in a modest building with 50 students has now evolved into a multi-campus educational beacon, nurturing thousands of bright minds every year.",
     ],
-    stat1Value: "28+",
+    stat1Value: "78+",
     stat1Label: "Years Legacy",
     stat2Value: "15k",
     stat2Label: "Alumni Globally",
-    archiveYear: "Archive 1995",
+    archiveYear: "Archive 1948",
     archiveTitle: "The First Foundation.",
     imageMain: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80",
     imageSmall1: "https://images.unsplash.com/photo-1509062522246-3755977927d7",
@@ -135,6 +141,8 @@ export default function About() {
       { title: "International Exchange", image: "" }
     ]
   };
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="pt-24 min-h-screen">

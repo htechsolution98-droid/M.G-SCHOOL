@@ -13,6 +13,7 @@ import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function BlockPageLayout({ blockKey, children }: { blockKey: "blockA" | "blockB" | "blockC", children?: React.ReactNode }) {
   const [block, setBlock] = useState<any>(null);
@@ -55,13 +56,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
 
   useSocketSync(fetchData);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-32 pb-32 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   if (!block || !block.name) {
     return (

@@ -15,17 +15,23 @@ import { cn } from "@/lib/utils";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
 import ReadMore from "@/components/ReadMore";
+import LoadingScreen from "@/components/LoadingScreen";
 
 
 const Academics = () => {
   const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = React.useCallback(() => {
+    setLoading(true);
     axiosInstance.get("/api/academics-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
+        setLoading(false);
       })
-      .catch(() => { });
+      .catch(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -39,6 +45,7 @@ const Academics = () => {
     headingHighlight: "",
     description: "",
     image: "",
+    images: []
   };
 
   const sections = content?.programs || [];
@@ -55,11 +62,11 @@ const Academics = () => {
   const journeyData = content?.journey;
   const journey = {
     title: journeyData?.title || "A Journey of Excellence in Education",
-    subtitle: journeyData?.subtitle || "M. G. School Journey so far… milestones in last 6 decades:",
+    subtitle: journeyData?.subtitle || "M. G. School Journey so far… milestones in last 7 decades:",
     paragraphs: (journeyData?.paragraphs && journeyData.paragraphs.length > 0)
       ? journeyData.paragraphs
       : [
-        "M. G. School stands as a premier institution with over 62 years of excellence in education. From its humble beginning in 1948 with just 36 students, the school has grown into one of the largest institutions in the Sindhi community in India, proudly serving over 1500 students while earning the trust and confidence of society.",
+        "M. G. School stands as a premier institution with over 78 years of excellence in education. From its humble beginning in 1948 with just 36 students, the school has grown into one of the largest institutions in the Sindhi community in India, proudly serving over 1500 students while earning the trust and confidence of society.",
         "We believe in personalized learning, where every child matters. With limited class sizes, teachers provide individual attention, and dedicated mentoring ensures that each student, including slow learners, receives the guidance they need to succeed.",
         "Our approach promotes balanced and stress-free education through interactive learning methods, including reading programs, spoken English, educational software, projects, and experiential activities such as visits and excursions. This ensures the overall development of every student.",
       ],
@@ -75,10 +82,14 @@ const Academics = () => {
       ]
   };
 
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <div className="pt-24 min-h-screen mb-32">
+    <div className="pt-24 min-h-screen mb-32 overflow-x-hidden">
       {/* Dynamic Header - Full Background Slider UI */}
-      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden mt-[-6rem]">
+      <section className="relative h-[60vh] md:h-[80vh] min-h-[400px] md:min-h-[600px] flex items-center justify-center overflow-hidden mt-[-6rem]">
         {/* Background Slider */}
         <div className="absolute inset-0 z-0">
           <Swiper
@@ -86,11 +97,17 @@ const Academics = () => {
             effect="fade"
             speed={1500}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
-            loop
+            loop={true}
             className="w-full h-full"
           >
-            {((hero.images && hero.images.length > 0) ? hero.images : [hero.image]).map((img: string, idx: number) => (
-              img && (
+            {(() => {
+              const slides = [...(hero.images || []), hero.image].filter(img => typeof img === 'string' && img.trim() !== "");
+              if (slides.length === 0) return (
+                <SwiperSlide>
+                  <div className="relative w-full h-full bg-primary" />
+                </SwiperSlide>
+              );
+              return slides.map((img: string, idx: number) => (
                 <SwiperSlide key={idx}>
                   <div className="relative w-full h-full">
                     <Image
@@ -103,8 +120,8 @@ const Academics = () => {
                     <div className="absolute inset-0 bg-black/60" />
                   </div>
                 </SwiperSlide>
-              )
-            ))}
+              ));
+            })()}
           </Swiper>
         </div>
 
@@ -171,16 +188,20 @@ const Academics = () => {
                 initial={{ scale: 0.9, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
-                className="lg:w-1/2 relative group"
+                className="w-full lg:w-1/2 relative group"
               >
                 <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color || "from-primary/10 to-transparent")} />
                 
                 {(() => {
-                  const allImages = section.images && section.images.length > 0 ? section.images : section.image ? [section.image] : [];
-                  if (allImages.length === 0) return null;
+                  const allImages = [...(section.images || []), section.image].filter(img => typeof img === 'string' && img.trim() !== "");
+                  if (allImages.length === 0) return (
+                    <div className="relative h-[350px] md:h-[500px] lg:h-[700px] w-full overflow-hidden rounded-[3rem] lg:rounded-[5rem] shadow-3xl bg-gray-100 flex items-center justify-center">
+                       <BookMarked size={48} className="text-gray-300" />
+                    </div>
+                  );
                   
                   return (
-                    <div className="relative h-[500px] lg:h-[700px] w-full overflow-hidden rounded-[4rem] lg:rounded-[5rem] shadow-3xl">
+                    <div className="relative h-[350px] md:h-[500px] lg:h-[700px] w-full overflow-hidden rounded-[3rem] lg:rounded-[5rem] shadow-3xl">
                       {allImages.length > 1 ? (
                         <Swiper
                           modules={[Autoplay, EffectFade, Pagination]}
@@ -289,8 +310,8 @@ const Academics = () => {
             ).map(([category, duties]: any, catIdx) => (
               <div key={catIdx} className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100">
                 <h4 className="text-2xl font-playfair font-black text-primary mb-8 border-b border-gray-100 pb-4">{category}</h4>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                <div className="overflow-x-auto custom-scrollbar-dark">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                       <tr className="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-gray-100">
                         <th className="pb-4 px-4 font-black w-16 text-center">Sr.</th>

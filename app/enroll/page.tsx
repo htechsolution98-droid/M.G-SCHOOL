@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 import { motion } from "framer-motion";
 import { GraduationCap, ArrowRight, CheckCircle } from "lucide-react";
 import { useSocketSync } from "@/hooks/useSocketSync";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function EnrollPage() {
   const [config, setConfig] = useState<any>(null);
@@ -50,13 +51,7 @@ export default function EnrollPage() {
     setSubmitting(false);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-32 pb-32 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   if (!config) {
     return <div className="min-h-screen pt-32 text-center text-red-500">Form configuration not found.</div>;

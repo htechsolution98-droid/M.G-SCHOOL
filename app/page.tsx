@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import axiosInstance from "@/lib/axios";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const iconMap: Record<string, React.ReactNode> = {
   Users: <Users size={20} />,
@@ -29,13 +30,18 @@ const featureIconMap: Record<string, React.ReactNode> = {
 
 export default function Home() {
   const [content, setContent] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = React.useCallback(() => {
+    setLoading(true);
     axiosInstance.get("/api/home-content")
       .then((res) => {
         if (res.data.success) setContent(res.data.content);
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -75,6 +81,8 @@ export default function Home() {
 
   const heroSlides = content?.heroSlides || null;
 
+  if (loading) return <LoadingScreen />;
+
   return (
     <div className="flex flex-col w-full">
       <HeroSlider slides={heroSlides} />
@@ -106,7 +114,7 @@ export default function Home() {
       </section>
 
       {/* Philosophy Section */}
-      <section className="section-padding overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-16 overflow-hidden">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row gap-24 items-center">
             <motion.div
@@ -157,7 +165,7 @@ export default function Home() {
       </section>
 
       {/* Branches Highlights - Asymmetrical Grid */}
-      <section className="section-padding bg-slate-50 relative overflow-hidden">
+      <section className="pt-12 md:pt-16 pb-24 md:pb-32 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
           <header className="max-w-3xl mb-24">
