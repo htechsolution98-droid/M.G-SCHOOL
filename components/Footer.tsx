@@ -7,15 +7,15 @@ import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
-    <footer className="bg-primary text-white pt-32 pb-16 relative overflow-hidden">
+    <footer className="bg-primary text-white pt-20 pb-12 relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary/50 to-transparent opacity-30" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Brand & Vision */}
-          <div className="lg:col-span-4 space-y-10">
+          <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-4 group">
               <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
               <div className="flex flex-col">
@@ -23,7 +23,7 @@ const Footer = () => {
                 <span className="text-xl font-playfair font-black tracking-tighter text-white/80 -mt-1">VIDHYA MANDAL</span>
               </div>
             </Link>
-            <p className="text-white/50 text-xl font-light leading-relaxed italic">
+            <p className="text-white/50 text-lg font-light leading-relaxed italic">
               "Dedicated to crafting the global leaders of tomorrow through a fusion of traditional ethics and modern innovation."
             </p>
             <div className="flex gap-4">
@@ -43,7 +43,7 @@ const Footer = () => {
           {/* Links Grid */}
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-16">
             <div>
-              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-secondary mb-6 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Institutional
               </h3>
               <ul className="space-y-4">
@@ -65,7 +65,7 @@ const Footer = () => {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-secondary mb-6 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Programs
               </h3>
               <ul className="space-y-4">
@@ -86,8 +86,8 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div className="space-y-8">
-              <h3 className="text-sm font-black uppercase tracking-[0.4em] text-secondary mb-10 flex items-center gap-3">
+            <div className="space-y-6">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-secondary mb-6 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 bg-secondary rounded-full" /> Reach Us
               </h3>
               <div className="space-y-6">
@@ -115,7 +115,7 @@ const Footer = () => {
         </div>
 
         {/* Lower Footer */}
-        <div className="mt-16 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2 order-2 md:order-1 text-center md:text-left">
             <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">
               © {new Date().getFullYear()} NAV BHARAT VIDHYA MANDAL – Where Dreams Take Flight.

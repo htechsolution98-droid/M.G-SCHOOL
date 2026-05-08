@@ -36,6 +36,7 @@ const defaultBranches = [
 ];
 
 const BranchesPage = () => {
+  const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
