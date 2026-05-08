@@ -5,8 +5,14 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
 import { useSocketSync } from "@/hooks/useSocketSync";
-import { Sparkles, Heart, Star, Camera } from "lucide-react";
+import { Sparkles, Heart, Star, Camera, PlayCircle } from "lucide-react";
 import ReadMore from "@/components/ReadMore";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination, EffectCreative } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-creative";
 
 
 const LifeAtMGPage = () => {
@@ -63,72 +69,11 @@ const LifeAtMGPage = () => {
 
       </section>
       
-      {/* Watch Out Highlights Section */}
-      {content?.highlights && content.highlights.length > 0 && (
-        <section className="section-padding bg-slate-50 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1/4 h-1/4 bg-primary/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
-          <div className="container-custom relative z-10">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/5 text-primary border border-primary/10 mb-6">
-                <Sparkles size={16} className="text-secondary" />
-                <span className="text-xs font-black uppercase tracking-widest">Must Watch Highlights</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-playfair font-black text-primary mb-6">Experience the <span className="text-secondary italic">MG Magic.</span></h2>
-              <p className="text-xl text-gray-500 font-light leading-relaxed">Catch the latest updates, event highlights, and glimpses of excellence across our buildings.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {content.highlights.map((h: any, idx: number) => (
-                <motion.div 
-                  key={idx}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  viewport={{ once: true }}
-                  className="group bg-white rounded-[4rem] overflow-hidden border border-gray-100 shadow-2xl hover:shadow-primary/10 transition-all duration-500 flex flex-col"
-                >
-                  <div className="relative h-80 overflow-hidden bg-slate-900">
-                    {h.video ? (
-                      <video 
-                        src={h.video} 
-                        className="w-full h-full object-cover" 
-                        controls 
-                        playsInline
-                      />
-                    ) : (
-                      h.image && <Image src={h.image} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" alt={h.title} />
-                    )}
-                    
-                    {!h.video && h.image && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60" />
-                    )}
-                    
-                    <div className="absolute bottom-8 left-8">
-                       <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest border border-white/20">
-                         {h.video ? "Video Highlight" : "Event Glimpse"}
-                       </span>
-                    </div>
-                  </div>
-                  <div className="p-10 md:p-12">
-                    <h3 className="text-2xl md:text-3xl font-playfair font-black text-primary mb-6 leading-tight group-hover:text-secondary transition-colors">
-                      {h.title}
-                    </h3>
-                    <p className="text-lg text-gray-500 font-light leading-relaxed mb-8">
-                       <ReadMore text={h.description} limit={150} />
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Modern Slider Showcase */}
       <section className="section-padding bg-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-secondary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-24">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
             <div className="max-w-2xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-1 bg-secondary rounded-full" />
@@ -144,25 +89,73 @@ const LifeAtMGPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {slider.map((img: string, idx: number) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className={`relative group rounded-[3rem] overflow-hidden shadow-2xl h-[500px] ${idx % 2 !== 0 ? 'md:translate-y-12' : ''}`}
-              >
-                <Image src={img} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" alt="Activity" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-                   <div className="text-white">
-                      <div className="w-12 h-12 rounded-xl bg-secondary text-primary flex items-center justify-center mb-4"><Camera size={20} /></div>
-                      <p className="text-sm font-bold uppercase tracking-widest">MG Chronicle #{idx + 1}</p>
-                   </div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="relative group">
+            <Swiper
+              modules={[Autoplay, Navigation, Pagination, EffectCreative]}
+              spaceBetween={30}
+              slidesPerView={1}
+              navigation={{
+                prevEl: ".slider-prev",
+                nextEl: ".slider-next",
+              }}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 5000, disableOnInteraction: false }}
+              loop={slider.length > 1}
+              breakpoints={{
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              className="!pb-20"
+            >
+              {slider.map((slide: any, idx: number) => (
+                <SwiperSlide key={idx}>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="relative rounded-[3rem] overflow-hidden shadow-2xl h-[550px]"
+                  >
+                    {slide.type === "video" ? (
+                      <video 
+                        src={slide.url} 
+                        className="w-full h-full object-cover" 
+                        controls={false}
+                        autoPlay 
+                        muted 
+                        loop 
+                        playsInline
+                      />
+                    ) : (
+                      <Image src={slide.url} fill className="object-cover" alt={slide.title || "Activity"} />
+                    )}
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-60" />
+                    
+                    <div className="absolute bottom-0 left-0 w-full p-10 text-white">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-secondary text-primary flex items-center justify-center">
+                          {slide.type === "video" ? <PlayCircle size={24} /> : <Camera size={24} />}
+                        </div>
+                        <span className="text-xs font-black uppercase tracking-widest text-secondary">
+                          {slide.type === "video" ? "Video Highlight" : "Life at MG"}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-playfair font-black mb-2">
+                        {slide.title || `Moment #${idx + 1}`}
+                      </h3>
+                    </div>
+                  </motion.div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            
+            {/* Custom Navigation */}
+            <button className="slider-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-primary hover:bg-secondary transition-all cursor-pointer border border-gray-100 hidden md:flex">
+              <Star size={20} />
+            </button>
+            <button className="slider-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-primary hover:bg-secondary transition-all cursor-pointer border border-gray-100 hidden md:flex">
+              <Star size={20} />
+            </button>
           </div>
         </div>
       </section>

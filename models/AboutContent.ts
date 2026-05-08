@@ -48,10 +48,23 @@ export interface IWhyChooseReason {
   description: string;
 }
 
+export interface IWhyChooseUsFeature {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
 export interface IWhyChooseUs {
   heading: string;
   headingHighlight: string;
+  reasonsTitle?: string;
   reasons: IWhyChooseReason[];
+  vision?: {
+    heading: string;
+    description: string;
+  };
+  featuresTitle?: string;
+  features: IWhyChooseUsFeature[];
 }
 
 export interface IPrincipalMessage {
@@ -99,6 +112,19 @@ const AboutContentSchema: Schema = new Schema({
   whyChooseUs: {
     heading: { type: String, default: "Why to study in M. G. School?" },
     headingHighlight: { type: String, default: "Why we are best?" },
+    reasonsTitle: { type: String, default: "" },
+    vision: {
+      heading: { type: String, default: "" },
+      description: { type: String, default: "" },
+    },
+    featuresTitle: { type: String, default: "" },
+    features: [
+      {
+        title: { type: String, default: "" },
+        description: { type: String, default: "" },
+        icon: { type: String, default: "" },
+      }
+    ],
     reasons: [
       {
         title: { type: String, default: "" },

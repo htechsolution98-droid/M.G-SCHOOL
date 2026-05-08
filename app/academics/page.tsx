@@ -183,18 +183,45 @@ const Academics = () => {
                 className="lg:w-1/2 relative group"
               >
                 <div className={cn("absolute inset-x-0 -bottom-10 h-4/5 -z-10 rounded-[5rem] blur-3xl", section.color || "from-primary/10 to-transparent")} />
-                {section.image && (
-                  <div className="relative overflow-hidden rounded-[5rem] shadow-3xl">
-                    <Image
-                      src={section.image}
-                      alt={section.title}
-                      width={800}
-                      height={1000}
-                      className="object-cover h-[700px] w-full group-hover:scale-110 transition-transform duration-1000"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
-                  </div>
-                )}
+                
+                {(() => {
+                  const allImages = section.images && section.images.length > 0 ? section.images : section.image ? [section.image] : [];
+                  if (allImages.length === 0) return null;
+                  
+                  return (
+                    <div className="relative h-[500px] lg:h-[700px] w-full overflow-hidden rounded-[4rem] lg:rounded-[5rem] shadow-3xl">
+                      {allImages.length > 1 ? (
+                        <Swiper
+                          modules={[Autoplay, EffectFade, Pagination]}
+                          effect="fade"
+                          pagination={{ clickable: true }}
+                          autoplay={{ delay: 3500, disableOnInteraction: false }}
+                          loop={true}
+                          className="w-full h-full rounded-[4rem] lg:rounded-[5rem]"
+                        >
+                          {allImages.map((img: string, iIdx: number) => (
+                            <SwiperSlide key={iIdx}>
+                              <Image
+                                src={img}
+                                alt={`${section.title} slide ${iIdx + 1}`}
+                                fill
+                                className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                              />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      ) : (
+                        <Image
+                          src={allImages[0]}
+                          alt={section.title}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent pointer-events-none z-10" />
+                    </div>
+                  );
+                })()}
               </motion.div>
             </div>
           ))}

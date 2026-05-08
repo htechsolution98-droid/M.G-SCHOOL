@@ -109,7 +109,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* ─── Sidebar Desktop ─── */}
-      <aside className="hidden lg:flex flex-col w-72 bg-primary h-screen fixed left-0 top-0 z-40">
+      <aside className="hidden lg:flex flex-col w-72 bg-primary h-screen fixed left-0 top-0 z-40 overflow-y-auto custom-scrollbar">
         <div className="p-8 border-b border-white/10 bg-white/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="bg-white p-1 rounded-xl shadow-lg">
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar pb-2">
+        <nav className="flex-1 p-4 space-y-1 pb-2">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             );
           })}
         </nav>
-        <div className="p-6 border-t border-white/10">
+        <div className="p-6 border-t border-white/10 mt-auto shrink-0">
           <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all cursor-pointer">
             <LogOut size={20} /> Sign Out
           </button>
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
         {sidebarOpen && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" />
-            <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary h-screen z-50 lg:hidden flex flex-col">
+            <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-0 w-72 bg-primary h-screen z-50 lg:hidden flex flex-col overflow-y-auto custom-scrollbar">
               <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/10 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="bg-white p-1 rounded-xl shadow-lg">
@@ -159,7 +159,7 @@ export default function AdminDashboard() {
                 </div>
                 <button onClick={() => setSidebarOpen(false)} className="text-white/50 cursor-pointer"><X size={24} /></button>
               </div>
-              <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar pb-2">
+              <nav className="flex-1 p-4 space-y-1 pb-2">
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
                   );
                 })}
               </nav>
-              <div className="p-6 border-t border-white/10">
+              <div className="p-6 border-t border-white/10 mt-auto shrink-0">
                 <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all cursor-pointer">
                   <LogOut size={20} /> Sign Out
                 </button>
@@ -1116,10 +1116,15 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
   const [local, setLocal] = useState(whyChooseUs || {
     heading: "Why Choose Our School",
     headingHighlight: "A Destination for Bright Futures",
+    vision: { heading: "", description: "" },
+    features: [],
     reasons: []
   });
 
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
+  const updateVision = (subField: string, value: string) => {
+    update("vision", { ...(local.vision || { heading: "", description: "" }), [subField]: value });
+  };
 
   const addReason = () => update("reasons", [...(local.reasons || []), { title: "", description: "" }]);
   const removeReason = (idx: number) => update("reasons", (local.reasons || []).filter((_: any, i: number) => i !== idx));
@@ -1129,6 +1134,14 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
     update("reasons", updated);
   };
 
+  const addFeature = () => update("features", [...(local.features || []), { title: "", description: "", icon: "" }]);
+  const removeFeature = (idx: number) => update("features", (local.features || []).filter((_: any, i: number) => i !== idx));
+  const updateFeature = (idx: number, subField: string, val: string) => {
+    const updated = [...(local.features || [])];
+    updated[idx] = { ...updated[idx], [subField]: val };
+    update("features", updated);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
@@ -1136,6 +1149,46 @@ function AboutWhyChooseUsEditor({ whyChooseUs, onSave, saving }: { whyChooseUs: 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField label="Heading" value={local.heading} onChange={(v: string) => update("heading", v)} />
           <InputField label="Heading Highlight" value={local.headingHighlight} onChange={(v: string) => update("headingHighlight", v)} />
+          <InputField label="Reasons Section Title" value={local.reasonsTitle || ""} onChange={(v: string) => update("reasonsTitle", v)} />
+          <InputField label="Features Section Title" value={local.featuresTitle || ""} onChange={(v: string) => update("featuresTitle", v)} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h4 className="text-lg font-playfair font-black text-primary mb-2">Vision Section (Optional)</h4>
+        <p className="text-xs text-gray-400 mb-6 border-b border-gray-50 pb-4">If left blank, this section will not appear on the website.</p>
+        <div className="grid grid-cols-1 gap-6">
+          <InputField label="Vision Heading" value={local.vision?.heading || ""} onChange={(v: string) => updateVision("heading", v)} />
+          <TextareaField label="Vision Description" value={local.vision?.description || ""} onChange={(v: string) => updateVision("description", v)} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
+          <h4 className="text-lg font-playfair font-black text-primary">Features Section</h4>
+          <button onClick={addFeature} className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary/10 transition-all cursor-pointer">
+            <Plus size={14} /> Add Feature
+          </button>
+        </div>
+        <div className="space-y-6">
+          {(local.features || []).map((feature: any, idx: number) => (
+            <div key={idx} className="flex gap-4 items-start p-6 bg-slate-50 rounded-2xl border border-gray-100 relative">
+              <span className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-primary font-bold text-sm shrink-0">{idx + 1}</span>
+              <div className="flex-1 grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField label="Feature Title" value={feature.title} onChange={(v: string) => updateFeature(idx, "title", v)} />
+                  <InputField label="Icon Name (e.g. Users, BookOpen)" value={feature.icon} onChange={(v: string) => updateFeature(idx, "icon", v)} />
+                </div>
+                <TextareaField label="Feature Description" value={feature.description} onChange={(v: string) => updateFeature(idx, "description", v)} />
+              </div>
+              <button onClick={() => removeFeature(idx)} className="p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer">
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+          {(!local.features || local.features.length === 0) && (
+            <div className="text-center py-10 text-gray-400 font-medium italic">No features added yet.</div>
+          )}
         </div>
       </div>
 
@@ -1517,7 +1570,16 @@ function AcademicsProgramsEditor({ programs, onSave, saving }: { programs: any[]
             <InputField label="Tagline" value={program.tagline} onChange={(v) => updateProgram(idx, "tagline", v)} />
             <InputField label="Card Color (CSS Gradient)" value={program.color} onChange={(v) => updateProgram(idx, "color", v)} />
             <div className="md:col-span-2">
-              <ImageUpload label="Program Image" value={program.image} onChange={(v) => updateProgram(idx, "image", v)} />
+              <MultiImageUpload
+                label="Program Images (Slider)"
+                values={program.images && program.images.length > 0 ? program.images : (program.image ? [program.image] : [])}
+                onChange={(urls: string[]) => {
+                  updateProgram(idx, "images", urls);
+                  if (urls.length > 0) updateProgram(idx, "image", urls[0]);
+                  else updateProgram(idx, "image", "");
+                }}
+                maxImages={10}
+              />
             </div>
             <div className="md:col-span-2">
               <TextareaField label="Description" value={program.description} onChange={(v) => updateProgram(idx, "description", v)} />
@@ -2674,8 +2736,7 @@ function LifeAtMGTab() {
 
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
-    { id: "highlights", name: "Watch Out Highlights", icon: Sparkles },
-    { id: "slider", name: "Image Slider", icon: ImageIcon },
+    { id: "slider", name: "Image/Video Slider", icon: ImageIcon },
   ];
 
   return (
@@ -2743,104 +2804,88 @@ function LifeAtMGTab() {
       {activeSection === "slider" && content && (
         <div className="space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-            <h4 className="text-lg font-playfair font-black text-primary mb-6">Life@MG: Image Slider</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {(content.slider || []).map((img: string, idx: number) => (
-                <div key={idx} className="relative group aspect-video rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                  <img src={img} className="w-full h-full object-cover" />
-                  <button
-                    onClick={() => setContent((prev: any) => ({ ...prev, slider: prev.slider.filter((_: any, i: number) => i !== idx) }))}
-                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-            <ImageUpload label="Add New Slider Image" value="" onChange={(v) => setContent((prev: any) => ({ ...prev, slider: [...(content.slider || []), v] }))} />
-          </div>
-          <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
-            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            <Save size={18} /> {saving === "slider" ? "Saving..." : "Save Slider"}
-          </button>
-        </div>
-      )}
-
-      {activeSection === "highlights" && content && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-8 border-b border-gray-50 pb-4">
               <div>
-                <h4 className="text-lg font-playfair font-black text-primary">Watch Out Highlights</h4>
-                <p className="text-xs text-gray-400 mt-1">Manage the highlighted events and activities.</p>
+                <h4 className="text-lg font-playfair font-black text-primary">Life@MG: Image/Video Slider</h4>
+                <p className="text-xs text-gray-400 mt-1">Add images or videos to the main experience slider.</p>
               </div>
               <button
-                onClick={() => setContent((prev: any) => ({ ...prev, highlights: [...(prev.highlights || []), { title: "", description: "", image: "", videoLink: "" }] }))}
+                onClick={() => setContent((prev: any) => ({ ...prev, slider: [...(content.slider || []), { url: "", type: "image", title: "" }] }))}
                 className="flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-xl font-bold text-xs hover:bg-primary hover:text-white transition-all cursor-pointer"
               >
-                <Plus size={14} /> Add Highlight
+                <Plus size={14} /> Add Slide
               </button>
             </div>
 
             <div className="space-y-8">
-              {(content.highlights || []).map((h: any, idx: number) => (
+              {(content.slider || []).map((slide: any, idx: number) => (
                 <div key={idx} className="p-6 border border-gray-100 rounded-3xl bg-gray-50 relative group">
                   <button
-                    onClick={() => setContent((prev: any) => ({ ...prev, highlights: prev.highlights.filter((_: any, i: number) => i !== idx) }))}
+                    onClick={() => setContent((prev: any) => ({ ...prev, slider: prev.slider.filter((_: any, i: number) => i !== idx) }))}
                     className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-all cursor-pointer opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={18} />
                   </button>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                      <InputField label="Highlight Title" value={h.title} onChange={(v) => {
-                        const updated = [...content.highlights];
+                      <InputField label="Slide Title (Optional)" value={slide.title || ""} onChange={(v) => {
+                        const updated = [...content.slider];
                         updated[idx] = { ...updated[idx], title: v };
-                        setContent((prev: any) => ({ ...prev, highlights: updated }));
+                        setContent((prev: any) => ({ ...prev, slider: updated }));
                       }} />
-                      <TextareaField label="Description" value={h.description} onChange={(v) => {
-                        const updated = [...content.highlights];
-                        updated[idx] = { ...updated[idx], description: v };
-                        setContent((prev: any) => ({ ...prev, highlights: updated }));
-                      }} />
+                      <div className="space-y-2">
+                        <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 ml-1">Content Type</label>
+                        <div className="flex gap-2">
+                          {["image", "video"].map((type) => (
+                            <button
+                              key={type}
+                              onClick={() => {
+                                const updated = [...content.slider];
+                                updated[idx] = { ...updated[idx], type: type as "image" | "video", url: "" };
+                                setContent((prev: any) => ({ ...prev, slider: updated }));
+                              }}
+                              className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${slide.type === type ? "bg-primary text-white" : "bg-white text-gray-400 border border-gray-100"}`}
+                            >
+                              {type}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 gap-6">
-                        <ImageUpload 
-                          label={h.video ? "Image (Disabled - Video Uploaded)" : "Highlight Image"} 
-                          value={h.image} 
+                      {slide.type === "video" ? (
+                        <VideoUpload
+                          label="Slide Video"
+                          value={slide.url}
                           onChange={(v) => {
-                            const updated = [...content.highlights];
-                            updated[idx] = { ...updated[idx], image: v, video: "" };
-                            setContent((prev: any) => ({ ...prev, highlights: updated }));
-                          }} 
+                            const updated = [...content.slider];
+                            updated[idx] = { ...updated[idx], url: v };
+                            setContent((prev: any) => ({ ...prev, slider: updated }));
+                          }}
                         />
-                        <div className="relative">
-                          <div className="absolute inset-x-0 top-1/2 h-px bg-gray-100 -z-10" />
-                          <span className="bg-gray-50 px-3 text-[10px] font-black text-gray-300 uppercase tracking-widest mx-auto block w-max">OR</span>
-                        </div>
-                        <VideoUpload 
-                          label={h.image ? "Video (Disabled - Image Uploaded)" : "Highlight Video"} 
-                          value={h.video} 
+                      ) : (
+                        <ImageUpload
+                          label="Slide Image"
+                          value={slide.url}
                           onChange={(v) => {
-                            const updated = [...content.highlights];
-                            updated[idx] = { ...updated[idx], video: v, image: "" };
-                            setContent((prev: any) => ({ ...prev, highlights: updated }));
-                          }} 
+                            const updated = [...content.slider];
+                            updated[idx] = { ...updated[idx], url: v };
+                            setContent((prev: any) => ({ ...prev, slider: updated }));
+                          }}
                         />
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
-              {(!content.highlights || content.highlights.length === 0) && (
-                <div className="text-center py-10 text-gray-400 italic">No highlights added yet. Click "Add Highlight" to begin.</div>
+              {(!content.slider || content.slider.length === 0) && (
+                <div className="text-center py-10 text-gray-400 italic">No slides added yet. Click "Add Slide" to begin.</div>
               )}
             </div>
           </div>
-          <button onClick={() => saveSection("highlights", { highlights: content.highlights })} disabled={saving === "highlights"}
+          <button onClick={() => saveSection("slider", { slider: content.slider })} disabled={saving === "slider"}
             className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            <Save size={18} /> {saving === "highlights" ? "Saving..." : "Save Highlights"}
+            <Save size={18} /> {saving === "slider" ? "Saving..." : "Save Slider"}
           </button>
         </div>
       )}

@@ -14,6 +14,7 @@ export interface IAcademicsProgram {
   tagline: string;
   description: string;
   image: string;
+  images: string[];
   color: string;
   features: string[];
 }
@@ -66,6 +67,7 @@ const AcademicsContentSchema = new Schema<IAcademicsContent>({
       tagline: { type: String, default: "" },
       description: { type: String, default: "" },
       image: { type: String, default: "" },
+      images: [{ type: String }],
       color: { type: String, default: "from-primary/10 to-transparent" },
       features: [{ type: String }],
     },
