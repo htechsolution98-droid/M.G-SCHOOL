@@ -621,10 +621,10 @@ function HeroSlidesEditor({ slides, onSave, saving }: { slides: any[]; onSave: (
                 onChange={(urls: string[]) => {
                   setLocalSlides(prev => {
                     const updated = [...prev];
-                    updated[idx] = { 
-                      ...updated[idx], 
-                      images: urls, 
-                      image: urls.length > 0 ? urls[0] : "" 
+                    updated[idx] = {
+                      ...updated[idx],
+                      images: urls,
+                      image: urls.length > 0 ? urls[0] : ""
                     };
                     return updated;
                   });
@@ -817,10 +817,10 @@ function CampusHubsEditor({ hubs, onSave, saving }: { hubs: any[]; onSave: (h: a
                   onChange={(urls: string[]) => {
                     setLocalHubs(prev => {
                       const updated = [...prev];
-                      updated[idx] = { 
-                        ...updated[idx], 
-                        images: urls, 
-                        img: urls.length > 0 ? urls[0] : "" 
+                      updated[idx] = {
+                        ...updated[idx],
+                        images: urls,
+                        img: urls.length > 0 ? urls[0] : ""
                       };
                       return updated;
                     });
@@ -2408,7 +2408,7 @@ function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: an
     ...hero,
     slides: hero.slides || []
   });
-  
+
   const update = (field: string, value: any) => setLocal({ ...local, [field]: value });
 
   const addSlide = () => {
@@ -3736,9 +3736,9 @@ function AboutPrincipalMessagesEditor({ principalMessages, onSave, saving }: { p
 
 // ─── Trustees Tab ───
 function TrusteesTab() {
-  const [content, setContent] = useState<any>({ 
-    hero: { heading: "Inspiring Mentors", description: "", image: "", slides: [] }, 
-    trustees: [] 
+  const [content, setContent] = useState<any>({
+    hero: { heading: "Inspiring Mentors", description: "", image: "", slides: [] },
+    trustees: []
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
