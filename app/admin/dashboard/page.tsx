@@ -2356,7 +2356,7 @@ function FacultyHeroEditor({ hero, onSave, saving }: { hero: any; onSave: (h: an
               label="Hero Images (multiple images will auto-cycle)"
               values={local.images && local.images.length > 0 ? local.images : (local.image ? [local.image] : [])}
               onChange={(urls: string[]) => {
-                setLocal(prev => ({
+                setLocal((prev: any) => ({
                   ...prev,
                   images: urls,
                   image: urls.length > 0 ? urls[0] : ""
