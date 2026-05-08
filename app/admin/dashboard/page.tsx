@@ -7,41 +7,32 @@ import VideoUpload from "@/components/admin/VideoUpload";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
-import { Sparkles } from "lucide-react";
 import {
   GraduationCap,
-  LayoutDashboard,
   Users,
   BookOpen,
   Image as ImageIcon,
   MessageSquare,
   Calendar,
-  Settings,
   LogOut,
   Menu,
   X,
-  TrendingUp,
-  School,
   Bell,
-  ChevronRight,
   Plus,
   Building2,
   Home,
+  TrendingUp,
+  History,
   Save,
   Trash2,
   Trash,
   Edit3,
   Star,
   Megaphone,
-  History,
-  HelpCircle,
-  ChevronUp,
-  ChevronDown
 } from "lucide-react";
 
 // ─── Sidebar Items ───
 const sidebarItems = [
-  { id: "overview", name: "Overview", icon: LayoutDashboard },
   { id: "homepage", name: "Homepage", icon: Home },
   { id: "about", name: "About Us", icon: BookOpen },
   { id: "trustees", name: "Trustees", icon: Users },
@@ -49,30 +40,15 @@ const sidebarItems = [
   { id: "branches", name: "Buildings", icon: Building2 },
   { id: "faculty", name: "Faculty", icon: BookOpen },
   { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
-  { id: "gallery", name: "Gallery", icon: ImageIcon },
   { id: "events", name: "Events", icon: Calendar },
   { id: "enrollment", name: "Enrollment", icon: BookOpen },
 ];
 
-// ─── Stats cards ───
-const statsCards = [
-  { label: "Total Students", value: "2,450", change: "+12%", icon: Users, color: "bg-blue-500" },
-  { label: "Faculty Members", value: "128", change: "+3%", icon: BookOpen, color: "bg-emerald-500" },
-  { label: "Active Buildings", value: "3", change: "Stable", icon: School, color: "bg-secondary" },
-  { label: "Applications", value: "340", change: "+28%", icon: TrendingUp, color: "bg-purple-500" },
-];
 
-const recentActivities = [
-  { text: "New admission application received", time: "2 min ago", type: "info" },
-  { text: "Block A - Parent-teacher meeting scheduled", time: "1 hour ago", type: "event" },
-  { text: "Gallery updated with sports day photos", time: "3 hours ago", type: "update" },
-  { text: "Faculty member Dr. Shah updated profile", time: "5 hours ago", type: "info" },
-  { text: "Block C - Science fair results published", time: "1 day ago", type: "event" },
-];
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("homepage");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -189,7 +165,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "gallery", "events"].includes(activeTab) && (
+              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "events"].includes(activeTab) && (
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
                   className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
@@ -208,7 +184,6 @@ export default function AdminDashboard() {
 
         <div className="p-6 lg:p-10 flex-1 flex flex-col">
           <div className="max-w-[1600px] mx-auto w-full flex-1">
-            {activeTab === "overview" && <OverviewTab />}
             {activeTab === "homepage" && <HomepageTab />}
             {activeTab === "about" && <AboutTab />}
             {activeTab === "trustees" && <TrusteesTab />}
@@ -216,7 +191,6 @@ export default function AdminDashboard() {
             {activeTab === "branches" && <BuildingsTab />}
             {activeTab === "faculty" && <FacultyTab />}
             {activeTab === "life-at-mg" && <LifeAtMGTab />}
-            {activeTab === "gallery" && <GalleryTab />}
             {activeTab === "events" && <EventsTab />}
             {activeTab === "enrollment" && <EnrollmentTab />}
           </div>
@@ -226,71 +200,6 @@ export default function AdminDashboard() {
   );
 }
 
-// ════════════════════════════════════════
-// OVERVIEW TAB
-// ════════════════════════════════════════
-function OverviewTab() {
-  return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, idx) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
-              className="bg-white rounded-3xl p-7 border border-gray-100 shadow-sm hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-5">
-                <div className={`${stat.color} w-12 h-12 rounded-2xl flex items-center justify-center`}><Icon className="text-white" size={22} /></div>
-                <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full">{stat.change}</span>
-              </div>
-              <div className="text-3xl font-playfair font-black text-primary mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-400 font-medium">{stat.label}</div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-playfair font-black text-primary">Recent Activity</h3>
-          </div>
-          <div className="space-y-5">
-            {recentActivities.map((activity, idx) => (
-              <div key={idx} className="flex items-start gap-4 pb-5 border-b border-gray-50 last:border-0 last:pb-0">
-                <div className={`w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 ${activity.type === "event" ? "bg-secondary" : activity.type === "update" ? "bg-emerald-500" : "bg-blue-500"}`} />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-700">{activity.text}</p>
-                  <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-playfair font-black text-primary mb-8">Quick Actions</h3>
-          <div className="space-y-4">
-            {[
-              { label: "Add Student", icon: Plus, color: "bg-blue-500" },
-              { label: "New Event", icon: Calendar, color: "bg-secondary" },
-              { label: "Upload Photos", icon: ImageIcon, color: "bg-emerald-500" },
-              { label: "View Messages", icon: MessageSquare, color: "bg-purple-500" },
-            ].map((action) => {
-              const Icon = action.icon;
-              return (
-                <button key={action.label} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group cursor-pointer">
-                  <div className={`${action.color} w-10 h-10 rounded-xl flex items-center justify-center`}><Icon className="text-white" size={18} /></div>
-                  <span className="text-sm font-bold text-gray-700 group-hover:text-primary transition-colors">{action.label}</span>
-                  <ChevronRight size={16} className="text-gray-300 ml-auto" />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ════════════════════════════════════════
 // HOMEPAGE TAB - Edit Hero, Stats, Philosophy
@@ -732,11 +641,12 @@ function PhilosophyEditor({ philosophy, onSave, saving }: { philosophy: any; onS
 }
 
 // ─── Reusable Input Fields ───
-function InputField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function InputField({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
   return (
     <div>
       <label className="block text-xs uppercase tracking-[0.15em] font-bold text-gray-400 mb-2">{label}</label>
       <input
+        type={type}
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all"
@@ -2768,178 +2678,6 @@ function LifeAtMGTab() {
   );
 }
 
-function GalleryTab() {
-  const [content, setContent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState("");
-  const [message, setMessage] = useState("");
-  const [activeSection, setActiveSection] = useState("images");
-
-  useEffect(() => {
-    axiosInstance.get("/api/gallery")
-      .then((res) => {
-        if (res.data.success) {
-          setContent(res.data.content);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const saveSection = async (section: string, data: any) => {
-    setSaving(section);
-    setMessage("");
-    try {
-      const res = await axiosInstance.put("/api/gallery", { section, ...data });
-      if (res.data.success) {
-        setContent(res.data.content);
-        setMessage("Saved successfully!");
-      } else {
-        setMessage("Error: " + res.data.error);
-      }
-    } catch {
-      setMessage("Failed to save.");
-    }
-    setSaving("");
-    setTimeout(() => setMessage(""), 3000);
-  };
-
-  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
-
-  return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap gap-3">
-        {["images", "categories"].map((id) => (
-          <button
-            key={id}
-            onClick={() => setActiveSection(id)}
-            className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeSection === id ? "bg-primary text-white shadow-lg" : "bg-white text-gray-600 border border-gray-100 hover:border-primary/20"
-              }`}
-          >
-            {id.toUpperCase()}
-          </button>
-        ))}
-        <button
-          onClick={async () => {
-            if (confirm("Reset Gallery?")) {
-              await axiosInstance.delete("/api/gallery");
-              window.location.reload();
-            }
-          }}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all cursor-pointer ml-auto"
-        >
-          <Trash2 size={18} /> Reset
-        </button>
-      </div>
-
-      {message && (
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className={`px-6 py-3 rounded-2xl text-sm font-bold ${message.startsWith("Error") ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>
-          {message}
-        </motion.div>
-      )}
-
-      {activeSection === "categories" && content && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-            <h4 className="text-lg font-playfair font-black text-primary mb-6">Gallery Categories</h4>
-            <div className="flex flex-wrap gap-3 mb-6">
-              {content.categories.map((cat: string, idx: number) => (
-                <div key={idx} className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
-                  <span className="text-sm font-bold text-gray-600">{cat}</span>
-                  <button onClick={() => setContent((prev: any) => ({ ...prev, categories: prev.categories.filter((_: any, i: number) => i !== idx) }))} className="text-red-400 hover:text-red-600"><X size={14} /></button>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-4">
-              <input
-                id="new-cat"
-                type="text"
-                placeholder="Add new category..."
-                className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/30 w-full max-w-xs"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    const val = (e.target as HTMLInputElement).value;
-                    if (val) {
-                      setContent({ ...content, categories: [...content.categories, val] });
-                      (e.target as HTMLInputElement).value = "";
-                    }
-                  }
-                }}
-              />
-              <button onClick={() => {
-                const input = document.getElementById("new-cat") as HTMLInputElement;
-                if (input.value) {
-                  setContent({ ...content, categories: [...content.categories, input.value] });
-                  input.value = "";
-                }
-              }} className="px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm">Add</button>
-            </div>
-          </div>
-          <button onClick={() => saveSection("categories", { categories: content.categories })} disabled={saving === "categories"}
-            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            <Save size={18} /> {saving === "categories" ? "Saving..." : "Save Categories"}
-          </button>
-        </div>
-      )}
-
-      {activeSection === "images" && content && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {content.images.map((img: any, idx: number) => (
-              <div key={idx} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative group transition-all hover:shadow-lg">
-                <button
-                  onClick={() => setContent((prev: any) => ({ ...prev, images: prev.images.filter((_: any, i: number) => i !== idx) }))}
-                  className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                >
-                  <Trash2 size={16} />
-                </button>
-                <div className="aspect-video rounded-2xl overflow-hidden mb-4 border border-gray-100">
-                  <img src={img.src} className="w-full h-full object-cover" />
-                </div>
-                <div className="space-y-3">
-                  <InputField label="Title" value={img.title} onChange={(v) => {
-                    setContent((prev: any) => {
-                      const updated = [...prev.images];
-                      updated[idx] = { ...updated[idx], title: v };
-                      return { ...prev, images: updated };
-                    });
-                  }} />
-                  <div>
-                    <label className="block text-[10px] uppercase tracking-widest font-black text-gray-400 mb-2 ml-1">Category</label>
-                    <select
-                      value={img.category}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setContent((prev: any) => {
-                          const updated = [...prev.images];
-                          updated[idx] = { ...updated[idx], category: val };
-                          return { ...prev, images: updated };
-                        });
-                      }}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 focus:outline-none focus:border-primary/30"
-                    >
-                      {content.categories.map((c: string) => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="bg-primary/5 rounded-3xl p-8 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-center">
-              <Plus size={32} className="text-primary/30 mb-4" />
-              <p className="text-sm font-bold text-primary mb-6">Add New Archive</p>
-              <ImageUpload label="Upload Image" value="" onChange={(v) => setContent({ ...content, images: [...content.images, { src: v, title: "New Memory", category: content.categories[0] || "General" }] })} />
-            </div>
-          </div>
-          <button onClick={() => saveSection("images", { images: content.images })} disabled={saving === "images"}
-            className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            <Save size={18} /> {saving === "images" ? "Saving..." : "Save Gallery"}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 function EventsTab() {
   const [events, setEvents] = useState<any[]>([]);
@@ -3017,7 +2755,7 @@ function EventsTab() {
                     return updated;
                   });
                 }} />
-                <InputField label="Date" value={event.date?.split('T')[0]} onChange={(v) => {
+                <InputField label="Date" type="date" value={event.date?.split('T')[0]} onChange={(v) => {
                   setEvents((prev: any) => {
                     const updated = [...prev];
                     updated[idx] = { ...updated[idx], date: v };

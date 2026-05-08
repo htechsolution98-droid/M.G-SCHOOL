@@ -122,9 +122,18 @@ const EventsPage = () => {
       <section className="section-padding bg-slate-50 border-y border-gray-100">
         <div className="container-custom space-y-24 md:space-y-40">
           {events.map((event, idx) => {
-            const d = new Date(event.date);
-            const dateStr = d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' });
-            const yearStr = d.getFullYear();
+            let d = new Date(event.date);
+            
+            // Safety check for DD/MM/YYYY format if it's still in the DB
+            if (isNaN(d.getTime()) && event.date && event.date.includes('/')) {
+              const [day, month, year] = event.date.split('/');
+              d = new Date(`${year}-${month}-${day}`);
+            }
+
+            const dateStr = !isNaN(d.getTime()) 
+              ? d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' })
+              : "TBA";
+            const yearStr = !isNaN(d.getTime()) ? d.getFullYear() : "";
 
             return (
               <motion.div 
