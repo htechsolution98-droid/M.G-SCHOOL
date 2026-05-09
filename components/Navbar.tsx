@@ -152,16 +152,6 @@ const Navbar = () => {
                 </Link>
               )
             ))}
-            <div className="w-px h-6 bg-gray-200 mx-4" />
-            <Link
-              href="/enroll"
-              className="bg-primary text-white pl-6 pr-4 py-3 rounded-2xl font-bold text-sm hover:bg-secondary hover:text-primary transition-all flex items-center gap-2 group shadow-xl"
-            >
-              Enroll Now
-              <div className="bg-white/20 p-1 rounded-lg group-hover:translate-x-1 transition-transform">
-                <ArrowRight size={16} />
-              </div>
-            </Link>
           </div>
 
           {/* Mobile Toggle */}

@@ -183,10 +183,10 @@ export default function Home() {
 
 
       {/* Background of the School - Legacy & Structure */}
+      {/* 
       <section className="section-padding bg-white relative overflow-hidden">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row gap-20 items-start">
-            {/* Left Column: History */}
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -225,7 +225,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right Column: School Structure */}
             <motion.div 
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -233,7 +232,6 @@ export default function Home() {
               className="lg:w-1/2 grid grid-cols-1 gap-8"
             >
 
-              {/* English Medium Card */}
               <div className="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                 <div className="flex items-center gap-4 mb-8">
@@ -261,6 +259,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      */}
     </div>
   );
 }

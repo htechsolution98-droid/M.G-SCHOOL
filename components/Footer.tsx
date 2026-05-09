@@ -51,8 +51,7 @@ const Footer = () => {
                   { name: "About Us", href: "/about" },
                   { name: "Academics", href: "/academics" },
                   { name: "Faculty Portfolio", href: "/faculty" },
-                  { name: "Campus Buildings", href: "/branches" },
-                  { name: "Admissions", href: "/enroll" }
+                  { name: "Campus Buildings", href: "/branches" }
                 ].map((link, i) => (
                   <li key={i}>
                     <Link href={link.href} className="text-white/60 hover:text-white transition-colors font-medium flex items-center gap-2 group">
