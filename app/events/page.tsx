@@ -145,18 +145,41 @@ const EventsPage = () => {
               >
                 {/* Event Image & Date */}
                 <div className="lg:w-1/2 relative min-h-[500px] overflow-hidden rounded-[4rem] shadow-3xl group">
-                  <Image 
-                     src={event.image || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"} 
-                     alt={event.title} 
-                     fill 
-                     className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                  />
-                  <div className="absolute top-10 left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl text-center min-w-[120px]">
+                  {event.images && event.images.length > 1 ? (
+                    <Swiper
+                      modules={[Autoplay, Pagination, Navigation, EffectFade]}
+                      pagination={{ clickable: true }}
+                      navigation={true}
+                      autoplay={{ delay: 3000, disableOnInteraction: false }}
+                      loop={true}
+                      effect="fade"
+                      className="w-full h-full"
+                    >
+                      {event.images.map((img: string, i: number) => (
+                        <SwiperSlide key={i} className="relative w-full h-full">
+                          <Image
+                            src={img}
+                            alt={`${event.title} - ${i + 1}`}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                          />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  ) : (
+                    <Image
+                      src={event.image || (event.images && event.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
+                      alt={event.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                    />
+                  )}
+                  <div className="absolute top-10 left-10 bg-white/90 backdrop-blur-md p-8 rounded-[2.5rem] shadow-2xl text-center min-w-[120px] z-20">
                      <div className="text-secondary text-sm font-black tracking-widest uppercase mb-1">{yearStr}</div>
                      <div className="text-4xl font-playfair font-black text-primary">{dateStr}</div>
                   </div>
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
-                  <div className="absolute bottom-10 left-10 text-white">
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                  <div className="absolute bottom-10 left-10 text-white z-20">
                      <span className="bg-secondary/20 backdrop-blur-md text-secondary px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/30">{event.category}</span>
                   </div>
                 </div>

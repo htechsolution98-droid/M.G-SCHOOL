@@ -2712,7 +2712,7 @@ function EventsTab() {
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-playfair font-black text-primary">School Events</h3>
         <button
-          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", time: "", branch: "All", description: "", image: "", category: "Upcoming" }, ...events])}
+          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", time: "", branch: "All", description: "", image: "", images: [], category: "Upcoming" }, ...events])}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
         >
           <Plus size={18} /> Create Event
@@ -2723,13 +2723,22 @@ function EventsTab() {
         {events.map((event, idx) => (
           <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-8 hover:shadow-md transition-all overflow-hidden">
             <div className="lg:col-span-1 min-w-0">
-              <ImageUpload label="Event Banner" value={event.image} onChange={(v) => {
-                setEvents((prev: any) => {
-                  const updated = [...prev];
-                  updated[idx] = { ...updated[idx], image: v };
-                  return updated;
-                });
-              }} />
+              <MultiImageUpload
+                label="Event Images (multiple images will create a slider)"
+                values={event.images && event.images.length > 0 ? event.images : (event.image ? [event.image] : [])}
+                onChange={(urls: string[]) => {
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = {
+                      ...updated[idx],
+                      images: urls,
+                      image: urls.length > 0 ? urls[0] : ""
+                    };
+                    return updated;
+                  });
+                }}
+                maxImages={10}
+              />
             </div>
             <div className="lg:col-span-2 min-w-0 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
