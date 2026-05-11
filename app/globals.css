@@ -90,11 +90,11 @@
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: #EAB308; /* secondary color */
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: #CA8A04;
 }
 
 .custom-scrollbar-dark::-webkit-scrollbar {

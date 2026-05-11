@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import HeroSlider from "@/components/HeroSlider";
 import CampusHubCard from "@/components/CampusHubCard";
-import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart } from "lucide-react";
+import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart, X, Sparkles, Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "@/lib/axios";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -20,6 +20,13 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 import { useSocketSync } from "@/hooks/useSocketSync";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+import ReadMore from "@/components/ReadMore";
+import { Clock, MapPin } from "lucide-react";
 
 const featureIconMap: Record<string, React.ReactNode> = {
   "Intellectual Rigor": <BookOpen className="text-secondary" />,
@@ -164,6 +171,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Events Highlights Section */}
+      <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+            <div className="max-w-2xl">
+              <div className="bg-secondary/10 text-secondary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-6">Latest Updates</div>
+              <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary leading-tight">School <span className="text-secondary italic">Events.</span></h2>
+            </div>
+            <Link href="/events" className="group flex items-center gap-6 w-max">
+                <span className="text-primary font-black text-sm tracking-[0.3em] uppercase">See All Events</span>
+                <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-active:scale-90 transition-all shadow-lg group-hover:shadow-primary/20">
+                   <ArrowRight size={20} className="group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </div>
+            </Link>
+          </div>
+
+          <EventsPreview />
+        </div>
+      </section>
+
       {/* Branches Highlights - Asymmetrical Grid */}
       <section className="pt-12 md:pt-16 pb-24 md:pb-32 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
@@ -260,6 +287,241 @@ export default function Home() {
         </div>
       </section>
       */}
+    </div>
+  );
+}
+
+function EventsPreview() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  // Lock scroll when modal is open
+  useEffect(() => {
+    if (selectedEvent) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedEvent]);
+
+  useEffect(() => {
+    axiosInstance.get("/api/events")
+      .then(res => {
+        if (res.data.success) {
+          // Show only latest 3 events on homepage
+          setEvents(res.data.events.slice(0, 3));
+        }
+      });
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
+      {events.map((event, idx) => {
+        let d = new Date(event.date);
+        if (isNaN(d.getTime()) && event.date && event.date.includes('/')) {
+          const [day, month, year] = event.date.split('/');
+          d = new Date(`${year}-${month}-${day}`);
+        }
+        const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' }) : "TBA";
+        const yearStr = !isNaN(d.getTime()) ? d.getFullYear() : "";
+
+        return (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1 }}
+            className="bg-white rounded-[3rem] overflow-hidden shadow-xl hover:shadow-3xl transition-all duration-500 flex flex-col group h-full border border-gray-100"
+          >
+            <div className="relative h-72 w-full overflow-hidden">
+              {event.images && event.images.length > 1 ? (
+                <Swiper
+                  modules={[Autoplay, Pagination, Navigation, EffectFade]}
+                  pagination={{ clickable: true }}
+                  autoplay={{ delay: 4000, disableOnInteraction: false }}
+                  loop={true}
+                  effect="fade"
+                  className="w-full h-full"
+                >
+                  {event.images.map((img: string, i: number) => (
+                    <SwiperSlide key={i} className="relative w-full h-full">
+                      <Image src={img} alt={event.title} fill className="object-cover group-hover:scale-105 transition-transform duration-1000" />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : (
+                <Image src={event.image || (event.images && event.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"} alt={event.title} fill className="object-cover group-hover:scale-105 transition-transform duration-1000" />
+              )}
+              <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl text-center z-20">
+                <div className="text-secondary text-[9px] font-black tracking-widest uppercase mb-0.5">{yearStr}</div>
+                <div className="text-lg font-playfair font-black text-primary leading-none">{dateStr}</div>
+              </div>
+              <div className="absolute bottom-5 left-5 z-20">
+                <span className="bg-primary/20 backdrop-blur-md text-white px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">{event.category}</span>
+              </div>
+            </div>
+
+            <div className="p-8 flex-1 flex flex-col">
+              <div className="flex flex-wrap gap-4 mb-5">
+                <div className="flex items-center gap-2 text-gray-400 font-bold uppercase text-[9px] tracking-widest">
+                  <Clock size={14} className="text-secondary" /> {event.time || "TBD"}
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 font-bold uppercase text-[9px] tracking-widest">
+                  <MapPin size={14} className="text-secondary" /> {event.location}
+                </div>
+              </div>
+              <h3 className="text-2xl font-playfair font-black text-primary mb-5 leading-tight group-hover:text-secondary transition-colors line-clamp-2">{event.title}</h3>
+              <div className="text-gray-500 font-light leading-relaxed mb-8 text-sm italic flex-1">
+                <ReadMore text={event.description} limit={100} />
+              </div>
+              <button 
+                onClick={() => setSelectedEvent(event)}
+                className="flex items-center justify-between w-full p-2 pr-6 rounded-2xl bg-gray-50 hover:bg-primary hover:text-white group/btn transition-all duration-300"
+              >
+                <div className="w-12 h-12 rounded-xl bg-white group-hover/btn:bg-white/20 flex items-center justify-center transition-colors shadow-sm">
+                  <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest">Event Details</span>
+              </button>
+            </div>
+          </motion.div>
+        );
+      })}
+      {/* ── Event Detail Modal ── */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+          >
+            {/* Backdrop with intense blur */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedEvent(null)}
+              className="absolute inset-0 bg-primary/40 backdrop-blur-2xl" 
+            />
+
+            {/* Modal Content */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-4xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh]"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedEvent(null)}
+                className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-primary hover:bg-white/40 transition-all"
+              >
+                <X size={24} />
+              </button>
+
+              {/* Media Section */}
+              <div className="lg:w-1/2 relative h-72 lg:h-auto bg-slate-100">
+                {selectedEvent.images && selectedEvent.images.length > 0 ? (
+                  <Swiper
+                    modules={[Autoplay, Pagination, Navigation, EffectFade]}
+                    pagination={{ clickable: true }}
+                    navigation={true}
+                    autoplay={{ delay: 5000 }}
+                    loop={true}
+                    className="w-full h-full"
+                  >
+                    {selectedEvent.images.map((img: string, i: number) => (
+                      <SwiperSlide key={i} className="relative w-full h-full">
+                        <Image
+                          src={img}
+                          alt={selectedEvent.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                ) : (
+                  <Image
+                    src={selectedEvent.image || (selectedEvent.images && selectedEvent.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
+                    alt={selectedEvent.title}
+                    fill
+                    className="object-cover"
+                  />
+                )}
+                
+                {/* Floating Category */}
+                <div className="absolute bottom-6 left-6 z-20">
+                   <span className="bg-secondary text-primary px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
+                     {selectedEvent.category}
+                   </span>
+                </div>
+              </div>
+
+              {/* Info Section */}
+              <div className="lg:w-1/2 p-8 md:p-12 overflow-y-auto custom-scrollbar">
+                <div className="flex items-center gap-3 mb-6 text-secondary font-black uppercase text-[10px] tracking-[0.3em]">
+                   <Sparkles size={16} />
+                   <span>Event Highlights</span>
+                </div>
+                
+                <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-8 leading-tight">
+                  {selectedEvent.title}
+                </h2>
+
+                <div className="grid grid-cols-2 gap-6 mb-10">
+                   <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-gray-400">
+                         <Calendar size={14} className="text-secondary" />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Date</span>
+                      </div>
+                      <p className="text-primary font-bold">{new Date(selectedEvent.date).toLocaleDateString("en-IN", { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                   </div>
+                   <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-gray-400">
+                         <Clock size={14} className="text-secondary" />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Time</span>
+                      </div>
+                      <p className="text-primary font-bold">{selectedEvent.time || "TBA"}</p>
+                   </div>
+                   <div className="col-span-2 space-y-1">
+                      <div className="flex items-center gap-2 text-gray-400">
+                         <MapPin size={14} className="text-secondary" />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Location</span>
+                      </div>
+                      <p className="text-primary font-bold">{selectedEvent.location}</p>
+                   </div>
+                </div>
+
+                <div className="prose prose-slate max-w-none">
+                   <p className="text-lg text-gray-500 font-light leading-relaxed whitespace-pre-wrap">
+                      {selectedEvent.description}
+                   </p>
+                </div>
+                
+                <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
+                   <div className="flex -space-x-3">
+                      {[1,2,3].map(i => (
+                        <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden relative" title="Student participant">
+                           <img src={`https://i.pravatar.cc/100?u=${i + 10}`} alt="avatar" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                      <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white font-black">
+                         +50
+                      </div>
+                   </div>
+                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Students Participating</span>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

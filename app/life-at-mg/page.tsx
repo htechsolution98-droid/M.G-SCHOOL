@@ -80,7 +80,7 @@ const LifeAtMGPage = () => {
                 <Image
                   src={slide.url}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                   alt={slide.title || `Slide ${idx + 1}`}
                   priority={idx === 0}
                 />

@@ -159,7 +159,7 @@ export default function About() {
             src={hero.image}
             alt="School Exterior"
             fill
-            className="object-cover"
+            className="object-cover object-top"
             priority
           />
         </motion.div>
@@ -246,7 +246,7 @@ export default function About() {
                   className="bg-white rounded-[3rem] overflow-hidden shadow-xl group hover:shadow-2xl transition-all duration-500 border-b-[6px] border-transparent hover:border-secondary"
                 >
                   <div className="h-64 relative overflow-hidden">
-                    {item.image && <Image src={item.image} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />}
+                    {item.image && <Image src={item.image} alt={item.title} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-700" />}
                   </div>
                   <div className="p-10">
                     <h3 className="text-3xl font-playfair font-black mb-4 text-primary">{item.title}</h3>
@@ -334,7 +334,7 @@ function LegacyImageSlider({ legacy }: { legacy: any }) {
             transition={{ duration: 1.0 }}
             style={{ zIndex: i === idx ? 1 : 0 }}
           >
-            <Image src={src} alt={`Legacy image ${i + 1}`} fill className="object-cover" />
+            <Image src={src} alt={`Legacy image ${i + 1}`} fill className="object-cover object-top" />
           </motion.div>
         ))}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-40 z-10" />

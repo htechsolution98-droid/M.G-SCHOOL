@@ -116,7 +116,7 @@ const FacultyPage = () => {
                       src={slide.image} 
                       alt={slide.name} 
                       fill 
-                      className="object-cover hover:scale-105 transition-transform duration-1000" 
+                      className="object-cover object-top hover:scale-105 transition-transform duration-1000" 
                     />
                   </div>
                 </motion.div>
@@ -151,7 +151,7 @@ const FacultyPage = () => {
                 className="group relative"
               >
                 <div className="relative h-[550px] overflow-hidden rounded-[4rem] shadow-2xl mb-10 transition-transform duration-700 group-hover:-translate-y-4">
-                  {faculty.image && <Image src={faculty.image} alt={faculty.name} fill className="object-cover" />}
+                  {faculty.image && <Image src={faculty.image} alt={faculty.name} fill className="object-cover object-top" />}
                   <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-primary via-primary/20 to-transparent" />
                   <div className="absolute top-8 right-8 bg-white/20 backdrop-blur-xl p-4 rounded-2xl border border-white/20 text-white group-hover:bg-secondary group-hover:text-primary transition-all">
                     <GraduationCap size={24} />

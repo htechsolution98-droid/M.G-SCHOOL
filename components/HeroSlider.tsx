@@ -79,7 +79,7 @@ function SlideBackground({ slide }: { slide: any }) {
             src={src}
             alt={slide.title}
             fill
-            className="object-cover brightness-[0.4]"
+            className="object-cover object-top brightness-[0.4]"
             priority={i === 0}
             sizes="100vw"
           />
