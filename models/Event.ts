@@ -19,7 +19,7 @@ const EventSchema = new Schema<IEvent>({
   description: { type: String, default: "" },
   date: { type: String, required: true },
   image: { type: String, default: "" },
-  images: { type: [String], default: [] },
+  images: [String],
   location: { type: String, default: "" },
   time: { type: String, default: "" },
   branch: { type: String, default: "All" },
@@ -28,4 +28,9 @@ const EventSchema = new Schema<IEvent>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Event || mongoose.model<IEvent>("Event", EventSchema);
+// Use a more robust export pattern for Next.js HMR and schema updates
+if (mongoose.models && mongoose.models.Event) {
+  delete mongoose.models.Event;
+}
+
+export default mongoose.model<IEvent>("Event", EventSchema);

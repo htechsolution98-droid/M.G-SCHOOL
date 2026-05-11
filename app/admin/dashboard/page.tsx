@@ -2764,9 +2764,11 @@ function EventsTab() {
                   });
                 }} />
                 <InputField label="Time (e.g. 10:00 AM)" value={event.time} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].time = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], time: v };
+                    return updated;
+                  });
                 }} />
                 <InputField label="Category" value={event.category} onChange={(v) => {
                   setEvents((prev: any) => {
@@ -2776,9 +2778,11 @@ function EventsTab() {
                   });
                 }} />
                 <InputField label="Branch/Block" value={event.branch} onChange={(v) => {
-                  const updated = [...events];
-                  updated[idx].branch = v;
-                  setEvents(updated);
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = { ...updated[idx], branch: v };
+                    return updated;
+                  });
                 }} />
               </div>
               <TextareaField label="Description" value={event.description} onChange={(v) => {

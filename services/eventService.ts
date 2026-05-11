@@ -18,7 +18,7 @@ export async function updateEvent(id: string, data: any) {
 
   if (!id) throw new Error("Event ID is required");
 
-  const event = await Event.findByIdAndUpdate(id, data, { new: true });
+  const event = await Event.findByIdAndUpdate(id, { $set: data }, { new: true });
   if (!event) throw new Error("Event not found");
 
   return event;
