@@ -220,7 +220,7 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
             </div>
 
             {(() => {
-              const allFaculty = [...(block.faculty || []), ...globalFaculty];
+              const allFaculty = [...(block.faculty || []), ...globalFaculty].sort((a, b) => (a.order || 0) - (b.order || 0));
               
               // If Block C, group by category
               if (blockKey === "blockC") {
@@ -295,6 +295,9 @@ function FacultyCard({ member }: { member: any }) {
         )}
         {(member.expertise || member.subject) && (
           <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Expertise</span> <span className="font-medium text-gray-700 truncate ml-2">{member.expertise || member.subject}</span></p>
+        )}
+        {member.experience && (
+          <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Experience</span> <span className="font-medium text-gray-700 truncate ml-2">{member.experience}</span></p>
         )}
       </div>
     </div>
