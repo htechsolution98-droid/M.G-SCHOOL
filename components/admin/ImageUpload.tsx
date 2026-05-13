@@ -76,7 +76,7 @@ export default function ImageUpload({ value, onChange, label = "Image", contain 
             <img
               src={value}
               alt="Preview"
-              className={`max-w-full max-h-full ${contain ? "object-contain" : "object-cover w-full h-full"}`}
+              className={`max-w-full max-h-full ${contain ? "object-contain" : "object-cover w-full h-full object-top"}`}
             />
           </div>
           <button

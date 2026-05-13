@@ -22,6 +22,7 @@ export interface IFacultyMember {
   role: string;
   education: string;
   subject: string;
+  category?: "Granted" | "Non-Granted" | "None";
 }
 
 export interface IBlockContent {
@@ -62,7 +63,8 @@ const BlockContentSchema = new Schema<IBlockContent>({
       name: { type: String, default: "" },
       role: { type: String, default: "" },
       education: { type: String, default: "" },
-      subject: { type: String, default: "" }
+      subject: { type: String, default: "" },
+      category: { type: String, default: "None" }
     }],
     default: []
   }

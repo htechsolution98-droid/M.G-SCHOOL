@@ -218,29 +218,52 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
               <div className="text-secondary text-sm font-black uppercase tracking-[0.3em] mb-4">Dedicated Educators</div>
               <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary">Our Faculty</h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {[...(block.faculty || []), ...globalFaculty].map((member: any, idx: number) => (
-                <div key={idx} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center group">
-                  <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-50 group-hover:border-secondary/20 transition-colors">
-                    {member.image ? (
-                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-full h-full p-6 text-gray-400 bg-gray-100" />
-                    )}
-                  </div>
-                  <h5 className="text-xl font-bold text-primary mb-2">{member.name}</h5>
-                  <p className="text-secondary text-sm font-black uppercase tracking-widest mb-4">{member.designation || member.role}</p>
-                  <div className="w-full pt-4 border-t border-gray-100 space-y-2">
-                    {member.education && (
-                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Education</span> <span className="font-medium text-gray-700 truncate ml-2">{member.education}</span></p>
-                    )}
-                    {(member.expertise || member.subject) && (
-                      <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Expertise</span> <span className="font-medium text-gray-700 truncate ml-2">{member.expertise || member.subject}</span></p>
-                    )}
-                  </div>
+
+            {(() => {
+              const allFaculty = [...(block.faculty || []), ...globalFaculty];
+              
+              // If Block C, group by category
+              if (blockKey === "blockC") {
+                const groups = allFaculty.reduce((acc: any, member: any) => {
+                  const cat = member.category || "None";
+                  if (!acc[cat]) acc[cat] = [];
+                  acc[cat].push(member);
+                  return acc;
+                }, {});
+
+                // Define display order: Granted, Non-Granted, None
+                const order = ["Granted", "Non-Granted", "None"];
+                
+                return order.map(cat => {
+                  if (!groups[cat] || groups[cat].length === 0) return null;
+                  return (
+                    <div key={cat} className="mb-20 last:mb-0">
+                      <div className="flex items-center gap-6 mb-12">
+                        <div className="h-px flex-1 bg-gray-100" />
+                        <h3 className="text-2xl font-playfair font-black text-primary uppercase tracking-wider bg-white px-8 border border-gray-100 py-3 rounded-2xl shadow-sm">
+                          {cat === "None" ? "Faculty" : `${cat} Faculty`}
+                        </h3>
+                        <div className="h-px flex-1 bg-gray-100" />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        {groups[cat].map((member: any, idx: number) => (
+                          <FacultyCard key={idx} member={member} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                });
+              }
+
+              // Default behavior for other blocks
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                  {allFaculty.map((member: any, idx: number) => (
+                    <FacultyCard key={idx} member={member} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              );
+            })()}
           </div>
         )}
       </motion.section>
@@ -250,6 +273,30 @@ export default function BlockPageLayout({ blockKey, children }: { blockKey: "blo
           {children}
         </section>
       )}
+    </div>
+  );
+}
+
+function FacultyCard({ member }: { member: any }) {
+  return (
+    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center group">
+      <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-gray-50 group-hover:border-secondary/20 transition-colors">
+        {member.image ? (
+          <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" />
+        ) : (
+          <User className="w-full h-full p-6 text-gray-400 bg-gray-100" />
+        )}
+      </div>
+      <h5 className="text-xl font-bold text-primary mb-2">{member.name}</h5>
+      <p className="text-secondary text-sm font-black uppercase tracking-widest mb-4">{member.designation || member.role}</p>
+      <div className="w-full pt-4 border-t border-gray-100 space-y-2">
+        {member.education && (
+          <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Education</span> <span className="font-medium text-gray-700 truncate ml-2">{member.education}</span></p>
+        )}
+        {(member.expertise || member.subject) && (
+          <p className="text-xs text-gray-500 flex justify-between text-left"><span className="font-bold text-gray-400">Expertise</span> <span className="font-medium text-gray-700 truncate ml-2">{member.expertise || member.subject}</span></p>
+        )}
+      </div>
     </div>
   );
 }

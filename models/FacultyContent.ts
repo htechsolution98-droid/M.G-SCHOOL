@@ -8,6 +8,7 @@ export interface IFacultyMember {
   block: string; // e.g. "Block A", "Block B", "Block C"
   experience?: string;
   education?: string;
+  category?: "Granted" | "Non-Granted" | "None";
 }
 
 export interface IFacultyHeroSlide {
@@ -51,6 +52,7 @@ const FacultyContentSchema: Schema = new Schema({
       block: { type: String, required: true },
       experience: { type: String },
       education: { type: String },
+      category: { type: String, default: "None" },
     },
   ],
   updatedAt: { type: Date, default: Date.now },

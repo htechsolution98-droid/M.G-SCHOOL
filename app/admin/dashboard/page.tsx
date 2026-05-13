@@ -2132,6 +2132,18 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
                   <InputField label="Education" value={member.education} onChange={(v) => updateFaculty(idx, "education", v)} />
                   <InputField label="Subject" value={member.subject} onChange={(v) => updateFaculty(idx, "subject", v)} />
                 </div>
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Category (For Block C)</label>
+                  <select
+                    value={member.category || "None"}
+                    onChange={(e) => updateFaculty(idx, "category", e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+                  >
+                    <option value="None">None</option>
+                    <option value="Granted">Granted</option>
+                    <option value="Non-Granted">Non-Granted</option>
+                  </select>
+                </div>
               </div>
             </div>
           ))}
@@ -2440,6 +2452,18 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
                       <option value="Block A">Block A</option>
                       <option value="Block B">Block B</option>
                       <option value="Block C">Block C</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Category (For Block C)</label>
+                    <select
+                      value={member.category || "None"}
+                      onChange={(e) => updateMember(idx, "category", e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+                    >
+                      <option value="None">None</option>
+                      <option value="Granted">Granted</option>
+                      <option value="Non-Granted">Non-Granted</option>
                     </select>
                   </div>
                 </div>
