@@ -54,6 +54,7 @@ const sidebarItems = [
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("homepage");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -83,25 +84,17 @@ export default function AdminDashboard() {
 
   return (
     <>
-      {/* ─── Mobile Restriction Message ─── */}
-      <div className="lg:hidden min-h-screen bg-primary flex flex-col items-center justify-center p-8 text-center">
-        <div className="bg-white p-6 rounded-[2.5rem] mb-8 shadow-2xl animate-bounce">
-          <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-20 h-20 object-contain" />
-        </div>
-        <h1 className="text-3xl font-playfair font-black text-white mb-4">Desktop Access Only</h1>
-        <p className="text-secondary/80 font-medium max-w-xs leading-relaxed mb-10">
-          The Management Console is optimized for professional desktop workflows. Please log in from a laptop or PC to manage your school's digital presence.
-        </p>
-        <button onClick={handleLogout} className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-white/10 text-white font-bold hover:bg-white/20 transition-all border border-white/10">
-          <LogOut size={20} /> Sign Out
-        </button>
-      </div>
-
-      {/* ─── Desktop Dashboard ─── */}
-      <div className="hidden lg:flex min-h-screen bg-gray-50 flex">
-      {/* ─── Sidebar Desktop ─── */}
-      <aside className="hidden lg:flex flex-col w-72 bg-primary h-screen fixed left-0 top-0 z-40 overflow-y-auto custom-scrollbar">
-        <div className="p-8 border-b border-white/10 bg-white/10 shrink-0">
+      {/* ─── Responsive Dashboard ─── */}
+      <div className="min-h-screen bg-gray-50 flex">
+      {/* ─── Sidebar ─── */}
+      <aside 
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50
+          w-72 bg-primary h-screen transition-transform duration-300 ease-in-out overflow-y-auto custom-scrollbar
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
+      >
+        <div className="p-8 border-b border-white/10 bg-white/10 shrink-0 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white p-1 rounded-xl shadow-lg">
               <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
@@ -111,6 +104,9 @@ export default function AdminDashboard() {
               <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-secondary">Admin Panel</div>
             </div>
           </div>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/50 hover:text-white transition-colors">
+            <X size={24} />
+          </button>
         </div>
         <nav className="flex-1 p-4 space-y-1 pb-2">
           {sidebarItems.map((item) => {
@@ -118,7 +114,10 @@ export default function AdminDashboard() {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  if (window.innerWidth < 1024) setSidebarOpen(false);
+                }}
                 className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-secondary text-primary shadow-lg" : "text-white/50 hover:text-white hover:bg-white/5"
                   }`}
               >
@@ -135,13 +134,22 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
-
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* ─── Main Content ─── */}
-      <main className="flex-1 lg:ml-72 min-h-screen w-full min-w-0 overflow-x-hidden flex flex-col">
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 lg:px-10 py-5">
+      <main className="flex-1 min-h-screen w-full min-w-0 overflow-x-hidden flex flex-col">
+        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 lg:px-10 py-5">
           <div className="flex items-center justify-between max-w-[1600px] mx-auto w-full">
             <div className="flex items-center gap-4">
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-primary hover:bg-gray-100 rounded-xl transition-all">
+                <Menu size={24} />
+              </button>
 
               <div>
                 <h2 className="text-xl font-playfair font-black text-primary capitalize">{activeTab}</h2>
