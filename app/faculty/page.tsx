@@ -46,7 +46,7 @@ const FacultyPage = () => {
     slides: content?.hero?.slides || [],
   };
 
-  const facultyMembers = content?.facultyMembers || [];
+  const facultyMembers = (content?.facultyMembers || []).sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
   return (
     <div className="pt-24 min-h-screen">

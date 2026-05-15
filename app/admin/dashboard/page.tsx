@@ -36,6 +36,37 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+// ─── Helper Functions ───
+const calculateExperience = (doj: string) => {
+  if (!doj) return "";
+  const start = new Date(doj);
+  const now = new Date();
+  if (isNaN(start.getTime())) return "";
+
+  let years = now.getFullYear() - start.getFullYear();
+  let months = now.getMonth() - start.getMonth();
+  let days = now.getDate() - start.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const yearsStr = years > 0 ? `${years} Year${years > 1 ? "s" : ""}` : "";
+  const monthsStr = months > 0 ? `${months} Month${months > 1 ? "s" : ""}` : "";
+  const daysStr = days > 0 ? `${days} Day${days > 1 ? "s" : ""}` : "";
+
+  const parts = [yearsStr, monthsStr, daysStr].filter(Boolean);
+  if (parts.length === 0) return "Less than a day";
+  return parts.join(" ");
+};
+
 // ─── Sidebar Items ───
 const sidebarItems = [
   { id: "homepage", name: "Homepage", icon: Home },
@@ -2060,7 +2091,14 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
 
   const updateFaculty = (idx: number, field: string, value: any) => {
     const updatedFaculty = [...(local.faculty || [])];
-    updatedFaculty[idx] = { ...updatedFaculty[idx], [field]: value };
+    let newValue = value;
+    let expValue = updatedFaculty[idx].experience;
+
+    if (field === "dateOfJoining") {
+      expValue = calculateExperience(value);
+    }
+
+    updatedFaculty[idx] = { ...updatedFaculty[idx], [field]: newValue, experience: expValue };
     update("faculty", updatedFaculty);
   };
 
@@ -2140,17 +2178,24 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
                   <InputField label="Education" value={member.education} onChange={(v) => updateFaculty(idx, "education", v)} />
                   <InputField label="Subject" value={member.subject} onChange={(v) => updateFaculty(idx, "subject", v)} />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Category (For Block C)</label>
-                  <select
-                    value={member.category || "None"}
-                    onChange={(e) => updateFaculty(idx, "category", e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
-                  >
-                    <option value="None">None</option>
-                    <option value="Granted">Granted</option>
-                    <option value="Non-Granted">Non-Granted</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Date of Joining" type="date" value={member.dateOfJoining ? new Date(member.dateOfJoining).toISOString().split('T')[0] : ""} onChange={(v) => updateFaculty(idx, "dateOfJoining", v)} />
+                  <InputField label="Experience" value={member.experience || ""} onChange={(v) => updateFaculty(idx, "experience", v)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Order Number" type="number" value={member.order || 0} onChange={(v) => updateFaculty(idx, "order", parseInt(v) || 0)} />
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Category (For Block C)</label>
+                    <select
+                      value={member.category || "None"}
+                      onChange={(e) => updateFaculty(idx, "category", e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-primary/30 focus:bg-white transition-all cursor-pointer"
+                    >
+                      <option value="None">None</option>
+                      <option value="Granted">Granted</option>
+                      <option value="Non-Granted">Non-Granted</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2384,7 +2429,14 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
   const updateMember = (idx: number, field: string, value: any) => {
     setLocalMembers((prev: any) => {
       const updated = [...prev];
-      updated[idx] = { ...updated[idx], [field]: value };
+      let newValue = value;
+      let expValue = updated[idx].experience;
+
+      if (field === "dateOfJoining") {
+        expValue = calculateExperience(value);
+      }
+
+      updated[idx] = { ...updated[idx], [field]: newValue, experience: expValue };
       return updated;
     });
   };
@@ -2397,7 +2449,9 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
       image: "",
       block: filter === "All" ? "Block A" : filter,
       experience: "",
-      education: ""
+      education: "",
+      dateOfJoining: "",
+      order: 0
     }]);
   };
 
@@ -2449,7 +2503,11 @@ function FacultyMembersEditor({ members, onSave, saving }: { members: any[]; onS
                   <InputField label="Education" value={member.education} onChange={(v) => updateMember(idx, "education", v)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
+                  <InputField label="Date of Joining" type="date" value={member.dateOfJoining ? new Date(member.dateOfJoining).toISOString().split('T')[0] : ""} onChange={(v) => updateMember(idx, "dateOfJoining", v)} />
                   <InputField label="Experience" value={member.experience} onChange={(v) => updateMember(idx, "experience", v)} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <InputField label="Order Number" type="number" value={member.order || 0} onChange={(v) => updateMember(idx, "order", parseInt(v) || 0)} />
                   <div className="space-y-1.5">
                     <label className="block text-[10px] uppercase tracking-[0.15em] font-black text-gray-400">Block</label>
                     <select

@@ -9,6 +9,8 @@ export interface IFacultyMember {
   experience?: string;
   education?: string;
   category?: "Granted" | "Non-Granted" | "None";
+  dateOfJoining?: Date;
+  order?: number;
 }
 
 export interface IFacultyHeroSlide {
@@ -53,6 +55,8 @@ const FacultyContentSchema: Schema = new Schema({
       experience: { type: String },
       education: { type: String },
       category: { type: String, default: "None" },
+      dateOfJoining: { type: Date },
+      order: { type: Number, default: 0 },
     },
   ],
   updatedAt: { type: Date, default: Date.now },
