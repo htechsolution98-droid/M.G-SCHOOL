@@ -6,7 +6,7 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js",
-    "export": "next export",
+    "export": "cross-env NEXT_EXPORT=true next build",
     "lint": "next lint"
   },
   "dependencies": {
