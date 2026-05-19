@@ -35,7 +35,9 @@ app.prepare().then(() => {
   });
 
   const port = process.env.PORT || 3000;
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  const hostname = "0.0.0.0";
+
+  server.listen(port, hostname, () => {
+    console.log(`> Ready on http://${hostname}:${port}`);
   });
 });

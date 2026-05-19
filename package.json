@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "axios": "^1.15.1",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
+    "cross-env": "^10.1.0",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.1.7",
     "gsap": "^3.15.0",
