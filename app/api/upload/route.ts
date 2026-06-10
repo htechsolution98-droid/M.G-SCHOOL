@@ -13,14 +13,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    // Validate file type — images + videos
+    const allowedTypes = [
+      // Images
+      "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
+      // Videos
+      "video/mp4", "video/webm", "video/ogg", "video/quicktime",
+      "video/x-msvideo", "video/mpeg", "video/3gpp",
+    ];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Only JPG, PNG, WebP, GIF, SVG allowed." },
+        { error: `Invalid file type (${file.type}). Allowed: JPG, PNG, WebP, GIF, SVG, MP4, WebM, MOV.` },
         { status: 400 }
       );
     }
+
+    const isVideo = file.type.startsWith("video/");
 
     // In development, save to public/uploads to avoid massive Base64 strings crashing Next.js dev server
     if (process.env.NODE_ENV === "development") {
@@ -40,10 +48,11 @@ export async function POST(req: NextRequest) {
     }
 
     // In production (Vercel), we must use Base64 because the filesystem is read-only
-    const maxSize = 2 * 1024 * 1024;
+    // Videos can be much larger — allow 100MB; images stay at 5MB
+    const maxSize = isVideo ? 100 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: "File too large. Maximum 2MB allowed for direct upload." },
+        { error: `File too large. Maximum ${isVideo ? "100MB" : "5MB"} allowed.` },
         { status: 400 }
       );
     }

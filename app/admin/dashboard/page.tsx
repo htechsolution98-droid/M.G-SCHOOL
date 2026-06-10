@@ -116,110 +116,110 @@ export default function AdminDashboard() {
   return (
     <>
       {/* ─── Responsive Dashboard ─── */}
-      <div className="min-h-screen bg-gray-50 flex">
-      {/* ─── Sidebar ─── */}
-      <aside 
-        className={`
+      <div className="h-screen bg-gray-50 flex overflow-hidden">
+        {/* ─── Sidebar ─── */}
+        <aside
+          className={`
           fixed lg:static inset-y-0 left-0 z-50
-          w-72 bg-primary h-screen transition-transform duration-300 ease-in-out overflow-y-auto custom-scrollbar
+          w-72 bg-primary h-screen flex flex-col transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
-      >
-        <div className="p-8 border-b border-white/10 bg-white/10 shrink-0 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-white p-1 rounded-xl shadow-lg">
-              <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
-            </div>
-            <div>
-              <div className="text-lg font-playfair font-black text-white tracking-tight">M.G. SCHOOL</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-secondary">Admin Panel</div>
-            </div>
-          </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/50 hover:text-white transition-colors">
-            <X size={24} />
-          </button>
-        </div>
-        <nav className="flex-1 p-4 space-y-1 pb-2">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  if (window.innerWidth < 1024) setSidebarOpen(false);
-                }}
-                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-secondary text-primary shadow-lg" : "text-white/50 hover:text-white hover:bg-white/5"
-                  }`}
-              >
-                <Icon size={20} />
-                {item.name}
-              </button>
-            );
-          })}
-        </nav>
-        <div className="p-6 border-t border-white/10 mt-auto shrink-0">
-          <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all cursor-pointer">
-            <LogOut size={20} /> Sign Out
-          </button>
-        </div>
-      </aside>
-
-      {/* Mobile Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* ─── Main Content ─── */}
-      <main className="flex-1 min-h-screen w-full min-w-0 overflow-x-hidden flex flex-col">
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 lg:px-10 py-5">
-          <div className="flex items-center justify-between max-w-[1600px] mx-auto w-full">
-            <div className="flex items-center gap-4">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-primary hover:bg-gray-100 rounded-xl transition-all">
-                <Menu size={24} />
-              </button>
-
+        >
+          <div className="p-8 border-b border-white/10 bg-white/10 shrink-0 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-white p-1 rounded-xl shadow-lg">
+                <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
+              </div>
               <div>
-                <h2 className="text-xl font-playfair font-black text-primary capitalize">{activeTab}</h2>
-                <p className="text-xs text-gray-400 font-medium">Welcome back, Administrator</p>
+                <div className="text-lg font-playfair font-black text-white tracking-tight">M.G. SCHOOL</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-secondary">Admin Panel</div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "events"].includes(activeTab) && (
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/50 hover:text-white transition-colors">
+              <X size={24} />
+            </button>
+          </div>
+          <nav className="flex-1 p-4 space-y-1 pb-2 overflow-y-auto custom-scrollbar">
+            {sidebarItems.map((item) => {
+              const Icon = item.icon;
+              return (
                 <button
-                  onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
-                  className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    if (window.innerWidth < 1024) setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-secondary text-primary shadow-lg" : "text-white/50 hover:text-white hover:bg-white/5"
+                    }`}
                 >
-                  <Save size={18} /> <span className="hidden sm:inline">Save Changes</span>
+                  <Icon size={20} />
+                  {item.name}
                 </button>
-              )}
-              <button className="relative p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer">
-                <Bell size={20} className="text-gray-500" />
-                <div className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-              </button>
-              <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-secondary font-black text-sm">A</div>
+              );
+            })}
+          </nav>
+          <div className="p-6 border-t border-white/10 mt-auto shrink-0">
+            <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all cursor-pointer">
+              <LogOut size={20} /> Sign Out
+            </button>
+          </div>
+        </aside>
+
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* ─── Main Content ─── */}
+        <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden flex flex-col">
+          <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 lg:px-10 py-5">
+            <div className="flex items-center justify-between max-w-[1600px] mx-auto w-full">
+              <div className="flex items-center gap-4">
+                <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-primary hover:bg-gray-100 rounded-xl transition-all">
+                  <Menu size={24} />
+                </button>
+
+                <div>
+                  <h2 className="text-xl font-playfair font-black text-primary capitalize">{activeTab}</h2>
+                  <p className="text-xs text-gray-400 font-medium">Welcome back, Administrator</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "events"].includes(activeTab) && (
+                  <button
+                    onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
+                    className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
+                  >
+                    <Save size={18} /> <span className="hidden sm:inline">Save Changes</span>
+                  </button>
+                )}
+                <button className="relative p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer">
+                  <Bell size={20} className="text-gray-500" />
+                  <div className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                </button>
+                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-secondary font-black text-sm">A</div>
+              </div>
+            </div>
+          </header>
+
+          <div className="p-6 lg:p-10 flex-1 flex flex-col">
+            <div className="max-w-[1600px] mx-auto w-full flex-1">
+              {activeTab === "homepage" && <HomepageTab />}
+              {activeTab === "about" && <AboutTab />}
+              {activeTab === "trustees" && <TrusteesTab />}
+              {activeTab === "academics" && <AcademicsTab />}
+              {activeTab === "branches" && <BuildingsTab />}
+              {activeTab === "faculty" && <FacultyTab />}
+              {activeTab === "life-at-mg" && <LifeAtMGTab />}
+              {activeTab === "events" && <EventsTab />}
+              {activeTab === "enrollment" && <EnrollmentTab />}
             </div>
           </div>
-        </header>
-
-        <div className="p-6 lg:p-10 flex-1 flex flex-col">
-          <div className="max-w-[1600px] mx-auto w-full flex-1">
-            {activeTab === "homepage" && <HomepageTab />}
-            {activeTab === "about" && <AboutTab />}
-            {activeTab === "trustees" && <TrusteesTab />}
-            {activeTab === "academics" && <AcademicsTab />}
-            {activeTab === "branches" && <BuildingsTab />}
-            {activeTab === "faculty" && <FacultyTab />}
-            {activeTab === "life-at-mg" && <LifeAtMGTab />}
-            {activeTab === "events" && <EventsTab />}
-            {activeTab === "enrollment" && <EnrollmentTab />}
-          </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
     </>
   );
 }

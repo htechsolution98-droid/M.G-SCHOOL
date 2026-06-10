@@ -180,10 +180,10 @@ export default function Home() {
               <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary leading-tight">School <span className="text-secondary italic">Events.</span></h2>
             </div>
             <Link href="/events" className="group flex items-center gap-6 w-max">
-                <span className="text-primary font-black text-sm tracking-[0.3em] uppercase">See All Events</span>
-                <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-active:scale-90 transition-all shadow-lg group-hover:shadow-primary/20">
-                   <ArrowRight size={20} className="group-hover:text-white group-hover:translate-x-1 transition-all" />
-                </div>
+              <span className="text-primary font-black text-sm tracking-[0.3em] uppercase">See All Events</span>
+              <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-active:scale-90 transition-all shadow-lg group-hover:shadow-primary/20">
+                <ArrowRight size={20} className="group-hover:text-white group-hover:translate-x-1 transition-all" />
+              </div>
             </Link>
           </div>
 
@@ -192,7 +192,7 @@ export default function Home() {
       </section>
 
       {/* Branches Highlights - Asymmetrical Grid */}
-      <section className="pt-12 md:pt-16 pb-24 md:pb-32 bg-slate-50 relative overflow-hidden">
+      <section className="pt-12 md:pt-16 pb-10 md:pb-14 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
           <header className="max-w-3xl mb-24">
@@ -208,6 +208,66 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* User Experience / Feedback Section */}
+      <section className="py-10 md:py-14 bg-white relative overflow-hidden">
+        <div className="container-custom relative z-10">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
+
+              {/* Left: Info + Illustration */}
+              <div className="lg:w-[45%] p-6 md:p-10 flex flex-col justify-between gap-6 bg-slate-50 border-b lg:border-b-0 lg:border-r border-gray-100">
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.35em] text-secondary mb-3">
+                      We Value Your Feedback
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-playfair font-black text-primary leading-tight mb-4">
+                      Your Experience <span className="italic text-secondary font-medium">Matters</span>
+                    </h2>
+                    <p className="text-gray-500 font-light leading-relaxed text-base">
+                      Your feedback helps us improve and provide a better experience for everyone. Please share your thoughts with us.
+                    </p>
+                  </div>
+
+                  {/* Bullet points - compact */}
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { icon: <Sparkles size={15} />, text: "Help us improve our services" },
+                      { icon: <Award size={15} />, text: "Your feedback drives positive change" },
+                      { icon: <Heart size={15} />, text: "We appreciate your time" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2.5 px-3 py-2 bg-white rounded-xl border border-gray-100 shadow-sm hover:scale-[1.01] transition-transform duration-200">
+                        <div className="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                          {item.icon}
+                        </div>
+                        <span className="text-xs font-semibold text-primary">{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Image — fills remaining space */}
+                <div className="hidden lg:flex items-center justify-center flex-1 min-h-0 pt-2">
+                  <Image
+                    src="/images/feedback-illustration.png"
+                    alt="Feedback Illustration"
+                    width={500}
+                    height={500}
+                    className="object-contain w-full h-auto max-h-[260px] drop-shadow-lg hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+
+              {/* Right: Form */}
+              <div className="lg:w-[55%] p-10 md:p-14">
+                <FeedbackForm />
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Background of the School - Legacy & Structure */}
       {/* 
@@ -378,7 +438,7 @@ function EventsPreview() {
               <div className="text-gray-500 font-light leading-relaxed mb-8 text-sm italic flex-1">
                 <ReadMore text={event.description} limit={100} />
               </div>
-              <button 
+              <button
                 onClick={() => setSelectedEvent(event)}
                 className="flex items-center justify-between w-full p-2 pr-6 rounded-2xl bg-gray-50 hover:bg-primary hover:text-white group/btn transition-all duration-300"
               >
@@ -401,12 +461,12 @@ function EventsPreview() {
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
           >
             {/* Backdrop with intense blur */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedEvent(null)}
-              className="absolute inset-0 bg-primary/40 backdrop-blur-2xl" 
+              className="absolute inset-0 bg-primary/40 backdrop-blur-2xl"
             />
 
             {/* Modal Content */}
@@ -417,7 +477,7 @@ function EventsPreview() {
               className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-4xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh]"
             >
               {/* Close Button */}
-              <button 
+              <button
                 onClick={() => setSelectedEvent(null)}
                 className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-primary hover:bg-white/40 transition-all"
               >
@@ -454,74 +514,222 @@ function EventsPreview() {
                     className="object-cover"
                   />
                 )}
-                
+
                 {/* Floating Category */}
                 <div className="absolute bottom-6 left-6 z-20">
-                   <span className="bg-secondary text-primary px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
-                     {selectedEvent.category}
-                   </span>
+                  <span className="bg-secondary text-primary px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
+                    {selectedEvent.category}
+                  </span>
                 </div>
               </div>
 
               {/* Info Section */}
               <div className="lg:w-1/2 p-8 md:p-12 overflow-y-auto custom-scrollbar">
                 <div className="flex items-center gap-3 mb-6 text-secondary font-black uppercase text-[10px] tracking-[0.3em]">
-                   <Sparkles size={16} />
-                   <span>Event Highlights</span>
+                  <Sparkles size={16} />
+                  <span>Event Highlights</span>
                 </div>
-                
+
                 <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-8 leading-tight">
                   {selectedEvent.title}
                 </h2>
 
                 <div className="grid grid-cols-2 gap-6 mb-10">
-                   <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-gray-400">
-                         <Calendar size={14} className="text-secondary" />
-                         <span className="text-[10px] font-black uppercase tracking-widest">Date</span>
-                      </div>
-                      <p className="text-primary font-bold">{new Date(selectedEvent.date).toLocaleDateString("en-IN", { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-                   </div>
-                   <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-gray-400">
-                         <Clock size={14} className="text-secondary" />
-                         <span className="text-[10px] font-black uppercase tracking-widest">Time</span>
-                      </div>
-                      <p className="text-primary font-bold">{selectedEvent.time || "TBA"}</p>
-                   </div>
-                   <div className="col-span-2 space-y-1">
-                      <div className="flex items-center gap-2 text-gray-400">
-                         <MapPin size={14} className="text-secondary" />
-                         <span className="text-[10px] font-black uppercase tracking-widest">Location</span>
-                      </div>
-                      <p className="text-primary font-bold">{selectedEvent.location}</p>
-                   </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <Calendar size={14} className="text-secondary" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Date</span>
+                    </div>
+                    <p className="text-primary font-bold">{new Date(selectedEvent.date).toLocaleDateString("en-IN", { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <Clock size={14} className="text-secondary" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Time</span>
+                    </div>
+                    <p className="text-primary font-bold">{selectedEvent.time || "TBA"}</p>
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <div className="flex items-center gap-2 text-gray-400">
+                      <MapPin size={14} className="text-secondary" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Location</span>
+                    </div>
+                    <p className="text-primary font-bold">{selectedEvent.location}</p>
+                  </div>
                 </div>
 
                 <div className="prose prose-slate max-w-none">
-                   <p className="text-lg text-gray-500 font-light leading-relaxed whitespace-pre-wrap">
-                      {selectedEvent.description}
-                   </p>
+                  <p className="text-lg text-gray-500 font-light leading-relaxed whitespace-pre-wrap">
+                    {selectedEvent.description}
+                  </p>
                 </div>
-                
+
                 <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
-                   <div className="flex -space-x-3">
-                      {[1,2,3].map(i => (
-                        <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden relative" title="Student participant">
-                           <img src={`https://i.pravatar.cc/100?u=${i + 10}`} alt="avatar" className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                      <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white font-black">
-                         +50
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden relative" title="Student participant">
+                        <img src={`https://i.pravatar.cc/100?u=${i + 10}`} alt="avatar" className="w-full h-full object-cover" />
                       </div>
-                   </div>
-                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Students Participating</span>
+                    ))}
+                    <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white font-black">
+                      +50
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Students Participating</span>
                 </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+function FeedbackForm() {
+  const [form, setForm] = useState({
+    name: "", email: "", role: "", phone: "",
+    experienceType: "", rating: 0, feedback: "",
+  });
+  const [hoverRating, setHoverRating] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    if (!form.name || !form.email || !form.role || !form.experienceType || !form.rating || !form.feedback) return;
+    setSubmitting(true);
+    try {
+      await axiosInstance.post("/api/feedback", form);
+      setSubmitted(true);
+    } catch {
+      // handle error
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) return (
+    <div className="flex flex-col items-center justify-center h-full py-20 gap-6">
+      <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+        <ShieldCheck size={40} className="text-green-500" />
+      </div>
+      <h2 className="text-3xl font-playfair font-black text-primary">Thank You!</h2>
+      <p className="text-gray-500 text-center max-w-sm">Your feedback has been submitted successfully.</p>
+      <button
+        onClick={() => { setSubmitted(false); setForm({ name: "", email: "", role: "", phone: "", experienceType: "", rating: 0, feedback: "" }); }}
+        className="mt-4 px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all"
+      >
+        Submit Another
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      {/* Name */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Your Name <span className="text-red-400">*</span></label>
+        <div className="relative">
+          <Users size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
+          <input name="name" value={form.name} onChange={handleChange} placeholder="Enter your name"
+            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary placeholder-gray-300 focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all" />
+        </div>
+      </div>
+
+      {/* Email */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Email Address <span className="text-red-400">*</span></label>
+        <div className="relative">
+          <Zap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
+          <input name="email" value={form.email} onChange={handleChange} placeholder="Enter your email" type="email"
+            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary placeholder-gray-300 focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all" />
+        </div>
+      </div>
+
+      {/* Role */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Role <span className="text-red-400">*</span></label>
+        <select name="role" value={form.role} onChange={handleChange}
+          className="w-full px-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary bg-white focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all appearance-none">
+          <option value="">Select your role</option>
+          <option value="student">Student</option>
+          <option value="parent">Parent</option>
+          <option value="teacher">Teacher</option>
+          <option value="staff">Staff</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      {/* Phone */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Phone Number</label>
+        <div className="relative">
+          <BookOpen size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
+          <input name="phone" value={form.phone} onChange={handleChange} placeholder="Enter your phone number" type="tel"
+            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary placeholder-gray-300 focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all" />
+        </div>
+      </div>
+
+      {/* Experience Type */}
+      <div className="flex flex-col gap-1.5 md:col-span-2">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Experience Type <span className="text-red-400">*</span></label>
+        <select name="experienceType" value={form.experienceType} onChange={handleChange}
+          className="w-full px-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary bg-white focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all appearance-none">
+          <option value="">Select experience type</option>
+          <option value="academics">Academics</option>
+          <option value="facilities">Facilities</option>
+          <option value="events">Events</option>
+          <option value="staff">Staff Behaviour</option>
+          <option value="online">Online Experience</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      {/* Star Rating */}
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Your Experience <span className="text-red-400">*</span></label>
+        <div className="flex items-center gap-3">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button key={star} type="button"
+              onClick={() => setForm({ ...form, rating: star })}
+              onMouseEnter={() => setHoverRating(star)}
+              onMouseLeave={() => setHoverRating(0)}
+              className="transition-transform hover:scale-110">
+              <Award size={28} className={`transition-colors ${star <= (hoverRating || form.rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-100"}`} />
+            </button>
+          ))}
+          <span className="text-xs text-gray-400 font-medium ml-2">
+            {form.rating ? ["", "Poor", "Fair", "Good", "Very Good", "Excellent"][form.rating] : "Click to rate your experience"}
+          </span>
+        </div>
+      </div>
+
+      {/* Feedback Textarea */}
+      <div className="flex flex-col gap-1.5 md:col-span-2">
+        <label className="text-xs font-black uppercase tracking-widest text-gray-400">Your Feedback <span className="text-red-400">*</span></label>
+        <textarea name="feedback" value={form.feedback} onChange={handleChange}
+          placeholder="Write your feedback here..." maxLength={500} rows={5}
+          className="w-full px-4 py-3.5 rounded-xl border border-gray-200 text-sm text-primary placeholder-gray-300 focus:outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all resize-none" />
+        <div className="text-right text-xs text-gray-300 font-medium">{form.feedback.length} / 500</div>
+      </div>
+
+      {/* Submit */}
+      <div className="md:col-span-2 flex flex-col items-center gap-3 mt-2">
+        <button onClick={handleSubmit} disabled={submitting}
+          className="w-full flex items-center justify-center gap-3 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white font-black text-sm uppercase tracking-widest py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 disabled:opacity-60">
+          <ArrowRight size={18} />
+          {submitting ? "Submitting..." : "Submit Feedback"}
+        </button>
+        <div className="flex items-center gap-2 text-gray-300 text-xs">
+          <ShieldCheck size={14} />
+          <span>Your feedback is secure and confidential.</span>
+        </div>
+      </div>
+
     </div>
   );
 }
