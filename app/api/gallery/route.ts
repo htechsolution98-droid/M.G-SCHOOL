@@ -6,7 +6,7 @@ import {
   updateGalleryCategories,
   updateGalleryImages,
   deleteGalleryContent,
-} from "@/services/galleryService";
+} from "@/backend/services/galleryService";
 
 export async function GET() {
   try {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import EnrollmentSubmission from "@/models/EnrollmentSubmission";
+import EnrollmentSubmission from "@/backend/models/EnrollmentSubmission";
 
 export const dynamic = "force-dynamic";
 

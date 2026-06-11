@@ -78,6 +78,7 @@ const sidebarItems = [
   { id: "life-at-mg", name: "Life@MG", icon: ImageIcon },
   { id: "events", name: "Events", icon: Calendar },
   { id: "enrollment", name: "Enrollment", icon: BookOpen },
+  { id: "ratings", name: "Ratings", icon: Star },
 ];
 
 
@@ -216,6 +217,7 @@ export default function AdminDashboard() {
               {activeTab === "life-at-mg" && <LifeAtMGTab />}
               {activeTab === "events" && <EventsTab />}
               {activeTab === "enrollment" && <EnrollmentTab />}
+              {activeTab === "ratings" && <RatingsTab />}
             </div>
           </div>
         </main>
@@ -3389,3 +3391,149 @@ function TrusteesTab() {
     </div>
   );
 }
+
+function RatingsTab() {
+  const [ratings, setRatings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+
+  const fetchRatings = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get("/api/rating");
+      if (res.data.success) {
+        setRatings(res.data.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchRatings();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this rating?")) return;
+    setDeletingId(id);
+    try {
+      const res = await axiosInstance.delete(`/api/rating?id=${id}`);
+      if (res.data.success) {
+        setRatings(ratings.filter((r) => r._id !== id));
+        setMessage("Rating deleted successfully");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete rating.");
+    }
+    setDeletingId(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="py-32 flex justify-center">
+        <div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h4 className="text-lg font-playfair font-black text-primary">User Ratings & Feedback</h4>
+            <p className="text-xs text-gray-400 font-medium mt-1">Manage feedback submissions from the homepage</p>
+          </div>
+          <span className="bg-primary/5 text-primary text-xs font-bold px-4 py-1.5 rounded-full">
+            Total Submissions: {ratings.length}
+          </span>
+        </div>
+
+        {message && (
+          <div className="px-6 py-3 rounded-2xl text-sm font-bold bg-emerald-50 text-emerald-600 mb-6">
+            {message}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {ratings.map((item) => (
+            <div key={item._id} className="p-6 border border-gray-100 rounded-3xl bg-slate-50 relative flex flex-col justify-between hover:shadow-md transition-shadow">
+              <button
+                disabled={deletingId === item._id}
+                onClick={() => handleDelete(item._id)}
+                className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all"
+              >
+                {deletingId === item._id ? (
+                  <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-500 rounded-full animate-spin" />
+                ) : (
+                  <Trash2 size={16} />
+                )}
+              </button>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary font-bold text-sm">
+                    {item.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-primary leading-tight">{item.name}</h5>
+                    <p className="text-xs text-gray-400 font-medium mt-0.5">{item.email}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-2xl border border-gray-50 text-xs">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Role</span>
+                    <span className="font-bold text-primary capitalize">{item.role}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Experience Type</span>
+                    <span className="font-bold text-primary capitalize">{item.experienceType}</span>
+                  </div>
+                  {item.phone && (
+                    <div className="col-span-2">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Phone</span>
+                      <span className="font-bold text-primary">{item.phone}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={16}
+                      className={star <= item.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-200"}
+                    />
+                  ))}
+                  <span className="text-xs font-bold text-primary ml-1 capitalize">
+                    {["", "Poor", "Fair", "Good", "Very Good", "Excellent"][item.rating]}
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-500 italic font-light leading-relaxed bg-white p-4 rounded-2xl border border-gray-50">
+                  "{item.feedback}"
+                </p>
+              </div>
+
+              <div className="text-[10px] text-gray-400 font-medium mt-4 pt-4 border-t border-gray-100">
+                Submitted on: {new Date(item.createdAt).toLocaleString()}
+              </div>
+            </div>
+          ))}
+
+          {ratings.length === 0 && (
+            <div className="col-span-2 text-center py-16 text-gray-400 font-medium bg-slate-50 rounded-3xl border border-dashed border-gray-200">
+              No ratings or feedback submitted yet.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+

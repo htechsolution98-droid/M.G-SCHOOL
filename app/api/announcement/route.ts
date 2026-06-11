@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
 import connectDB from "@/lib/mongodb";
-import Announcement from "@/models/Announcement";
+import Announcement from "@/backend/models/Announcement";
 
 export async function GET() {
   await connectDB();

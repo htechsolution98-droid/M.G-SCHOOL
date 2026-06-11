@@ -74,10 +74,10 @@ const Navbar = () => {
       >
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 group">
-            <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
+            <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-12 w-auto object-contain group-hover:rotate-3 transition-transform duration-500" />
             <div className="flex flex-col">
               <span className="text-2xl font-black text-primary leading-none" style={{ fontFamily: "var(--font-inter)", letterSpacing: "0.05em" }}>
-                NAV BHARAT VIDHYA MANDAL
+                M.G. SCHOOL
               </span>
               <span className="text-xs uppercase tracking-[0.3em] font-bold text-secondary">
                 Legacy of Excellence

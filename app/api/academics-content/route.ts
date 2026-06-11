@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 import {
   handleGetAcademicsContent,
   handleUpdateAcademicsContent,
-} from "@/controllers/academicsContentController";
+} from "@/backend/controllers/academicsContentController";
 
 export async function GET() {
   return handleGetAcademicsContent();

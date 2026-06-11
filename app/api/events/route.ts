@@ -6,7 +6,7 @@ import {
   handleCreateEvent,
   handleUpdateEvent,
   handleDeleteEvent,
-} from "@/controllers/eventController";
+} from "@/backend/controllers/eventController";
 
 export async function GET() {
   return handleGetEvents();

@@ -5,7 +5,7 @@ import {
   handleGetFacultyContent,
   handleUpdateFacultyContent,
   handleDeleteFacultyContent,
-} from "@/controllers/facultyContentController";
+} from "@/backend/controllers/facultyContentController";
 
 export async function GET() {
   return handleGetFacultyContent();

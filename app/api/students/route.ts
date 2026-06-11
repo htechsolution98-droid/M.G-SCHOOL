@@ -6,7 +6,7 @@ import {
   handleCreateStudent,
   handleUpdateStudent,
   handleDeleteStudent,
-} from "@/controllers/studentController";
+} from "@/backend/controllers/studentController";
 
 export async function GET(req: NextRequest) {
   return handleGetStudents(req);

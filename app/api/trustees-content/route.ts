@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import TrusteeContent from "@/models/TrusteeContent";
+import TrusteeContent from "@/backend/models/TrusteeContent";
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';

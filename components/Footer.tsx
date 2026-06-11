@@ -17,10 +17,10 @@ const Footer = () => {
           {/* Brand & Vision */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-4 group">
-              <img src="/images/logo nbm.png" alt="Navbharat Logo" className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
+              <img src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" alt="M.G. School Logo" className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
               <div className="flex flex-col">
-                <span className="text-2xl font-playfair font-black tracking-tighter">NAV BHARAT</span>
-                <span className="text-xl font-playfair font-black tracking-tighter text-white/80 -mt-1">VIDHYA MANDAL</span>
+                <span className="text-2xl font-playfair font-black tracking-tighter">M.G. SCHOOL</span>
+                <span className="text-xl font-playfair font-black tracking-tighter text-white/80 -mt-1">Legacy of Excellence</span>
               </div>
             </Link>
             <p className="text-white/50 text-lg font-light leading-relaxed italic">
@@ -102,7 +102,7 @@ const Footer = () => {
                 </div>
                 <div className="pt-4">
                   <div className="flex items-center gap-2 text-secondary text-[12px] font-black uppercase tracking-widest mb-2">
-                    <ShieldCheck size={12} /> NAV BHARAT VIDHYA MANDAL
+                    <ShieldCheck size={12} /> M.G. SCHOOL
                   </div>
                   <p className="text-white/40 text-xs leading-relaxed italic">
                     Commitment to global standards of pedagogical excellence.
@@ -117,7 +117,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2 order-2 md:order-1 text-center md:text-left">
             <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">
-              © {new Date().getFullYear()} NAV BHARAT VIDHYA MANDAL – Where Dreams Take Flight.
+              © {new Date().getFullYear()} M.G. SCHOOL – Where Dreams Take Flight.
             </p>
             <p className="text-white/20 text-[9px] uppercase tracking-[0.2em] font-medium">
               Accredited by the Global Academic Board, ensuring excellence in every lesson.

@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 import {
   handleGetHomeContent,
   handleUpdateHomeContent,
-} from "@/controllers/homeContentController";
+} from "@/backend/controllers/homeContentController";
 
 export async function GET() {
   return handleGetHomeContent();

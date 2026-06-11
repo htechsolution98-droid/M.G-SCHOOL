@@ -124,7 +124,7 @@ const EventsPage = () => {
   return (
     <div className="pt-24 min-h-screen">
       {/* High-Impact Events Header */}
-      <section className="section-padding overflow-hidden relative">
+      <section className="pt-20 md:pt-28 pb-10 md:pb-14 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row items-center gap-20">
@@ -150,21 +150,21 @@ const EventsPage = () => {
               {lifeAtMg?.slider && lifeAtMg.slider.length > 0 ? (
                 <div className="w-full h-full rounded-[4rem] overflow-hidden shadow-3xl border-8 border-white bg-slate-100">
                   <Swiper
-                    modules={[Autoplay, EffectFade, Pagination]}
-                    effect="fade"
-                    pagination={{ clickable: true }}
-                    autoplay={{ delay: 4000, disableOnInteraction: false }}
-                    loop={true}
-                    onSwiper={setSwiperInstance}
-                    onSlideChange={(swiper) => {
-                      const activeSlide = lifeAtMg.slider[swiper.realIndex];
-                      if (activeSlide && activeSlide.type !== "video") {
-                        if (swiper.autoplay) {
-                          swiper.autoplay.start();
-                        }
-                      }
-                    }}
-                    className="w-full h-full"
+                     modules={[Autoplay, EffectFade, Pagination]}
+                     effect="fade"
+                     pagination={{ clickable: true }}
+                     autoplay={{ delay: 4000, disableOnInteraction: false }}
+                     loop={true}
+                     onSwiper={setSwiperInstance}
+                     onSlideChange={(swiper) => {
+                       const activeSlide = lifeAtMg.slider[swiper.realIndex];
+                       if (activeSlide && activeSlide.type !== "video") {
+                         if (swiper.autoplay) {
+                           swiper.autoplay.start();
+                         }
+                       }
+                     }}
+                     className="w-full h-full"
                   >
                     {lifeAtMg.slider.map((slide: any, idx: number) => (
                       <SwiperSlide key={idx} className="relative w-full h-full">
@@ -172,17 +172,17 @@ const EventsPage = () => {
                           <>
                             {slide.type === "video" ? (
                               <VideoSlide
-                                src={slide.url}
-                                isActive={isActive}
-                                swiper={swiperInstance}
-                                slidesCount={lifeAtMg.slider.length}
+                                 src={slide.url}
+                                 isActive={isActive}
+                                 swiper={swiperInstance}
+                                 slidesCount={lifeAtMg.slider.length}
                               />
                             ) : (
                               <Image
-                                src={slide.url}
-                                fill
-                                className="object-cover"
-                                alt={slide.title || `Slide ${idx + 1}`}
+                                 src={slide.url}
+                                 fill
+                                 className="object-cover"
+                                 alt={slide.title || `Slide ${idx + 1}`}
                               />
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60 z-10" />
@@ -204,7 +204,7 @@ const EventsPage = () => {
       </section>
 
       {/* Events Grid Section */}
-      <section className="section-padding bg-slate-50 border-y border-gray-100">
+      <section className="pt-12 md:pt-16 pb-12 md:pb-16 bg-slate-50 border-y border-gray-100">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
             <div className="max-w-2xl">

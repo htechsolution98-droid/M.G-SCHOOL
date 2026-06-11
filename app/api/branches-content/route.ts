@@ -5,7 +5,7 @@ import {
   handleGetBranchesContent,
   handleUpdateBranchesContent,
   handleDeleteBranchesContent,
-} from "@/controllers/branchesContentController";
+} from "@/backend/controllers/branchesContentController";
 
 export async function GET() {
   return handleGetBranchesContent();

@@ -1,13 +1,34 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SectionTitle from "@/components/SectionTitle";
 import TestimonialCard from "@/components/TestimonialCard";
 import { motion } from "framer-motion";
 import { Quote, Sparkles, MessageSquare, Heart } from "lucide-react";
 import Image from "next/image";
+import axiosInstance from "@/lib/axios";
 
 const TestimonialsPage = () => {
+  const [dbTestimonials, setDbTestimonials] = useState<any[]>([]);
+
+  useEffect(() => {
+    axiosInstance.get("/api/rating")
+      .then((res) => {
+        if (res.data.success && res.data.data) {
+          const mapped = res.data.data.map((item: any, idx: number) => ({
+            name: item.name,
+            role: item.role,
+            relation: item.experienceType,
+            rating: item.rating,
+            content: item.feedback,
+            image: `https://i.pravatar.cc/150?u=${item._id || idx}`
+          }));
+          setDbTestimonials(mapped);
+        }
+      })
+      .catch((err) => console.error("Error fetching testimonials:", err));
+  }, []);
+
   const testimonials = [
     {
       name: "Suresh Mehta",
@@ -43,11 +64,13 @@ const TestimonialsPage = () => {
     },
   ];
 
+  const combinedTestimonials = [...dbTestimonials, ...testimonials];
+
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="pt-24 min-h-screen bg-slate-50">
       {/* Editorial Testimonial Header */}
-      <section className="section-padding overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-full bg-slate-50 border-b border-gray-100 -z-10" />
+      <section className="pt-20 md:pt-28 pb-10 md:pb-14 overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full h-full bg-white border-b border-gray-100 -z-10" />
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row items-center gap-20">
             <motion.div 
@@ -86,9 +109,9 @@ const TestimonialsPage = () => {
       </section>
 
       {/* Featured Storytelling Grid */}
-      <section className="section-padding bg-white relative">
+      <section className="pt-12 md:pt-16 pb-12 md:pb-16 bg-white relative">
         <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-20">
-          {testimonials.slice(0, 2).map((test, i) => (
+          {combinedTestimonials.slice(0, 2).map((test, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, y: 30 }}
@@ -118,7 +141,7 @@ const TestimonialsPage = () => {
       </section>
 
       {/* Modern Card Stream */}
-      <section className="section-padding overflow-hidden bg-slate-50 border-y border-gray-100">
+      <section className="pt-12 md:pt-16 pb-12 md:pb-16 overflow-hidden bg-slate-50 border-y border-gray-100">
          <div className="container-custom">
             <header className="text-center mb-24">
                <div className="flex justify-center gap-1 mb-8">
@@ -128,7 +151,7 @@ const TestimonialsPage = () => {
             </header>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-               {testimonials.map((test, i) => (
+               {combinedTestimonials.map((test, i) => (
                   <motion.div 
                     key={i}
                     initial={{ opacity: 0, y: 20 }}
@@ -164,7 +187,7 @@ const TestimonialsPage = () => {
       </section>
 
       {/* Narrative CTA Section */}
-      <section className="section-padding overflow-hidden">
+      <section className="pt-12 md:pt-16 pb-16 md:pb-24 overflow-hidden">
         <div className="container-custom">
            <motion.div 
               initial={{ opacity: 0, y: 50 }}

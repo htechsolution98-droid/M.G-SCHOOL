@@ -19,6 +19,9 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "M.G. School | Excellence in Education",
   description: "Welcome to M.G. School - Nurturing future leaders with excellence in education and values.",
+  icons: {
+    icon: "/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png",
+  },
 };
 
 export default function RootLayout({

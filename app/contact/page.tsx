@@ -55,7 +55,7 @@ export default function Contact() {
   return (
     <div className="pt-24 min-h-screen">
       {/* Editorial Contact Header */}
-      <section className="section-padding overflow-hidden relative">
+      <section className="pt-20 md:pt-28 pb-10 md:pb-14 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row items-end gap-20">
@@ -79,7 +79,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="section-padding bg-slate-50 border-y border-gray-100">
+      <section className="pt-12 md:pt-16 pb-12 md:pb-16 bg-slate-50 border-y border-gray-100">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row gap-24">
             {/* High-End Inquiry Form -> Sleek Modern Form */}
@@ -216,7 +216,7 @@ export default function Contact() {
       </section>
 
       {/* Articulated Campus Map Frame */}
-      <section className="section-padding container-custom">
+      <section className="pt-12 md:pt-16 pb-16 md:pb-24 container-custom">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}

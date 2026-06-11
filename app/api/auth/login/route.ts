@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { handleLogin } from "@/controllers/authController";
+import { handleLogin } from "@/backend/controllers/authController";
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';

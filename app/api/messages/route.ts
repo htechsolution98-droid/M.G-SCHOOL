@@ -6,7 +6,7 @@ import {
   handleCreateMessage,
   handleUpdateMessage,
   handleDeleteMessage,
-} from "@/controllers/messageController";
+} from "@/backend/controllers/messageController";
 
 export async function GET() {
   return handleGetMessages();

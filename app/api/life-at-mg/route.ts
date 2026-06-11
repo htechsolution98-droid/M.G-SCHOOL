@@ -6,7 +6,7 @@ import {
   updateLifeAtMGHero,
   updateLifeAtMGSlider,
   deleteLifeAtMGContent,
-} from "@/services/lifeAtMGService";
+} from "@/backend/services/lifeAtMGService";
 
 export async function GET() {
   try {

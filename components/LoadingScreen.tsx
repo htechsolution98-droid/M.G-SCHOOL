@@ -15,7 +15,7 @@ const LoadingScreen = () => {
         {/* Main Logo Container */}
         <div className="bg-white p-6 rounded-[2.5rem] shadow-2xl relative z-10">
           <img 
-            src="/images/logo nbm.png" 
+            src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png" 
             alt="Logo" 
             className="w-20 h-20 object-contain animate-pulse" 
           />
@@ -46,8 +46,8 @@ const LoadingScreen = () => {
         transition={{ delay: 0.3 }}
         className="mt-12 text-center"
       >
-        <h2 className="text-xl font-playfair font-black text-primary tracking-tight">NAV BHARAT</h2>
-        <p className="text-[10px] uppercase tracking-[0.4em] font-black text-secondary mt-1">VIDHYA MANDAL</p>
+        <h2 className="text-xl font-playfair font-black text-primary tracking-tight">M.G. SCHOOL</h2>
+        <p className="text-[10px] uppercase tracking-[0.4em] font-black text-secondary mt-1">Excellence in Education</p>
       </motion.div>
     </div>
   );

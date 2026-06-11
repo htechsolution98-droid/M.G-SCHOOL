@@ -710,7 +710,7 @@ function FeedbackForm() {
     if (!form.name || !form.email || !form.role || !form.experienceType || !form.rating || !form.feedback) return;
     setSubmitting(true);
     try {
-      await axiosInstance.post("/api/feedback", form);
+      await axiosInstance.post("/api/rating", form);
       setSubmitted(true);
     } catch {
       // handle error
