@@ -82,6 +82,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [modalSwiperInstance, setModalSwiperInstance] = useState<any>(null);
 
   // Lock scroll when modal is open
   useEffect(() => {
@@ -261,6 +262,15 @@ const EventsPage = () => {
                           </SwiperSlide>
                         ))}
                       </Swiper>
+                    ) : event.video ? (
+                      <video
+                        src={event.video}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                      />
                     ) : (
                       <Image
                         src={event.image || (event.images && event.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
@@ -349,39 +359,77 @@ const EventsPage = () => {
                 className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-primary hover:bg-white/40 transition-all"
               >
                 <X size={24} />
-              </button>
-
-              {/* Media Section */}
+              </button>              {/* Media Section */}
               <div className="lg:w-1/2 relative h-72 lg:h-auto bg-slate-100">
-                {selectedEvent.images && selectedEvent.images.length > 0 ? (
-                  <Swiper
-                    modules={[Autoplay, Pagination, Navigation, EffectFade]}
-                    pagination={{ clickable: true }}
-                    navigation={true}
-                    autoplay={{ delay: 5000 }}
-                    loop={true}
-                    className="w-full h-full"
-                  >
-                    {selectedEvent.images.map((img: string, i: number) => (
-                      <SwiperSlide key={i} className="relative w-full h-full">
-                        <Image
-                          src={img}
-                          alt={selectedEvent.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                ) : (
-                  <Image
-                    src={selectedEvent.image || (selectedEvent.images && selectedEvent.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
-                    alt={selectedEvent.title}
-                    fill
-                    className="object-cover"
-                  />
-                )}
-                
+                {(() => {
+                  const images = (selectedEvent.images && selectedEvent.images.length > 0
+                    ? selectedEvent.images
+                    : (selectedEvent.image ? [selectedEvent.image] : [])).filter(Boolean);
+                  const hasVideo = !!selectedEvent.video;
+                  const totalMediaCount = images.length + (hasVideo ? 1 : 0);
+
+                  if (totalMediaCount > 1) {
+                    return (
+                      <Swiper
+                        modules={[Autoplay, Pagination, Navigation, EffectFade]}
+                        pagination={{ clickable: true }}
+                        navigation={true}
+                        autoplay={{ delay: 5000, disableOnInteraction: false }}
+                        loop={true}
+                        onSwiper={setModalSwiperInstance}
+                        onSlideChange={(swiper) => {
+                          const isVideoActive = hasVideo && swiper.realIndex === 0;
+                          if (!isVideoActive && swiper.autoplay) {
+                            swiper.autoplay.start();
+                          }
+                        }}
+                        className="w-full h-full"
+                      >
+                        {hasVideo && (
+                          <SwiperSlide className="relative w-full h-full">
+                            {({ isActive }) => (
+                              <VideoSlide
+                                src={selectedEvent.video}
+                                isActive={isActive}
+                                swiper={modalSwiperInstance}
+                                slidesCount={totalMediaCount}
+                              />
+                            )}
+                          </SwiperSlide>
+                        )}
+                        {images.map((img: string, i: number) => (
+                          <SwiperSlide key={i} className="relative w-full h-full">
+                            <Image
+                              src={img}
+                              alt={selectedEvent.title}
+                              fill
+                              className="object-cover"
+                            />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    );
+                  } else if (hasVideo) {
+                    return (
+                      <video
+                        src={selectedEvent.video}
+                        className="w-full h-full object-cover"
+                        controls
+                        playsInline
+                      />
+                    );
+                  } else {
+                    return (
+                      <Image
+                        src={images[0] || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
+                        alt={selectedEvent.title}
+                        fill
+                        className="object-cover"
+                      />
+                    );
+                  }
+                })()}
+
                 {/* Floating Category */}
                 <div className="absolute bottom-6 left-6 z-20">
                    <span className="bg-secondary text-primary px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">

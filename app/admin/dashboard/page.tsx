@@ -2838,7 +2838,7 @@ function EventsTab() {
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-playfair font-black text-primary">School Events</h3>
         <button
-          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", time: "", branch: "All", description: "", image: "", images: [], category: "Upcoming" }, ...events])}
+          onClick={() => setEvents([{ title: "New Event", date: new Date().toISOString(), location: "Campus", time: "", branch: "All", description: "", image: "", images: [], video: "", category: "Upcoming" }, ...events])}
           className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-secondary text-primary font-bold text-sm shadow-lg"
         >
           <Plus size={18} /> Create Event
@@ -2848,7 +2848,7 @@ function EventsTab() {
       <div className="grid grid-cols-1 gap-6">
         {events.map((event, idx) => (
           <div key={idx} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-8 hover:shadow-md transition-all overflow-hidden">
-            <div className="lg:col-span-1 min-w-0">
+            <div className="lg:col-span-1 min-w-0 space-y-6">
               <MultiImageUpload
                 label="Event Images (multiple images will create a slider)"
                 values={event.images && event.images.length > 0 ? event.images : (event.image ? [event.image] : [])}
@@ -2864,6 +2864,20 @@ function EventsTab() {
                   });
                 }}
                 maxImages={10}
+              />
+              <VideoUpload
+                label="Event Video (Optional)"
+                value={event.video || ""}
+                onChange={(url: string) => {
+                  setEvents((prev: any) => {
+                    const updated = [...prev];
+                    updated[idx] = {
+                      ...updated[idx],
+                      video: url
+                    };
+                    return updated;
+                  });
+                }}
               />
             </div>
             <div className="lg:col-span-2 min-w-0 space-y-4">
