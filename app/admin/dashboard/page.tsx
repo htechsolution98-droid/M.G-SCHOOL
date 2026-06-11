@@ -2570,6 +2570,19 @@ function LifeAtMGTab() {
       .catch(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    const handleGlobalSave = () => {
+      if (!content) return;
+      if (activeSection === "hero") {
+        saveSection("hero", { hero: content.hero });
+      } else if (activeSection === "slider") {
+        saveSection("slider", { slider: content.slider });
+      }
+    };
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [content, activeSection]);
+
   const saveSection = async (section: string, data: any) => {
     setSaving(section);
     setMessage("");
@@ -2768,6 +2781,29 @@ function EventsTab() {
 
   useEffect(() => { fetchEvents(); }, []);
 
+  useEffect(() => {
+    const handleGlobalSave = async () => {
+      if (events.length === 0) return;
+      setSaving("all");
+      setMessage("");
+      try {
+        await Promise.all(events.map(event => 
+          event._id 
+            ? axiosInstance.put("/api/events", event)
+            : axiosInstance.post("/api/events", event)
+        ));
+        setMessage("All events saved successfully!");
+        fetchEvents();
+      } catch {
+        setMessage("Error saving events");
+      }
+      setSaving("");
+      setTimeout(() => setMessage(""), 3000);
+    };
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [events]);
+
   const saveEvent = async (event: any) => {
     setSaving(event._id || "new");
     try {
@@ -2883,7 +2919,7 @@ function EventsTab() {
                 });
               }} />
               <div className="flex gap-4 pt-4">
-                <button onClick={() => saveEvent(event)} disabled={saving === (event._id || "new")}
+                <button onClick={() => saveEvent(event)} disabled={!!saving}
                   className="flex-1 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-all shadow-lg">
                   {saving === (event._id || "new") ? "Saving..." : "Persist Event"}
                 </button>

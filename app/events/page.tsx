@@ -17,11 +17,71 @@ import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+const VideoSlide = ({
+  src,
+  isActive,
+  swiper,
+  slidesCount,
+}: {
+  src: string;
+  isActive: boolean;
+  swiper: any;
+  slidesCount: number;
+}) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isActive) {
+      if (swiper?.autoplay) {
+        swiper.autoplay.stop();
+      }
+      video.currentTime = 0;
+      video.play().catch((err) => {
+        console.error("Error playing video:", err);
+        if (swiper?.autoplay) {
+          swiper.autoplay.start();
+        }
+      });
+    } else {
+      video.pause();
+    }
+  }, [isActive, swiper]);
+
+  const handleEnded = () => {
+    if (swiper && slidesCount > 1) {
+      swiper.slideNext();
+      if (swiper.autoplay) {
+        swiper.autoplay.start();
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(console.error);
+      }
+    }
+  };
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      className="absolute inset-0 w-full h-full object-cover"
+      muted
+      playsInline
+      onEnded={handleEnded}
+    />
+  );
+};
+
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [lifeAtMg, setLifeAtMg] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
 
   // Lock scroll when modal is open
   useEffect(() => {
@@ -94,28 +154,39 @@ const EventsPage = () => {
                     pagination={{ clickable: true }}
                     autoplay={{ delay: 4000, disableOnInteraction: false }}
                     loop={true}
+                    onSwiper={setSwiperInstance}
+                    onSlideChange={(swiper) => {
+                      const activeSlide = lifeAtMg.slider[swiper.realIndex];
+                      if (activeSlide && activeSlide.type !== "video") {
+                        if (swiper.autoplay) {
+                          swiper.autoplay.start();
+                        }
+                      }
+                    }}
                     className="w-full h-full"
                   >
                     {lifeAtMg.slider.map((slide: any, idx: number) => (
                       <SwiperSlide key={idx} className="relative w-full h-full">
-                        {slide.type === "video" ? (
-                          <video
-                            src={slide.url}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                          />
-                        ) : (
-                          <Image
-                            src={slide.url}
-                            fill
-                            className="object-cover"
-                            alt={slide.title || `Slide ${idx + 1}`}
-                          />
+                        {({ isActive }) => (
+                          <>
+                            {slide.type === "video" ? (
+                              <VideoSlide
+                                src={slide.url}
+                                isActive={isActive}
+                                swiper={swiperInstance}
+                                slidesCount={lifeAtMg.slider.length}
+                              />
+                            ) : (
+                              <Image
+                                src={slide.url}
+                                fill
+                                className="object-cover"
+                                alt={slide.title || `Slide ${idx + 1}`}
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60 z-10" />
+                          </>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60 z-10" />
                       </SwiperSlide>
                     ))}
                   </Swiper>

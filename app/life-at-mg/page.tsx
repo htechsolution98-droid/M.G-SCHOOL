@@ -14,9 +14,69 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import LoadingScreen from "@/components/LoadingScreen";
 
+const VideoSlide = ({
+  src,
+  isActive,
+  swiper,
+  slidesCount,
+}: {
+  src: string;
+  isActive: boolean;
+  swiper: any;
+  slidesCount: number;
+}) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isActive) {
+      if (swiper?.autoplay) {
+        swiper.autoplay.stop();
+      }
+      video.currentTime = 0;
+      video.play().catch((err) => {
+        console.error("Error playing video:", err);
+        if (swiper?.autoplay) {
+          swiper.autoplay.start();
+        }
+      });
+    } else {
+      video.pause();
+    }
+  }, [isActive, swiper]);
+
+  const handleEnded = () => {
+    if (swiper && slidesCount > 1) {
+      swiper.slideNext();
+      if (swiper.autoplay) {
+        swiper.autoplay.start();
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(console.error);
+      }
+    }
+  };
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      className="absolute inset-0 w-full h-full object-cover"
+      muted
+      playsInline
+      onEnded={handleEnded}
+    />
+  );
+};
+
 const LifeAtMGPage = () => {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
 
   const fetchData = React.useCallback(() => {
     axiosInstance.get("/api/life-at-mg")
@@ -47,6 +107,15 @@ const LifeAtMGPage = () => {
 
   const slides = slider.length > 0 ? slider : [fallbackSlide];
 
+  const handleSlideChange = (swiper: any) => {
+    const activeSlide = slides[swiper.realIndex];
+    if (activeSlide && activeSlide.type !== "video") {
+      if (swiper.autoplay) {
+        swiper.autoplay.start();
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* ── Full-Screen Hero Slider ── */}
@@ -63,52 +132,56 @@ const LifeAtMGPage = () => {
           pagination={{ clickable: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           loop={slides.length > 1}
+          onSwiper={setSwiperInstance}
+          onSlideChange={handleSlideChange}
           className="w-full h-full"
         >
           {slides.map((slide: any, idx: number) => (
             <SwiperSlide key={idx} className="relative w-full h-full">
-              {slide.type === "video" ? (
-                <video
-                  src={slide.url}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
-              ) : (
-                <Image
-                  src={slide.url}
-                  fill
-                  className="object-cover object-top"
-                  alt={slide.title || `Slide ${idx + 1}`}
-                  priority={idx === 0}
-                />
-              )}
+              {({ isActive }) => (
+                <>
+                  {slide.type === "video" ? (
+                    <VideoSlide
+                      src={slide.url}
+                      isActive={isActive}
+                      swiper={swiperInstance}
+                      slidesCount={slides.length}
+                    />
+                  ) : (
+                    <Image
+                      src={slide.url}
+                      fill
+                      className="object-cover object-top"
+                      alt={slide.title || `Slide ${idx + 1}`}
+                      priority={idx === 0}
+                    />
+                  )}
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/30 to-primary/70 z-10" />
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/30 to-primary/70 z-10" />
 
-              {/* Text */}
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6">
-                {slide.type === "video" && (
-                  <div className="mb-6 flex items-center gap-2 text-secondary">
-                    <PlayCircle size={28} />
-                    <span className="text-xs font-black uppercase tracking-widest">Video</span>
+                  {/* Text */}
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6">
+                    {slide.type === "video" && (
+                      <div className="mb-6 flex items-center gap-2 text-secondary">
+                        <PlayCircle size={28} />
+                        <span className="text-xs font-black uppercase tracking-widest">Video</span>
+                      </div>
+                    )}
+                    {slide.title && (
+                      <motion.h1
+                        key={`title-${idx}`}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-4xl md:text-6xl lg:text-7xl font-playfair font-black text-white leading-tight tracking-tighter drop-shadow-2xl max-w-4xl"
+                      >
+                        {slide.title}
+                      </motion.h1>
+                    )}
                   </div>
-                )}
-                {slide.title && (
-                  <motion.h1
-                    key={`title-${idx}`}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-playfair font-black text-white leading-tight tracking-tighter drop-shadow-2xl max-w-4xl"
-                  >
-                    {slide.title}
-                  </motion.h1>
-                )}
-              </div>
+                </>
+              )}
             </SwiperSlide>
           ))}
         </Swiper>
