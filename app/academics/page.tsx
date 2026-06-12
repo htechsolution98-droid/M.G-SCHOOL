@@ -87,7 +87,7 @@ const Academics = () => {
   }
 
   return (
-    <div className="pt-24 min-h-screen mb-32 overflow-x-hidden">
+    <div className="pt-24 min-h-screen mb-12 overflow-x-hidden">
       {/* Dynamic Header - Full Background Slider UI */}
       <section className="relative h-[60vh] md:h-[80vh] min-h-[400px] md:min-h-[600px] flex items-center justify-center overflow-hidden mt-[-6rem]">
         {/* Background Slider */}
@@ -294,7 +294,7 @@ const Academics = () => {
 
       {/* Teacher Duty Distribution Plan */}
       {content?.teacherDuties && content.teacherDuties.length > 0 && (
-        <section className="pb-24 md:pb-32 pt-10 container-custom">
+      <section className="pb-12 md:pb-16 pt-10 container-custom">
           <div className="mb-16 text-center">
             <h2 className="text-sm font-black text-secondary uppercase tracking-[0.4em] mb-4">Notice / Updates</h2>
             <h3 className="text-4xl md:text-5xl font-playfair font-black text-primary">Teacher Duty Plan 2026–27</h3>

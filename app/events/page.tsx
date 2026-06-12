@@ -206,7 +206,7 @@ const EventsPage = () => {
       {/* Events Grid Section */}
       <section className="pt-12 md:pt-16 pb-12 md:pb-16 bg-slate-50 border-y border-gray-100">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-8">
             <div className="max-w-2xl">
               <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary mb-6">Upcoming & Recent <span className="text-secondary italic">Events.</span></h2>
               <p className="text-lg text-gray-400 font-medium leading-relaxed">

@@ -143,7 +143,7 @@ const TestimonialsPage = () => {
       {/* Modern Card Stream */}
       <section className="pt-12 md:pt-16 pb-12 md:pb-16 overflow-hidden bg-slate-50 border-y border-gray-100">
          <div className="container-custom">
-            <header className="text-center mb-24">
+            <header className="text-center mb-12">
                <div className="flex justify-center gap-1 mb-8">
                   {[1,2,3,4,5].map(i => <Sparkles key={i} className="text-secondary fill-secondary" size={20} />)}
                </div>

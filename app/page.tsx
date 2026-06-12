@@ -180,7 +180,7 @@ export default function Home() {
       </section>
 
       {/* Philosophy Section */}
-      <section className="pt-24 md:pt-32 pb-12 md:pb-16 overflow-hidden">
+      <section className="pt-12 md:pt-12 pb-2 md:pb-2 overflow-hidden">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row gap-24 items-center">
             <motion.div
@@ -201,39 +201,54 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:w-1/2"
-            >
-              <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">{philosophy.badge}</div>
-              <h2 className="text-3xl md:text-5xl font-playfair font-black leading-[1.1] mb-10 text-primary">
-                {philosophy.heading} <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">{philosophy.headingHighlight}</span>
-              </h2>
-              <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
-                {philosophy.description}
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                {(philosophy.features || []).map((feature: string, i: number) => (
-                  <div key={i} className="flex items-center gap-4 p-4 hover:bg-white hover:shadow-xl rounded-2xl transition-all border border-transparent hover:border-gray-100">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      {featureIconMap[feature] || <BookOpen className="text-secondary" />}
-                    </div>
-                    <span className="font-bold text-primary">{feature}</span>
+            {(philosophy.badge || philosophy.heading || philosophy.headingHighlight || philosophy.description || (philosophy.features && philosophy.features.length > 0)) && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="lg:w-1/2"
+              >
+                {philosophy.badge && (
+                  <div className="bg-primary/5 text-primary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-8">
+                    {philosophy.badge}
                   </div>
-                ))}
-              </div>
-            </motion.div>
+                )}
+                {(philosophy.heading || philosophy.headingHighlight) && (
+                  <h2 className="text-3xl md:text-5xl font-playfair font-black leading-[1.1] mb-10 text-primary">
+                    {philosophy.heading}{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-600">
+                      {philosophy.headingHighlight}
+                    </span>
+                  </h2>
+                )}
+                {philosophy.description && (
+                  <p className="text-xl text-gray-500 font-light leading-relaxed mb-12">
+                    {philosophy.description}
+                  </p>
+                )}
+
+                {philosophy.features && philosophy.features.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                    {philosophy.features.map((feature: string, i: number) => (
+                      <div key={i} className="flex items-center gap-4 p-4 hover:bg-white hover:shadow-xl rounded-2xl transition-all border border-transparent hover:border-gray-100">
+                        <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                          {featureIconMap[feature] || <BookOpen className="text-secondary" />}
+                        </div>
+                        <span className="font-bold text-primary">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
         </div>
       </section>
 
       {/* Events Highlights Section */}
-      <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+      <section className="pt-2 md:pt-3 pb-2 md:pb-3 bg-white relative overflow-hidden">
         <div className="container-custom relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-8">
             <div className="max-w-2xl">
               <div className="bg-secondary/10 text-secondary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-6">Latest Updates</div>
               <h2 className="text-3xl md:text-6xl font-playfair font-black text-primary leading-tight">School <span className="text-secondary italic">Events.</span></h2>
@@ -251,13 +266,23 @@ export default function Home() {
       </section>
 
       {/* Branches Highlights - Asymmetrical Grid */}
-      <section className="pt-12 md:pt-16 pb-10 md:pb-14 bg-slate-50 relative overflow-hidden">
+      <section className="pt-2 md:pt-3 pb-6 md:pb-8 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 translate-x-1/2" />
         <div className="container-custom relative z-10">
-          <header className="max-w-3xl mb-24">
-            <h2 className="text-3xl md:text-6xl font-playfair font-black mb-8 leading-tight">{content?.campusHubsHeading || ""}</h2>
-            <p className="text-xl text-gray-400 font-medium">{content?.campusHubsSubheading || ""}</p>
-          </header>
+          {(content?.campusHubsHeading || content?.campusHubsSubheading) && (
+            <header className="max-w-3xl mb-12">
+              {content?.campusHubsHeading && (
+                <h2 className="text-3xl md:text-6xl font-playfair font-black mb-8 leading-tight">
+                  {content.campusHubsHeading}
+                </h2>
+              )}
+              {content?.campusHubsSubheading && (
+                <p className="text-xl text-gray-400 font-medium">
+                  {content.campusHubsSubheading}
+                </p>
+              )}
+            </header>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {campusHubs.map((item: any, idx: number) => (
@@ -267,9 +292,8 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* User Experience / Feedback Section */}
-      <section className="py-10 md:py-14 bg-white relative overflow-hidden">
+      <section className="py-6 md:py-8 bg-white relative overflow-hidden">
         <div className="container-custom relative z-10">
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             <div className="flex flex-col lg:flex-row">

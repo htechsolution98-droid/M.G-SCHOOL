@@ -15,7 +15,7 @@ const SectionTitle = ({ title, subtitle, centered = true }: SectionTitleProps) =
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`max-w-4xl ${centered ? "text-center mx-auto" : "text-left"} mb-24`}
+      className={`max-w-4xl ${centered ? "text-center mx-auto" : "text-left"} mb-12`}
     >
       <div className={`flex items-center gap-4 mb-8 ${centered ? "justify-center" : ""}`}>
         <div className="h-0.5 w-12 bg-secondary rounded-full" />

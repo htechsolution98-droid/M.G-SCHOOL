@@ -129,7 +129,7 @@ const FacultyPage = () => {
       {/* Faculty Profiles - Portfolio Layout */}
       <section className="section-padding bg-slate-50 relative border-y border-gray-100">
         <div className="container-custom">
-          <header className="mb-24 flex flex-col md:flex-row justify-between items-end gap-10">
+          <header className="mb-12 flex flex-col md:flex-row justify-between items-end gap-10">
             <div className="max-w-2xl">
               <h2 className="text-3xl font-playfair font-black text-primary mb-6">Expertise & <span className="text-secondary italic">Leadership</span></h2>
               <p className="text-lg text-gray-500 font-medium tracking-wide font-outfit uppercase">Our leadership remains dedicated to fostering an environment of innovation and ethics.</p>

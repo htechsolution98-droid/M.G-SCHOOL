@@ -92,7 +92,7 @@ const BranchesPage = () => {
       </section>
 
       {/* Campus Cards - Link to separate pages */}
-      <section className="container-custom mb-32">
+      <section className="container-custom mb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {branches.map((branch: any, idx: number) => (
             <motion.div

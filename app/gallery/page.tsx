@@ -74,7 +74,7 @@ const GalleryPage = () => {
 
       {/* Modern Filter Navigation */}
       <section className="container-custom mt-20">
-        <div className="flex flex-wrap justify-center gap-6 mb-24">
+        <div className="flex flex-wrap justify-center gap-6 mb-12">
           {categories.map((cat: any, i: number) => (
             <button
               key={cat}
@@ -92,7 +92,7 @@ const GalleryPage = () => {
         </div>
 
         {/* Dynamic Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-32">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           <AnimatePresence mode="popLayout">
             {filteredImages.map((img: any, idx: number) => (
               <motion.div 
