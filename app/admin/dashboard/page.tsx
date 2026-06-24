@@ -34,6 +34,8 @@ import {
   LayoutDashboard,
   ChevronUp,
   ChevronDown,
+  Download,
+  Loader2,
 } from "lucide-react";
 
 // ─── Helper Functions ───
@@ -81,7 +83,68 @@ const sidebarItems = [
   { id: "ratings", name: "Ratings", icon: Star },
 ];
 
+const loadHtml2Pdf = () => {
+  return new Promise<any>((resolve, reject) => {
+    if (typeof window === "undefined") return reject();
+    if ((window as any).html2pdf) return resolve((window as any).html2pdf);
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+    script.onload = () => resolve((window as any).html2pdf);
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+};
 
+function TabSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      {/* Buttons Mock */}
+      <div className="flex flex-wrap gap-3">
+        <div className="w-32 h-11 bg-gray-200 rounded-2xl" />
+        <div className="w-32 h-11 bg-gray-200/60 rounded-2xl" />
+        <div className="w-32 h-11 bg-gray-200/60 rounded-2xl" />
+      </div>
+
+      {/* Main card mock */}
+      <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
+        <div className="h-6 bg-gray-200 rounded-md w-1/4 mb-8" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded-md w-1/3" />
+            <div className="h-12 bg-gray-100 rounded-2xl w-full" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded-md w-1/3" />
+            <div className="h-12 bg-gray-100 rounded-2xl w-full" />
+          </div>
+
+          <div className="md:col-span-2 space-y-2">
+            <div className="h-4 bg-gray-200 rounded-md w-1/6" />
+            <div className="h-24 bg-gray-100 rounded-2xl w-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Grid items mock */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[1, 2].map((i) => (
+          <div key={i} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex gap-5">
+            <div className="w-28 h-28 bg-gray-200 rounded-2xl shrink-0" />
+            <div className="flex-1 space-y-3">
+              <div className="h-4 bg-gray-200 rounded-md w-2/3" />
+              <div className="h-3 bg-gray-200 rounded-md w-1/2" />
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="h-8 bg-gray-100 rounded-xl" />
+                <div className="h-8 bg-gray-100 rounded-xl" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -294,11 +357,7 @@ function HomepageTab() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <TabSkeleton />;
   }
 
   const sections = [
@@ -853,11 +912,7 @@ function AboutTab() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <TabSkeleton />;
   }
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
@@ -1337,11 +1392,7 @@ function AcademicsTab() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <TabSkeleton />;
   }
 
   const sections = [
@@ -1828,11 +1879,7 @@ function BuildingsTab() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <TabSkeleton />;
   }
 
   const sections = [
@@ -2075,7 +2122,17 @@ function BuildingsListEditor({ branches, onSave, saving }: { branches: any[]; on
 }
 
 function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockName: string; blockData: any; onSave: (b: any) => void; saving: boolean }) {
-  const [local, setLocal] = useState(blockData);
+  const [local, setLocal] = useState(() => {
+    const data = { ...blockData };
+    if (data.faculty) {
+      data.faculty = data.faculty.map((f: any) => ({
+        ...f,
+        clientUniqueId: f.clientUniqueId || Math.random().toString(36).substring(2, 9)
+      }));
+    }
+    return data;
+  });
+  const [downloading, setDownloading] = useState(false);
 
   const update = (field: string, value: any) => setLocal((prev: any) => ({ ...prev, [field]: value }));
 
@@ -2088,7 +2145,17 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
   };
 
   const addFaculty = () => {
-    update("faculty", [...(local.faculty || []), { image: "", name: "", role: "", education: "", subject: "" }]);
+    update("faculty", [
+      ...(local.faculty || []),
+      {
+        clientUniqueId: Math.random().toString(36).substring(2, 9),
+        image: "",
+        name: "",
+        role: "",
+        education: "",
+        subject: ""
+      }
+    ]);
   };
 
   const updateFaculty = (idx: number, field: string, value: any) => {
@@ -2109,10 +2176,110 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
   };
 
   useEffect(() => {
+    const data = { ...blockData };
+    if (data.faculty) {
+      data.faculty = data.faculty.map((f: any) => ({
+        ...f,
+        clientUniqueId: f.clientUniqueId || Math.random().toString(36).substring(2, 9)
+      }));
+    }
+    setLocal(data);
+  }, [blockData]);
+
+  useEffect(() => {
     const handleGlobalSave = () => onSave(local);
     window.addEventListener("admin-global-save", handleGlobalSave);
     return () => window.removeEventListener("admin-global-save", handleGlobalSave);
   }, [local, onSave]);
+
+  const handleDownloadPDF = async () => {
+    try {
+      setDownloading(true);
+      const html2pdf = await loadHtml2Pdf();
+      const blockNameDisplay = local.name || blockName.replace("block", "Block ");
+
+      let cardsHtml = "";
+      (local.faculty || []).forEach((member: any) => {
+        const hasPhoto = member.image && member.image.trim() !== "";
+        cardsHtml += `
+                    <div style="display: flex; gap: 20px; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 20px; background-color: #f8fafc; align-items: center; break-inside: avoid; box-sizing: border-box; width: 100%; overflow: hidden;">
+
+            ${hasPhoto ? `
+              <div style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; border: 2px solid #b89047; flex-shrink: 0;">
+                <img src="${member.image}" style="width: 100%; height: 100%; object-fit: cover;" />
+              </div>
+            ` : ''}
+            <div style="flex-grow: 1; min-width: 0; overflow: hidden; max-width: calc(100% - 120px);">
+              <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1e3a8a; font-family: 'Playfair Display', serif;">${member.name || "N/A"}</h3>
+              <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold; color: #b89047; word-wrap: break-word; overflow-wrap: break-word;">${member.role || "N/A"}</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; border-top: 1px solid #111111ff; padding-top: 10px;">
+                <div><span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Education:</span> <span style="font-size: 13px; font-weight: 500;">${member.education || "N/A"}</span></div>
+                <div><span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Subject:</span> <span style="font-size: 13px; font-weight: 500;">${member.subject || "N/A"}</span></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      const elementHtml = `
+        <div id="pdf-export-faculty" style="padding: 20px; font-family: 'Inter', sans-serif; color: #1e293b; background-color: #ffffff; width: 100%; box-sizing: border-box;">
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+          <div style="border: 4px double #b89047; padding: 20px; border-radius: 24px;">
+            <!-- Header -->
+            <div style="text-align: center; border-bottom: 2px solid #b89047; padding-bottom: 20px; margin-bottom: 30px;">
+              <div style="font-size: 28px; font-weight: 900; color: #1e3a8a; letter-spacing: 1px; font-family: 'Playfair Display', serif;">M.G. SCHOOL</div>
+              <div style="font-size: 11px; font-weight: bold; color: #b89047; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px;">Admin Panel</div>
+              <h2 style="font-size: 20px; color: #1e3a8a; margin: 20px auto 0 auto; max-width: 620px; font-family: 'Playfair Display', serif; text-align: center; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; display: block;">Faculty Directory - ${blockNameDisplay}</h2>
+              <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Generated on ${new Date().toLocaleDateString()}</p>
+            </div>
+            
+            <!-- Faculty Cards Grid -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+              ${cardsHtml || '<div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">No faculty members listed in this block.</div>'}
+            </div>
+            
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 10px; color: #94a3b8;">
+              © ${new Date().getFullYear()} M.G. School. All rights reserved.
+            </div>
+          </div>
+        </div>
+      `;
+
+      const opt = {
+        margin: [15, 15, 15, 15],
+        filename: `MG_School_Faculty_${blockNameDisplay.replace(/\s+/g, "_")}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          scrollY: 0,
+          scrollX: 0,
+          onclone: (clonedDoc: any) => {
+            const body = clonedDoc.body;
+            body.style.display = "block";
+            body.style.margin = "0";
+            body.style.padding = "0";
+            const contentEl = clonedDoc.getElementById("pdf-export-faculty");
+            if (contentEl) {
+              contentEl.style.position = "static";
+              contentEl.style.margin = "0";
+              contentEl.style.width = "100%";
+            }
+          }
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      await html2pdf().set(opt).from(elementHtml).save();
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("Failed to download PDF. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -2150,15 +2317,38 @@ function BlockContentEditor({ blockName, blockData, onSave, saving }: { blockNam
       </div>
 
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
           <h4 className="text-lg font-playfair font-black text-primary">Faculty Section</h4>
-          <button onClick={addFaculty} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all cursor-pointer">
-            <Plus size={14} /> Add Faculty
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={downloading}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                downloading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+                  : "bg-primary text-white hover:bg-primary/90"
+              }`}
+            >
+              {downloading ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  Generating PDF...
+                </>
+              ) : (
+                <>
+                  <Download size={14} />
+                  Download List PDF
+                </>
+              )}
+            </button>
+            <button onClick={addFaculty} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/5 text-primary text-xs font-bold hover:bg-primary hover:text-white transition-all cursor-pointer">
+              <Plus size={14} /> Add Faculty
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {(local.faculty || []).map((member: any, idx: number) => (
-            <div key={idx} className="p-5 border border-gray-100 rounded-3xl bg-gray-50 relative flex flex-col sm:flex-row gap-5">
+            <div key={member.clientUniqueId || idx} className="p-5 border border-gray-100 rounded-3xl bg-gray-50 relative flex flex-col sm:flex-row gap-5">
               <button onClick={() => removeFaculty(idx)} className="absolute top-3 right-3 p-1.5 text-red-400 hover:bg-red-100 rounded-lg transition-all cursor-pointer z-10"><Trash2 size={14} /></button>
 
               {/* Image Column */}
@@ -2278,11 +2468,7 @@ function FacultyTab() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <TabSkeleton />;
   }
 
   const sections = [
@@ -2603,11 +2789,7 @@ function LifeAtMGTab() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  if (loading) return (
-    <div className="flex items-center justify-center py-32">
-      <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-    </div>
-  );
+  if (loading) return <TabSkeleton />;
 
   const sections = [
     { id: "hero", name: "Hero Section", icon: ImageIcon },
@@ -2833,7 +3015,7 @@ function EventsTab() {
     } catch { alert("Error deleting event"); }
   };
 
-  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+  if (loading) return <TabSkeleton />;
 
   return (
     <div className="space-y-8">
@@ -2996,7 +3178,7 @@ function EnrollmentTab() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  if (loading) return <div className="py-32 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full" /></div>;
+  if (loading) return <TabSkeleton />;
 
   return (
     <div className="space-y-8">
@@ -3278,11 +3460,21 @@ function TrusteesTab() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     axiosInstance.get("/api/trustees-content")
       .then((res) => {
-        if (res.data.success) setContent(res.data.content);
+        if (res.data.success) {
+          const data = res.data.content;
+          if (data && data.trustees) {
+            data.trustees = data.trustees.map((t: any) => ({
+              ...t,
+              clientUniqueId: t.clientUniqueId || Math.random().toString(36).substring(2, 9)
+            }));
+          }
+          setContent(data);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -3308,7 +3500,16 @@ function TrusteesTab() {
   const addTrustee = () => {
     setContent((prev: any) => ({
       ...prev,
-      trustees: [...(prev.trustees || []), { name: "New Trustee", designation: "", description: "", image: "" }]
+      trustees: [
+        ...(prev.trustees || []),
+        {
+          clientUniqueId: Math.random().toString(36).substring(2, 9),
+          name: "New Trustee",
+          designation: "",
+          description: "",
+          image: ""
+        }
+      ]
     }));
   };
 
@@ -3329,7 +3530,97 @@ function TrusteesTab() {
     }
   };
 
-  if (loading) return <div className="py-20 flex justify-center"><div className="w-8 h-8 animate-spin border-3 border-primary/30 border-t-primary rounded-full" /></div>;
+  const handleDownloadPDF = async () => {
+    try {
+      setDownloading(true);
+      const html2pdf = await loadHtml2Pdf();
+
+      let cardsHtml = "";
+      (content.trustees || []).forEach((member: any) => {
+        const hasPhoto = member.image && member.image.trim() !== "";
+        cardsHtml += `
+          <div style="border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 20px; background-color: #f8fafc; break-inside: avoid; box-sizing: border-box; width: 100%;">
+            <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+              <tr>
+                ${hasPhoto ? `
+                  <td style="width: 120px; vertical-align: top; padding-right: 20px;">
+                    <div style="width: 100px; height: 100px; border-radius: 12px; overflow: hidden; border: 2px solid #b89047;">
+                      <img src="${member.image}" style="width: 100px; height: 100px; object-fit: cover; display: block;" />
+                    </div>
+                  </td>
+                  <td style="vertical-align: top; word-break: break-word; overflow-wrap: break-word;">
+                ` : `
+                  <td style="vertical-align: top; word-break: break-word; overflow-wrap: break-word;">
+                `}
+                    <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1e3a8a; font-family: serif;">${member.name || "N/A"}</h3>
+                    <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #b89047;">${member.designation || "N/A"}</p>
+                    <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.6;">${(member.description || "No description provided.").replace(/\n/g, "<br/>")}</p>
+                  </td>
+              </tr>
+            </table>
+          </div>
+        `;
+      });
+      const elementHtml = `
+        <div id="pdf-export-trustees" style="padding: 20px; font-family: 'Inter', sans-serif; color: #1e293b; background-color: #ffffff; width: 100%; box-sizing: border-box;">
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+          <div style="border: 4px double #b89047; padding: 20px; border-radius: 24px;">
+            <!-- Header -->
+            <div style="text-align: center; border-bottom: 2px solid #b89047; padding-bottom: 20px; margin-bottom: 30px;">
+              <div style="font-size: 28px; font-weight: 900; color: #1e3a8a; letter-spacing: 1px; font-family: 'Playfair Display', serif;">M.G. SCHOOL</div>
+              <div style="font-size: 11px; font-weight: bold; color: #b89047; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px;">Admin Panel</div>
+              <h2 style="font-size: 20px; color: #1e3a8a; margin: 20px auto 0 auto; max-width: 620px; font-family: 'Playfair Display', serif; text-align: center; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; display: block;">Board of Trustees</h2>
+              <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Generated on ${new Date().toLocaleDateString()}</p>
+            </div>
+            
+            <!-- Trustees Cards -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+              ${cardsHtml || '<div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">No trustees listed.</div>'}
+            </div>
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 10px; color: #94a3b8;">
+              © ${new Date().getFullYear()} M.G. School. All rights reserved.
+            </div>
+          </div>
+        </div>
+      `;
+
+      const opt = {
+        margin: [15, 15, 15, 15],
+        filename: `MG_School_Trustees.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          scrollY: 0,
+          scrollX: 0,
+          onclone: (clonedDoc: any) => {
+            const body = clonedDoc.body;
+            body.style.display = "block";
+            body.style.margin = "0";
+            body.style.padding = "0";
+            const contentEl = clonedDoc.getElementById("pdf-export-trustees");
+            if (contentEl) {
+              contentEl.style.position = "static";
+              contentEl.style.margin = "0";
+              contentEl.style.width = "100%";
+            }
+          }
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      await html2pdf().set(opt).from(elementHtml).save();
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("Failed to download PDF. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  if (loading) return <TabSkeleton />;
 
   return (
     <div className="space-y-8">
@@ -3360,14 +3651,37 @@ function TrusteesTab() {
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
         <div className="flex items-center justify-between border-b border-gray-50 pb-4">
           <h4 className="text-lg font-playfair font-black text-primary">Trustees List</h4>
-          <button onClick={addTrustee} className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-colors cursor-pointer">
-            <Plus size={14} /> Add Trustee
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={downloading}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                downloading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+                  : "bg-primary text-white hover:bg-primary/90"
+              }`}
+            >
+              {downloading ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  Generating PDF...
+                </>
+              ) : (
+                <>
+                  <Download size={14} />
+                  Download List PDF
+                </>
+              )}
+            </button>
+            <button onClick={addTrustee} className="flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-xs font-bold hover:bg-secondary hover:text-white transition-colors cursor-pointer">
+              <Plus size={14} /> Add Trustee
+            </button>
+          </div>
         </div>
 
         <div className="space-y-6">
           {content.trustees.map((t: any, idx: number) => (
-            <div key={idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group overflow-hidden">
+            <div key={t.clientUniqueId || idx} className="p-6 border border-gray-100 rounded-2xl bg-gray-50 relative group overflow-hidden">
               <button onClick={() => removeTrustee(idx)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-red-100 rounded-xl transition-colors cursor-pointer opacity-0 group-hover:opacity-100">
                 <Trash2 size={16} />
               </button>
