@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import HeroSlider from "@/components/HeroSlider";
 import CampusHubCard from "@/components/CampusHubCard";
-import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart, X, Sparkles, Calendar } from "lucide-react";
+import { BookOpen, Users, Award, Trophy, ArrowRight, ShieldCheck, Zap, Heart, X, Sparkles, Calendar, Quote, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -97,6 +97,7 @@ const featureIconMap: Record<string, React.ReactNode> = {
 export default function Home() {
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [featuredReviews, setFeaturedReviews] = useState<any[]>([]);
 
   const fetchData = React.useCallback(() => {
     setLoading(true);
@@ -112,6 +113,14 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
+    axiosInstance.get("/api/rating")
+      .then((res) => {
+        if (res.data.success && res.data.data) {
+          const featured = res.data.data.filter((item: any) => item.showOnHome);
+          setFeaturedReviews(featured);
+        }
+      })
+      .catch((err) => console.error("Error fetching ratings:", err));
   }, [fetchData]);
 
   useSocketSync(fetchData);
@@ -291,6 +300,95 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Featured Reviews Slider Section */}
+      {featuredReviews.length > 0 && (
+        <section className="py-24 md:py-32 bg-slate-50 relative overflow-hidden border-b border-gray-100">
+          <div className="container-custom relative z-10">
+            <header className="text-center mb-16 max-w-2xl mx-auto">
+              <div className="bg-secondary/10 text-secondary text-xs font-black uppercase tracking-[0.4em] px-6 py-2 rounded-full w-max mb-6 mx-auto">
+                Testimonials
+              </div>
+              <h2 className="text-3xl md:text-5xl font-playfair font-black text-primary leading-tight">
+                What Our <span className="text-secondary italic">Community Says.</span>
+              </h2>
+            </header>
+
+            <Swiper
+              modules={[Autoplay, Pagination, Navigation]}
+              spaceBetween={30}
+              slidesPerView={1}
+              breakpoints={{
+                768: {
+                  slidesPerView: 2,
+                },
+                1024: {
+                  slidesPerView: 3,
+                },
+              }}
+              autoplay={{ delay: 5000, disableOnInteraction: false }}
+              pagination={{ clickable: true, dynamicBullets: true }}
+              navigation={true}
+              className="testimonials-swiper !pb-14"
+            >
+              {featuredReviews.map((item, idx) => (
+                <SwiperSlide key={item._id || idx} className="h-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl border border-gray-100/50 hover:border-secondary/20 transition-all duration-300 h-full flex flex-col justify-between relative group"
+                  >
+                    <div className="absolute top-6 right-8 text-primary/5 group-hover:text-secondary/10 transition-colors pointer-events-none">
+                      <Quote size={80} className="fill-current" />
+                    </div>
+
+                    <div className="space-y-6 relative z-10 flex-1 flex flex-col justify-between">
+                      <div>
+                        {/* Rating Stars */}
+                        <div className="flex items-center gap-1 mb-4">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={16}
+                              className={
+                                star <= item.rating
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-gray-200"
+                              }
+                            />
+                          ))}
+                        </div>
+
+                        {/* Feedback Content */}
+                        <p className="text-gray-500 font-light leading-relaxed italic text-sm md:text-base line-clamp-5">
+                          "{item.feedback}"
+                        </p>
+                      </div>
+
+                      {/* User Info */}
+                      <div className="flex items-center gap-4 mt-6 pt-6 border-t border-gray-50">
+                        <div className="w-12 h-12 bg-secondary/10 text-primary font-black rounded-2xl flex items-center justify-center text-sm shadow-sm relative overflow-hidden shrink-0">
+                          {item.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-primary text-sm leading-tight">
+                            {item.name}
+                          </h4>
+                          <span className="text-[10px] uppercase font-black tracking-widest text-secondary mt-0.5 block">
+                            {item.role} • {item.experienceType}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </section>
+      )}
 
       {/* User Experience / Feedback Section */}
       <section className="py-6 md:py-8 bg-white relative overflow-hidden">

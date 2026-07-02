@@ -4,6 +4,7 @@ import {
     createRatingService,
     getAllRatingsService,
     deleteRatingService,
+    updateRatingService,
 } from "@/services/rating.service";
 
 export const createRatingController = async (req: NextRequest) => {
@@ -87,6 +88,57 @@ export const deleteRatingController = async (req: NextRequest) => {
             {
                 success: true,
                 message: "Rating deleted successfully",
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        const message =
+            error instanceof Error ? error.message : "Something went wrong";
+
+        return NextResponse.json(
+            {
+                success: false,
+                message,
+            },
+            { status: 500 }
+        );
+    }
+};
+
+export const updateRatingController = async (req: NextRequest) => {
+    try {
+        await connectDB();
+
+        const body = await req.json();
+        const { id, ...updateData } = body;
+
+        if (!id) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Rating ID is required",
+                },
+                { status: 400 }
+            );
+        }
+
+        const updatedRating = await updateRatingService(id, updateData);
+
+        if (!updatedRating) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Rating not found",
+                },
+                { status: 444 }
+            );
+        }
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Rating updated successfully",
+                data: updatedRating,
             },
             { status: 200 }
         );

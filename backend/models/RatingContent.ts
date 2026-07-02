@@ -8,6 +8,7 @@ export interface IRating extends Document {
     experienceType: string;
     rating: number;
     feedback: string;
+    showOnHome: boolean;
 }
 
 const ratingSchema = new Schema<IRating>(
@@ -49,6 +50,11 @@ const ratingSchema = new Schema<IRating>(
         feedback: {
             type: String,
             required: true,
+        },
+
+        showOnHome: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true }

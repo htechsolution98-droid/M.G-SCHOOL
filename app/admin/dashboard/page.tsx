@@ -3710,6 +3710,7 @@ function RatingsTab() {
   const [ratings, setRatings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   const fetchRatings = async () => {
@@ -3744,6 +3745,22 @@ function RatingsTab() {
       alert("Failed to delete rating.");
     }
     setDeletingId(null);
+  };
+
+  const handleToggleHome = async (id: string, currentStatus: boolean) => {
+    setTogglingId(id);
+    try {
+      const res = await axiosInstance.put("/api/rating", { id, showOnHome: !currentStatus });
+      if (res.data.success) {
+        setRatings(ratings.map((r) => r._id === id ? { ...r, showOnHome: !currentStatus } : r));
+        setMessage(`Rating ${!currentStatus ? "featured on" : "removed from"} homepage successfully`);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update homepage status.");
+    }
+    setTogglingId(null);
   };
 
   if (loading) {
@@ -3834,8 +3851,34 @@ function RatingsTab() {
                 </p>
               </div>
 
-              <div className="text-[10px] text-gray-400 font-medium mt-4 pt-4 border-t border-gray-100">
-                Submitted on: {new Date(item.createdAt).toLocaleString()}
+              <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                <span className="text-[10px] text-gray-400 font-medium">
+                  Submitted on: {new Date(item.createdAt).toLocaleString()}
+                </span>
+                
+                <button
+                  disabled={togglingId === item._id}
+                  onClick={() => handleToggleHome(item._id, item.showOnHome)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all active:scale-95 border cursor-pointer ${
+                    item.showOnHome 
+                      ? "bg-secondary/10 border-secondary/20 text-secondary" 
+                      : "bg-white border-gray-200 text-gray-400 hover:text-primary hover:border-primary/20"
+                  }`}
+                >
+                  {togglingId === item._id ? (
+                    <div className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full animate-spin" />
+                  ) : item.showOnHome ? (
+                    <>
+                      <Home size={12} className="fill-current" />
+                      Featured
+                    </>
+                  ) : (
+                    <>
+                      <Home size={12} />
+                      Show on Home
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           ))}

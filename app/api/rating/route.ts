@@ -5,6 +5,7 @@ import {
     createRatingController,
     getAllRatingsController,
     deleteRatingController,
+    updateRatingController,
 } from "@/backend/controllers/rating.controller";
 
 export async function GET() {
@@ -17,4 +18,8 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     return deleteRatingController(req);
+}
+
+export async function PUT(req: NextRequest) {
+    return updateRatingController(req);
 }

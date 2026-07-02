@@ -35,3 +35,10 @@ export const getAllRatingsService = async (): Promise<IRating[]> => {
 export const deleteRatingService = async (id: string): Promise<any> => {
     return await Rating.findByIdAndDelete(id);
 };
+
+export const updateRatingService = async (
+    id: string,
+    data: Partial<IRating>
+): Promise<IRating | null> => {
+    return await Rating.findByIdAndUpdate(id, data, { new: true });
+};
