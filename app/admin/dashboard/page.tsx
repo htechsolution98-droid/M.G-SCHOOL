@@ -36,6 +36,10 @@ import {
   ChevronDown,
   Download,
   Loader2,
+  Check,
+  ExternalLink,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 // ─── Helper Functions ───
@@ -72,6 +76,7 @@ const calculateExperience = (doj: string) => {
 // ─── Sidebar Items ───
 const sidebarItems = [
   { id: "homepage", name: "Homepage", icon: Home },
+  { id: "header-admission", name: "Admission Button", icon: GraduationCap },
   { id: "about", name: "About Us", icon: BookOpen },
   { id: "trustees", name: "Trustees", icon: Users },
   { id: "academics", name: "Academics", icon: GraduationCap },
@@ -252,7 +257,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                {["homepage", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "events"].includes(activeTab) && (
+                {["homepage", "header-admission", "about", "trustees", "academics", "branches", "faculty", "life-at-mg", "events"].includes(activeTab) && (
                   <button
                     onClick={() => window.dispatchEvent(new CustomEvent("admin-global-save"))}
                     className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-secondary hover:text-primary transition-all active:scale-95 cursor-pointer"
@@ -260,10 +265,6 @@ export default function AdminDashboard() {
                     <Save size={18} /> <span className="hidden sm:inline">Save Changes</span>
                   </button>
                 )}
-                <button className="relative p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer">
-                  <Bell size={20} className="text-gray-500" />
-                  <div className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-                </button>
                 <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-secondary font-black text-sm">A</div>
               </div>
             </div>
@@ -272,6 +273,7 @@ export default function AdminDashboard() {
           <div className="p-6 lg:p-10 flex-1 flex flex-col">
             <div className="max-w-[1600px] mx-auto w-full flex-1">
               {activeTab === "homepage" && <HomepageTab />}
+              {activeTab === "header-admission" && <HeaderAdmissionTab />}
               {activeTab === "about" && <AboutTab />}
               {activeTab === "trustees" && <TrusteesTab />}
               {activeTab === "academics" && <AcademicsTab />}
@@ -362,6 +364,7 @@ function HomepageTab() {
 
   const sections = [
     { id: "heroSlides", name: "Hero Slider", icon: ImageIcon },
+    { id: "headerAdmission", name: "Admission Button", icon: GraduationCap },
     { id: "stats", name: "Stats Bar", icon: TrendingUp },
     { id: "philosophy", name: "Philosophy Section", icon: BookOpen },
     { id: "campusHubs", name: "Campus Hubs", icon: Building2 },
@@ -410,6 +413,11 @@ function HomepageTab() {
           onSave={(slides: any[]) => saveSection("heroSlides", { heroSlides: slides })}
           saving={saving === "heroSlides"}
         />
+      )}
+
+      {/* Header Admission Button Editor */}
+      {activeSection === "headerAdmission" && (
+        <HeaderAdmissionTab />
       )}
 
       {/* Stats Editor */}
@@ -3888,6 +3896,352 @@ function RatingsTab() {
               No ratings or feedback submitted yet.
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════
+// HEADER & ADMISSION TAB - Configure Header Admission Button
+// ═══════════════════════════════════════════════════════
+function HeaderAdmissionTab() {
+  const [config, setConfig] = useState<any>({
+    isVisible: true,
+    text: "Admission-open 2027-28",
+    link: "https://docs.google.com/forms/d/e/1FAIpQLScvDLrOCqRksq57FNC4asJ4uY3RX9hV4KVaJGfJSgHXTldrRw/viewform?usp=publish-editor",
+    openInNewTab: true,
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [statusType, setStatusType] = useState<"success" | "error">("success");
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get("/api/header-config");
+      if (res.data?.success && res.data.config?.admissionButton) {
+        setConfig(res.data.config.admissionButton);
+      }
+    } catch (e) {
+      console.error("Failed to load header admission config:", e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setMessage("");
+    try {
+      const res = await axiosInstance.put("/api/header-config", {
+        admissionButton: config,
+      });
+      if (res.data?.success) {
+        setConfig(res.data.config.admissionButton);
+        setMessage("Header admission button updated successfully! Website header is now up to date.");
+        setStatusType("success");
+      } else {
+        setMessage(res.data?.error || "Failed to save configuration.");
+        setStatusType("error");
+      }
+    } catch (err: any) {
+      setMessage(err?.message || "Failed to save configuration.");
+      setStatusType("error");
+    }
+    setSaving(false);
+    setTimeout(() => setMessage(""), 4000);
+  };
+
+  useEffect(() => {
+    const handleGlobalSave = () => {
+      handleSave();
+    };
+    window.addEventListener("admin-global-save", handleGlobalSave);
+    return () => window.removeEventListener("admin-global-save", handleGlobalSave);
+  }, [config]);
+
+  if (loading) return <TabSkeleton />;
+
+  return (
+    <div className="space-y-8 max-w-5xl mx-auto w-full">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-primary to-primary/90 text-white rounded-[2.5rem] p-8 md:p-10 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="bg-secondary text-primary font-black text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
+                Header Control
+              </span>
+              <span className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 ${
+                config.isVisible ? "bg-emerald-500/20 text-emerald-300" : "bg-red-500/20 text-red-300"
+              }`}>
+                <span className={`w-2 h-2 rounded-full ${config.isVisible ? "bg-emerald-400 animate-pulse" : "bg-red-400"}`} />
+                {config.isVisible ? "Visible on Website" : "Hidden from Website"}
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-playfair font-black text-white mb-2">
+              Admission Button & Header Link
+            </h1>
+            <p className="text-white/70 text-sm max-w-2xl leading-relaxed">
+              Control the prominent Admission button in the website header. Customize the heading text, Google Form URL, and toggle visibility on or off at any time.
+            </p>
+          </div>
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="shrink-0 bg-secondary text-primary font-black text-sm uppercase tracking-wider px-8 py-4 rounded-2xl shadow-xl hover:bg-white hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            <span>{saving ? "Saving..." : "Save Changes"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Status Message */}
+      {message && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-md ${
+            statusType === "success"
+              ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+              : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+        >
+          {statusType === "success" ? <Check size={18} /> : <X size={18} />}
+          <span>{message}</span>
+        </motion.div>
+      )}
+
+      {/* Main Settings Card */}
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-sm space-y-8">
+        <div>
+          <h2 className="text-xl font-playfair font-bold text-primary mb-1">
+            General Button Configuration
+          </h2>
+          <p className="text-xs text-gray-400 font-medium">
+            Configure how and where the button links, what it says, and its visibility.
+          </p>
+        </div>
+
+        {/* Visibility Toggle */}
+        <div className="bg-slate-50 rounded-2xl p-6 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+              config.isVisible ? "bg-emerald-100 text-emerald-600" : "bg-gray-200 text-gray-500"
+            }`}>
+              {config.isVisible ? <Eye size={22} /> : <EyeOff size={22} />}
+            </div>
+            <div>
+              <div className="text-base font-bold text-primary flex items-center gap-2">
+                Header Button Visibility
+                <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                  config.isVisible ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"
+                }`}>
+                  {config.isVisible ? "Active" : "Disabled"}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {config.isVisible
+                  ? "The admission button is currently visible on the desktop header and mobile menu."
+                  : "The admission button is currently hidden and will not be seen by visitors."}
+              </p>
+            </div>
+          </div>
+
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+            <input
+              type="checkbox"
+              checked={!!config.isVisible}
+              onChange={(e) => setConfig({ ...config, isVisible: e.target.checked })}
+              className="sr-only peer"
+            />
+            <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-secondary"></div>
+          </label>
+        </div>
+
+        {/* Heading Text Input */}
+        <div className="space-y-2">
+          <label className="block text-sm font-bold text-primary">
+            Heading / Button Text <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={config.text || ""}
+            onChange={(e) => setConfig({ ...config, text: e.target.value })}
+            placeholder="e.g. Admission-open 2027-28"
+            className="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-base font-medium text-primary bg-slate-50/50"
+          />
+          <p className="text-xs text-gray-400">
+            This is the text displayed on the header button (e.g. <strong>Admission-open 2027-28</strong>).
+          </p>
+        </div>
+
+        {/* Target Form Link URL */}
+        <div className="space-y-2">
+          <label className="block text-sm font-bold text-primary">
+            Target Form Link (Google Form / Application URL) <span className="text-red-500">*</span>
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={config.link || ""}
+              onChange={(e) => setConfig({ ...config, link: e.target.value })}
+              placeholder="https://docs.google.com/forms/d/..."
+              className="flex-1 px-5 py-3.5 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium text-primary bg-slate-50/50 font-mono"
+            />
+            {config.link && (
+              <a
+                href={config.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-primary hover:text-white text-gray-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors border border-gray-200 shrink-0"
+                title="Test link in new tab"
+              >
+                <span>Test Link</span>
+                <ExternalLink size={14} />
+              </a>
+            )}
+          </div>
+          <p className="text-xs text-gray-400">
+            When users click the admission button, they will be redirected to this link.
+          </p>
+        </div>
+
+        {/* Open in New Tab Toggle */}
+        <div className="flex items-center gap-3 pt-2">
+          <input
+            type="checkbox"
+            id="openInNewTab"
+            checked={config.openInNewTab !== false}
+            onChange={(e) => setConfig({ ...config, openInNewTab: e.target.checked })}
+            className="w-4 h-4 rounded text-primary focus:ring-primary/30 border-gray-300 cursor-pointer"
+          />
+          <label htmlFor="openInNewTab" className="text-sm font-bold text-gray-700 cursor-pointer select-none">
+            Open in new browser tab / window (recommended for Google Forms)
+          </label>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() =>
+              setConfig({
+                isVisible: true,
+                text: "Admission-open 2027-28",
+                link: "https://docs.google.com/forms/d/e/1FAIpQLScvDLrOCqRksq57FNC4asJ4uY3RX9hV4KVaJGfJSgHXTldrRw/viewform?usp=publish-editor",
+                openInNewTab: true,
+              })
+            }
+            className="text-xs text-gray-400 hover:text-primary font-bold transition-colors underline underline-offset-4 cursor-pointer"
+          >
+            Reset to default values
+          </button>
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="bg-primary text-white font-bold text-sm uppercase tracking-wider px-8 py-3.5 rounded-2xl shadow-lg hover:bg-secondary hover:text-primary transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+            <span>{saving ? "Saving Changes..." : "Save Changes"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Live Navbar Preview Card */}
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-sm space-y-6">
+        <div>
+          <h2 className="text-xl font-playfair font-bold text-primary mb-1">
+            Live Header Preview
+          </h2>
+          <p className="text-xs text-gray-400 font-medium">
+            This is how your header will appear to visitors in real time.
+          </p>
+        </div>
+
+        {/* Mock Desktop Navbar */}
+        <div className="bg-slate-100 rounded-3xl p-4 sm:p-6 border border-slate-200">
+          <div className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-3 px-2">
+            Desktop Header View
+          </div>
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl py-3 px-6 shadow-md border border-gray-200 flex items-center justify-between gap-4">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/Logo_of_M_G_Schools_Solo.jpg-removebg-preview.png"
+                alt="Logo"
+                className="h-9 w-auto object-contain"
+              />
+              <div className="flex flex-col">
+                <span className="text-base font-black text-primary leading-none">M.G. SCHOOL</span>
+                <span className="text-[9px] uppercase tracking-widest font-bold text-secondary">Legacy of Excellence</span>
+              </div>
+            </div>
+
+            {/* Menu Links */}
+            <div className="hidden md:flex items-center gap-4 text-xs font-bold text-gray-600">
+              <span>About</span>
+              <span>Academics</span>
+              <span>Buildings</span>
+              <span>Faculty</span>
+              <span>Life @ MG</span>
+              <span>Contact</span>
+            </div>
+
+            {/* Button */}
+            <div>
+              {config.isVisible ? (
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-extrabold bg-secondary text-primary shadow-md border border-secondary/50">
+                  <GraduationCap size={15} />
+                  <span>{config.text || "Admission-open"}</span>
+                  <ExternalLink size={12} />
+                </div>
+              ) : (
+                <span className="text-[11px] font-bold text-gray-400 italic bg-gray-100 px-3 py-1.5 rounded-lg border border-dashed border-gray-300">
+                  Button Hidden (Disabled)
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mock Mobile View */}
+        <div className="bg-slate-100 rounded-3xl p-4 sm:p-6 border border-slate-200">
+          <div className="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-3 px-2">
+            Mobile Drawer View
+          </div>
+          <div className="max-w-sm mx-auto bg-primary rounded-3xl p-6 text-white space-y-4">
+            <div className="text-secondary text-[10px] font-black uppercase tracking-widest text-center">
+              Mobile Drawer Button
+            </div>
+            {config.isVisible ? (
+              <div className="bg-secondary text-primary w-full py-3.5 px-4 rounded-xl font-black text-sm text-center shadow-lg flex items-center justify-center gap-2">
+                <GraduationCap size={18} />
+                <span>{config.text || "Admission-open"}</span>
+                <ExternalLink size={14} />
+              </div>
+            ) : (
+              <div className="text-xs text-white/50 text-center italic py-2">
+                Admission button is hidden from mobile menu
+              </div>
+            )}
+            <div className="bg-white/10 text-white w-full py-3 px-4 rounded-xl font-bold text-xs text-center">
+              Start Your Journey
+            </div>
+          </div>
         </div>
       </div>
     </div>

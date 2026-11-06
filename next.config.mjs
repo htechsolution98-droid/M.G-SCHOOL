@@ -4,11 +4,15 @@ const isExport = process.env.NEXT_EXPORT === 'true';
 const nextConfig = {
   output: isExport ? 'export' : undefined,
   images: {
-    unoptimized: isExport ? true : undefined, // Static exports require unoptimized images unless using a third-party loader
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
       },
     ],
   },
@@ -27,4 +31,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

@@ -76,6 +76,162 @@ const VideoSlide = ({
   );
 };
 
+function EventCardMedia({ event }: { event: any }) {
+  const [videoError, setVideoError] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const fallbackImg = "/images/school3 (1).jpg";
+  const validImages = (Array.isArray(event.images) ? event.images : []).filter(
+    (img: any) => typeof img === "string" && img.trim().length > 0
+  );
+  const primaryImg =
+    (!imageError && (event.image || validImages[0])) || fallbackImg;
+
+  if (event.video && !videoError) {
+    return (
+      <div className="relative w-full h-full bg-slate-900">
+        <video
+          src={event.video}
+          poster={primaryImg}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={() => setVideoError(true)}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+        />
+      </div>
+    );
+  }
+
+  if (validImages.length > 1 && !imageError) {
+    return (
+      <Swiper
+        modules={[Autoplay, Pagination, Navigation, EffectFade]}
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        loop={true}
+        effect="fade"
+        className="w-full h-full bg-slate-100"
+      >
+        {validImages.map((img: string, i: number) => (
+          <SwiperSlide key={i} className="relative w-full h-full">
+            <img
+              src={img}
+              alt={event.title}
+              onError={(e) => {
+                setImageError(true);
+                (e.currentTarget as HTMLImageElement).src = fallbackImg;
+              }}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    );
+  }
+
+  return (
+    <img
+      src={primaryImg}
+      alt={event.title}
+      onError={(e) => {
+        setImageError(true);
+        (e.currentTarget as HTMLImageElement).src = fallbackImg;
+      }}
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+    />
+  );
+}
+
+function EventModalMediaContent({
+  selectedEvent,
+  modalSwiperInstance,
+  setModalSwiperInstance,
+}: {
+  selectedEvent: any;
+  modalSwiperInstance: any;
+  setModalSwiperInstance: any;
+}) {
+  const [videoError, setVideoError] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const fallbackImg = "/images/school3 (1).jpg";
+
+  const images = (
+    selectedEvent.images && selectedEvent.images.length > 0
+      ? selectedEvent.images
+      : selectedEvent.image
+      ? [selectedEvent.image]
+      : []
+  ).filter((img: any) => typeof img === "string" && img.trim().length > 0);
+
+  const hasVideo = !!selectedEvent.video && !videoError;
+  const totalMediaCount = images.length + (hasVideo ? 1 : 0);
+
+  if (totalMediaCount > 1) {
+    return (
+      <Swiper
+        modules={[Autoplay, Pagination, Navigation, EffectFade]}
+        pagination={{ clickable: true }}
+        navigation={true}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        loop={true}
+        onSwiper={setModalSwiperInstance}
+        onSlideChange={(swiper) => {
+          const isVideoActive = hasVideo && swiper.realIndex === 0;
+          if (!isVideoActive && swiper.autoplay) {
+            swiper.autoplay.start();
+          }
+        }}
+        className="w-full h-full"
+      >
+        {hasVideo && (
+          <SwiperSlide className="relative w-full h-full bg-slate-900">
+            <video
+              src={selectedEvent.video}
+              autoPlay
+              muted
+              loop
+              playsInline
+              onError={() => setVideoError(true)}
+              className="w-full h-full object-cover"
+            />
+          </SwiperSlide>
+        )}
+        {images.map((img: string, i: number) => (
+          <SwiperSlide key={i} className="relative w-full h-full">
+            <img
+              src={img}
+              alt={selectedEvent.title}
+              onError={() => setImageError(true)}
+              className="w-full h-full object-cover"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    );
+  } else if (hasVideo) {
+    return (
+      <video
+        src={selectedEvent.video}
+        className="w-full h-full object-cover"
+        controls
+        playsInline
+        onError={() => setVideoError(true)}
+      />
+    );
+  } else {
+    return (
+      <img
+        src={(!imageError && images[0]) || fallbackImg}
+        alt={selectedEvent.title}
+        onError={() => setImageError(true)}
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+}
+
 const EventsPage = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [lifeAtMg, setLifeAtMg] = useState<any>(null);
@@ -241,53 +397,17 @@ const EventsPage = () => {
                   className="bg-white rounded-[3rem] overflow-hidden shadow-xl hover:shadow-3xl transition-all duration-500 flex flex-col group h-full border border-gray-100"
                 >
                   {/* Card Image Slider */}
-                  <div className="relative h-72 w-full overflow-hidden">
-                    {event.images && event.images.length > 1 ? (
-                      <Swiper
-                        modules={[Autoplay, Pagination, Navigation, EffectFade]}
-                        pagination={{ clickable: true }}
-                        autoplay={{ delay: 4000, disableOnInteraction: false }}
-                        loop={true}
-                        effect="fade"
-                        className="w-full h-full"
-                      >
-                        {event.images.map((img: string, i: number) => (
-                          <SwiperSlide key={i} className="relative w-full h-full">
-                            <Image
-                              src={img}
-                              alt={`${event.title} - ${i + 1}`}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-1000"
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    ) : event.video ? (
-                      <video
-                        src={event.video}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                      />
-                    ) : (
-                      <Image
-                        src={event.image || (event.images && event.images[0]) || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
-                        alt={event.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-1000"
-                      />
-                    )}
+                  <div className="relative h-72 w-full overflow-hidden bg-slate-100">
+                    <EventCardMedia event={event} />
                     
                     {/* Floating Date Badge */}
-                    <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl text-center z-20">
+                    <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl text-center z-20 pointer-events-none">
                        <div className="text-secondary text-[9px] font-black tracking-widest uppercase mb-0.5">{yearStr}</div>
                        <div className="text-lg font-playfair font-black text-primary leading-none">{dateStr}</div>
                     </div>
 
                     {/* Category Overlay */}
-                    <div className="absolute bottom-5 left-5 z-20">
+                    <div className="absolute bottom-5 left-5 z-20 pointer-events-none">
                        <span className="bg-primary/20 backdrop-blur-md text-white px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">{event.category}</span>
                     </div>
                   </div>
@@ -361,74 +481,11 @@ const EventsPage = () => {
                 <X size={24} />
               </button>              {/* Media Section */}
               <div className="lg:w-1/2 relative h-72 lg:h-auto bg-slate-100">
-                {(() => {
-                  const images = (selectedEvent.images && selectedEvent.images.length > 0
-                    ? selectedEvent.images
-                    : (selectedEvent.image ? [selectedEvent.image] : [])).filter(Boolean);
-                  const hasVideo = !!selectedEvent.video;
-                  const totalMediaCount = images.length + (hasVideo ? 1 : 0);
-
-                  if (totalMediaCount > 1) {
-                    return (
-                      <Swiper
-                        modules={[Autoplay, Pagination, Navigation, EffectFade]}
-                        pagination={{ clickable: true }}
-                        navigation={true}
-                        autoplay={{ delay: 5000, disableOnInteraction: false }}
-                        loop={true}
-                        onSwiper={setModalSwiperInstance}
-                        onSlideChange={(swiper) => {
-                          const isVideoActive = hasVideo && swiper.realIndex === 0;
-                          if (!isVideoActive && swiper.autoplay) {
-                            swiper.autoplay.start();
-                          }
-                        }}
-                        className="w-full h-full"
-                      >
-                        {hasVideo && (
-                          <SwiperSlide className="relative w-full h-full">
-                            {({ isActive }) => (
-                              <VideoSlide
-                                src={selectedEvent.video}
-                                isActive={isActive}
-                                swiper={modalSwiperInstance}
-                                slidesCount={totalMediaCount}
-                              />
-                            )}
-                          </SwiperSlide>
-                        )}
-                        {images.map((img: string, i: number) => (
-                          <SwiperSlide key={i} className="relative w-full h-full">
-                            <Image
-                              src={img}
-                              alt={selectedEvent.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    );
-                  } else if (hasVideo) {
-                    return (
-                      <video
-                        src={selectedEvent.video}
-                        className="w-full h-full object-cover"
-                        controls
-                        playsInline
-                      />
-                    );
-                  } else {
-                    return (
-                      <Image
-                        src={images[0] || "https://images.unsplash.com/photo-1540575861501-7c00117fc24b?q=80"}
-                        alt={selectedEvent.title}
-                        fill
-                        className="object-cover"
-                      />
-                    );
-                  }
-                })()}
+                <EventModalMediaContent
+                  selectedEvent={selectedEvent}
+                  modalSwiperInstance={modalSwiperInstance}
+                  setModalSwiperInstance={setModalSwiperInstance}
+                />
 
                 {/* Floating Category */}
                 <div className="absolute bottom-6 left-6 z-20">

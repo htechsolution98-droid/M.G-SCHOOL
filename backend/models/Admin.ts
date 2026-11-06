@@ -5,6 +5,8 @@ export interface IAdmin extends Document {
   password: string;
   name: string;
   role: string;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
 }
 
@@ -13,7 +15,13 @@ const AdminSchema = new Schema<IAdmin>({
   password: { type: String, required: true },
   name: { type: String, default: "Administrator" },
   role: { type: String, default: "admin" },
+  resetPasswordToken: { type: String, default: "" },
+  resetPasswordExpires: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Admin || mongoose.model<IAdmin>("Admin", AdminSchema);
+if (mongoose.models && mongoose.models.Admin) {
+  delete mongoose.models.Admin;
+}
+
+export default mongoose.model<IAdmin>("Admin", AdminSchema);
